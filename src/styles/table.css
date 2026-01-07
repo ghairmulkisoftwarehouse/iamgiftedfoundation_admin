@@ -1,0 +1,60 @@
+.table-container {
+    @apply  rounded-lg py-4;
+}
+
+
+/* thin horizontal scrollbar */
+.maintable::-webkit-scrollbar {
+  height: 5px; /* horizontal scrollbar height */
+}
+
+.maintable::-webkit-scrollbar-track {
+  background-color: white;
+  border-radius: 10px;
+}
+
+.maintable::-webkit-scrollbar-thumb {
+  background-color: gray;
+  border-radius: 10px;
+}
+
+.maintable::-webkit-scrollbar-thumb:hover {
+  background-color: var(--lavender);
+}
+
+/* Firefox */
+.maintable {
+  scrollbar-width: thin; /* makes scrollbar thin */
+  scrollbar-color: gray white; /* thumb color | track color */
+}
+
+th{
+    @apply    bg-grayOff whitespace-nowrap  font-semibold text-sm  text-black     ;
+} 
+
+
+
+
+tbody tr {
+  @apply bg-transparent hover:bg-gray-100 cursor-pointer border-b border-[#E0E7EA];
+}
+
+/* Remove bottom border for the last row */
+tbody tr:last-child {
+  border-bottom-color: transparent;
+}
+td {
+  @apply font-normal text-xs sm:text-sm text-[#1A1C1E];   
+}
+
+tbody tr td:first-child {
+  @apply rounded-l-2xl;
+}
+
+/* Last column rounded */
+tbody tr td:last-child {
+  @apply rounded-r-2xl;
+}
+
+
+

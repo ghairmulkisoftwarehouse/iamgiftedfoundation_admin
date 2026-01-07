@@ -1,0 +1,67 @@
+
+/* src/App.css */
+@import "tailwindcss";
+
+:root {
+    --primary:#2B7F75;
+   --aqua: #C9F2F2;
+  --grayblue:  #BCC4CE;
+  --light-cyan:#BFE5E4;
+  --lavender: #DCC1DD;
+  --black: #000000;
+  --white: #FFFFFF;
+   --grayblue-alt: #B2BCC5;
+   --polar-mist:#F4F6F6;
+   --thistle:#D8BFD8;
+   --steel-mist:#B2BCC5;
+    --plyr-color-main: #BFE5E4;
+    --darkGreen:#030F0CCC;
+    --lightGray:#9A9A9A;
+    --blueGray:#768FA0;
+    --lightBlue:#D8ECF7;
+    --grayOff:#F7F8F6;
+     --darkred:#CE2C60;
+     --cyan-Blue:#54A6FF;
+}
+@theme {
+  /* Colors */
+  
+   --color-primary: var(--primary);
+   
+ --color-aqua: var(--aqua);
+  --color-light-cyan:var(--light-cyan);
+  --color-grayblue:var(--grayblue);
+  --color-lavender:var(--lavender);
+  --color-black: var(--black);
+  --color-white:  var(--white);
+    --color-grayblue-alt: var(--grayblue-alt);
+       --color-polar-mist: var(--polar-mist);
+       --color-thistle:var(--thistle);
+          --color-steel-mist:var(--steel-mist);
+             --color-darkGreen:var(--darkGreen);
+                 --color-lightGray:var(--lightGray);
+               --color-blueGray:var(--blueGray);    
+
+               --color-lightBlue:var(--lightBlue);  
+               --color-grayOff:var(--grayOff); 
+                  --color-darkred: var(--darkred);
+                     --color-cyan-Blue: var(--cyan-Blue);
+               
+ 
+  /* Breakpoints */
+  --breakpoint-tiny: 18rem; /* 288px */
+--breakpoint-tiny-normal: 21.875rem; /* 350px */
+
+  --breakpoint-phone: 25.625rem; /* 410px */
+  --breakpoint-xs: 30rem; /* 480px */
+ --breakpoint-lg-desktop: 68.125rem; /* 1090px */
+}
+body {
+  font-family: 'Poppins', Arial, sans-serif;
+  font-style: normal;
+  color: var(--color-black);
+
+   background-color: var( --polar-mist);
+}
+
+

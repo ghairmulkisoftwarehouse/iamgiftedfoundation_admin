@@ -1,0 +1,18 @@
+
+const CarryingDonationSvg = ({className}) => {
+  return (
+    <svg 
+     className={className}
+    width="24" height="28" viewBox="0 0 24 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12.0814 3.53032C12.3802 1.76467 13.9169 0.419983 15.7676 0.419983C17.8325 0.419983 19.5064 2.0939 19.5064 4.15878C19.5064 6.00946 18.1617 7.54613 16.396 7.84498" stroke="white" strokeWidth="0.84" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M10.8439 12.7949C12.8943 12.7949 14.5564 11.1328 14.5564 9.08243C14.5564 7.03208 12.8943 5.36993 10.8439 5.36993C8.79355 5.36993 7.13141 7.03208 7.13141 9.08243C7.13141 11.1328 8.79355 12.7949 10.8439 12.7949Z" stroke="white" strokeWidth="0.84" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M0.600159 15.8887H3.89304C4.29749 15.8887 4.69639 15.9799 5.05814 16.1549L7.86587 17.5134C8.22761 17.6885 8.62652 17.7795 9.03097 17.7795H10.4645C11.8511 17.7795 12.9752 18.8673 12.9752 20.209C12.9752 20.2632 12.938 20.3109 12.8841 20.3257L9.3904 21.2918C8.76363 21.465 8.09253 21.4047 7.50953 21.1225L4.50806 19.6704" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M12.9752 19.3263L19.2903 17.386C20.4098 17.0372 21.6199 17.4508 22.3212 18.4219C22.8283 19.124 22.6217 20.1295 21.8831 20.5558L11.5491 26.5182C10.8919 26.8974 10.1164 26.99 9.39356 26.7755L0.600159 24.1661" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
+export default CarryingDonationSvg;
+
+
+
