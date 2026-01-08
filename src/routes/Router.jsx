@@ -19,6 +19,9 @@ import AppUser  from '../pages/app/app-user'
 import Donations  from '../pages/app/donations'
 import Community   from '../pages/app/community';
 import  Teams  from '../pages/app/teams';
+import  Programs   from '../pages/app/programs';
+import PerFundraising  from '../pages/app/per-fundraising'
+import  FundraisnigDetail  from '../pages/app/per-fundraising/fundraisnigdetail'
 
 
 
@@ -52,6 +55,14 @@ const Router = [
            { path : '/app/donations' , exact : true , element : <Donations /> } ,
           { path : '/app/community' , exact : true , element : <Community /> } ,
                { path : '/app/teams' , exact : true , element : <Teams /> } ,
+        { path : '/app/Programs' , exact : true , element : <Programs /> } ,
+            { path : '/app/peer-to-peer-fundraising' , exact : true , element : <PerFundraising /> } ,
+              { path : '/app/peer-to-peer-fundraising/:id' , exact : true , element : <FundraisnigDetail /> } ,
+            
+
+        
+
+               
           
             
           

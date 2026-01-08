@@ -8,9 +8,9 @@ const Status = ({ status }) => {
         <div
         className={`
             ${
-                status === 'pending' || status === 'running' 
+                status === 'pending' || status === 'running' ||  status === 'Pending' 
                 ? 
-                    'bg-yellow-500 bg-opacity-30 text-[#FFE500]'
+                    'bg-thistle'
                 : 
                 status === 'completed' || status === 'approved' || status === 'claimed' || status === 'active' || status === 'accepted' || status === 'Successful'
                 ?
@@ -30,7 +30,7 @@ const Status = ({ status }) => {
                 :
                     ''
             }
-            text-xs sm:text-sm px-2 rounded-md flex items-center gap-1 py-1 pb-1.5 font-medium w-fit capitalize
+            text-xs sm:text-sm px-2 rounded-md flex items-center gap-1 py-1 pb-1.5 font-normal w-fit capitalize
         `}
         >
             

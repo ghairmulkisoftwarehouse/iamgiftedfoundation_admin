@@ -1,4 +1,5 @@
-const ProgramsSvg = () => {
+const ProgramsSvg = ({ active = false }) => {
+     const strokeColor = active ? '#000000' : '#768FA0';
   return (
     <svg
       width="20"
@@ -9,28 +10,28 @@ const ProgramsSvg = () => {
     >
       <path
         d="M13.3333 1.66675V5.00008M6.66666 1.66675V5.00008"
-        stroke="#768FA0"
+         stroke={strokeColor}
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M10.8333 3.33325H9.16667C6.02397 3.33325 4.45262 3.33325 3.47631 4.30956C2.5 5.28588 2.5 6.85722 2.5 9.99992V11.6666C2.5 14.8093 2.5 16.3807 3.47631 17.3569C4.45262 18.3333 6.02397 18.3333 9.16667 18.3333H10.8333C13.976 18.3333 15.5474 18.3333 16.5237 17.3569C17.5 16.3807 17.5 14.8093 17.5 11.6666V9.99992C17.5 6.85722 17.5 5.28588 16.5237 4.30956C15.5474 3.33325 13.976 3.33325 10.8333 3.33325Z"
-        stroke="#768FA0"
+           stroke={strokeColor}
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M2.5 8.33325H17.5"
-        stroke="#768FA0"
+          stroke={strokeColor}
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M9.16666 11.6667H13.3333M6.66666 11.6667H6.67415M10.8333 15.0001H6.66666M13.3333 15.0001H13.3258"
-        stroke="#768FA0"
+           stroke={strokeColor}
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
