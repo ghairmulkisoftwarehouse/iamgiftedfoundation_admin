@@ -12,7 +12,7 @@ const PasswordInput = ({ label, name, value, onChange, error, readOnly = false, 
   return (
     <div className="w-full flex flex-col gap-1 relative">
       <div
-    className={`w-full relative h-[50px] transition-all duration-300 rounded-full border ${
+    className={`w-full relative h-[50px] transition-all duration-300 rounded-[10px] border ${
       error ? 'border-red-500' : focused || isActive ? 'border-black' : 'border-lightGray'
     }`}
   >
@@ -26,7 +26,7 @@ const PasswordInput = ({ label, name, value, onChange, error, readOnly = false, 
           onBlur={!readOnly ? () => setFocused(false) : undefined}
           onChange={onChange}
           autoComplete="off"
-      className={`w-full h-full px-4 rounded-full text-blacl outline-none text-sm sm:text-base transition-all duration-200
+      className={`w-full h-full px-4 rounded-[10px] text-blacl outline-none text-[13px] sm:text-sm transition-all duration-200
         ${
           readOnly
             &'text-gray-500 bg-transparent select-none'
@@ -39,9 +39,11 @@ const PasswordInput = ({ label, name, value, onChange, error, readOnly = false, 
         {/* Floating Label */}
         <label
           htmlFor={name}
-          className={`absolute left-4 px-1 bg-white transition-all duration-300 pointer-events-none ${
+          className={`absolute left-4 px-1 bg-white transition-all duration-300 
+          text-[13px] sm:text-sm
+          pointer-events-none ${
             isActive
-              ? `-top-3 text-[13px] ${error ? 'text-red-500' : 'text-black'}`
+              ? `-top-3 ${error ? 'text-red-500' : 'text-black'}`
               : `-top-3 text-gray-400 ${error ? 'text-red-500' : 'text-black'}`
           }`}
         >

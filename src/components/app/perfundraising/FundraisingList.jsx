@@ -15,7 +15,7 @@ const FundraisingList = () => {
           <Search />
         </div>
         <div className="flex justify-end order-1 sm:order-2">
-          <Titlebtn label="Add New" />
+          <Titlebtn label="Add New"  url = "/app/create-fundraising"  />
         </div>
       </div>
 

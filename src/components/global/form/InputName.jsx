@@ -8,7 +8,7 @@ const InputName = ({ label, type = 'text', name, value, onChange, error, readOnl
   return (
   <div className="w-full flex flex-col gap-1">
   <div
-    className={`w-full relative h-[50px] transition-all duration-300 rounded-full border ${
+    className={`w-full relative h-[50px] transition-all duration-300 rounded-[10px] border ${
       error ? 'border-red-500' : focused || isActive ? 'border-black' : 'border-lightGray'
     }`}
   >
@@ -21,7 +21,7 @@ const InputName = ({ label, type = 'text', name, value, onChange, error, readOnl
       onFocus={!readOnly ? () => setFocused(true) : undefined}
       onBlur={!readOnly ? () => setFocused(false) : undefined}
       onChange={onChange}
-      className={`w-full h-full px-4 rounded-full text-blacl outline-none text-sm sm:text-base transition-all duration-200
+      className={`w-full h-full px-4 rounded-[10px] text-blacl outline-none  text-[13px] sm:text-sm  transition-all duration-200
         ${
           readOnly
             &'text-gray-500 bg-transparent select-none'
@@ -34,10 +34,10 @@ const InputName = ({ label, type = 'text', name, value, onChange, error, readOnl
     {/* Floating Label */}
     <label
       htmlFor={name}
-      className={`absolute left-4 px-1 bg-white transition-all duration-300 pointer-events-none
+      className={`absolute left-4 px-1 text-[13px] sm:text-sm  bg-white transition-all duration-300 pointer-events-none
         ${
           isActive
-            ? `-top-3 text-[13px] ${error ? 'text-red-500' : 'text-black'}`
+            ? `-top-3  ${error ? 'text-red-500' : 'text-black'}`
             : `-top-3 text-lightGray ${error ? 'text-red-500' : 'text-lightGray'}`
         }
       `}
@@ -53,4 +53,3 @@ const InputName = ({ label, type = 'text', name, value, onChange, error, readOnl
 };
 
 export default InputName;
-2

@@ -1,4 +1,3 @@
-import moment from "moment";
 import ArrowTopSvg from "../../../assets/svgs/ArrowTopSvg";
 import img from "../../../assets/images/img1.jpg";
 import Status from "../../global/Status";

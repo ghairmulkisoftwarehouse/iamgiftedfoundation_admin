@@ -22,6 +22,8 @@ import  Teams  from '../pages/app/teams';
 import  Programs   from '../pages/app/programs';
 import PerFundraising  from '../pages/app/per-fundraising'
 import  FundraisnigDetail  from '../pages/app/per-fundraising/fundraisnigdetail'
+import CreateFundraising   from '../pages/app/per-fundraising/create-fundraising'
+import CreateImpact   from '../pages/app/per-fundraising/create-Impact'
 
 
 
@@ -58,6 +60,10 @@ const Router = [
         { path : '/app/Programs' , exact : true , element : <Programs /> } ,
             { path : '/app/peer-to-peer-fundraising' , exact : true , element : <PerFundraising /> } ,
               { path : '/app/peer-to-peer-fundraising/:id' , exact : true , element : <FundraisnigDetail /> } ,
+            { path : '/app/create-fundraising' , exact : true , element : <CreateFundraising /> } ,
+               { path : '/app/create-Impact/:id' , exact : true , element : <CreateImpact /> } ,
+            
+              
             
 
         

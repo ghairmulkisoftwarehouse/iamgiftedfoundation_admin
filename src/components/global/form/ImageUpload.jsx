@@ -1,46 +1,46 @@
 import React, { useState, useRef } from 'react';
-import Image from 'next/image';
-import SettingProfileSVG from '@/assets/svg/SettingProfileSVG';
+import SettingProfileSVG from '../../../assets/svgs/SettingProfileSVG';
 
 const MAX_FILE_SIZE_MB = 4;
-const VALID_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/svg+xml'];
-
-const ImageUpload = ({ label, imagePreview, setImagePreview ,error}) => {
+const VALID_IMAGE_TYPES = ['image/jpeg', 'image/png'];
+const ImageUpload = ({ label, imagePreview, setImagePreview, error }) => {
   const fileInputRef = useRef(null);
-   const [errorMessage, setErrorMessage]=useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [fileName, setFileName] = useState('');
+
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    setErrorMessage('');
+
     const isValidType = VALID_IMAGE_TYPES.includes(file.type);
     const isValidSize = file.size <= MAX_FILE_SIZE_MB * 1024 * 1024;
 
-    if (!isValidType) {
-      setErrorMessage('Invalid format. Only JPG, PNG, and SVG are allowed.');
-      setImagePreview(null);
-      return;
-    }
+if (!isValidType) {
+  setErrorMessage('Invalid format. Only JPG and PNG images are allowed.');
+  resetImage();
+  return;
+}
 
     if (!isValidSize) {
       setErrorMessage('File is too large. Please upload a file smaller than 4MB.');
-      setImagePreview(null);
+      resetImage();
       return;
     }
 
     const reader = new FileReader();
     reader.onloadend = () => {
       setImagePreview(reader.result);
-      setErrorMessage(''); 
+      setFileName(file.name);
     };
     reader.readAsDataURL(file);
   };
 
-  const handleRemoveImage = () => {
+  const resetImage = () => {
     setImagePreview(null);
-    setErrorMessage('');
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
+    setFileName('');
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const triggerFileInput = () => {
@@ -48,66 +48,87 @@ const ImageUpload = ({ label, imagePreview, setImagePreview ,error}) => {
   };
 
   return (
-    <div className=" rounded-xl  py-5 flex items-center gap-6">
-      <div className="flex flex-col items-center md:items-start gap-3 w-full">
+    <div className="rounded-xl  flex items-center gap-6">
+      <div className="flex flex-col items-center sm:items-start gap-3 w-full">
+        
+        {/* Label */}
         <div className="w-[110px] text-center">
-          <h3      className="font-medium text-sm sm:text-[15px] px-1 text-[#252C62]">{label}</h3>
+          <h3 className="font-medium text-xs md:text-sm px-1 text-black">
+            {label}
+          </h3>
         </div>
 
-        <div className="flex flex-col md:flex-row items-center gap-5">
-          <div 
-               onClick={triggerFileInput}
-          className={`w-[110px] h-[110px] bg-lightmist rounded-[15px] border ${error  ? 'border-red-500':' border-black/25  '}  border-dashed flex items-center justify-center overflow-hidden`}>
-            {imagePreview ? (
-              <Image
-                width={110}
-                height={110}
-                src={imagePreview}
-                             
+        <div className="flex flex-col sm:flex-row items-center gap-5">
+          
+          {/* Image Preview */}
+          <div
+  onClick={triggerFileInput}
+  className={`
+    w-[106px] h-[70px] bg-lightmist rounded-[15px]
+    flex items-center justify-center overflow-hidden cursor-pointer
+    ${
+      imagePreview
+        ? 'border-none'
+        : error || errorMessage
+        ? 'border border-red-500 border-dashed'
+        : 'border border-black/25 border-dashed'
+    }
+  `}
+>
 
-                alt="Profile Preview"
-                className="w-full h-full object-cover rounded-[15px] max-w-[110px]"
+            {imagePreview ? (
+              <img
+                src={imagePreview}
+                alt="Preview"
+                className="w-full h-full object-cover rounded-[15px]"
               />
             ) : (
               <SettingProfileSVG className="w-full h-full object-cover" />
             )}
           </div>
 
-          <div className="flex flex-col md:items-start items-center gap-1">
-            <div className="flex gap-4">
+          {/* Actions */}
+          <div className="flex flex-col sm:items-start items-center gap-1">
+            {fileName && (
+              <p className="text-sm text-gray-700 truncate max-w-[220px]">
+                {fileName}
+              </p>
+            )}
+
+            <div className="flex flex-col sm:flex-row items-center gap-4">
               <button
                 type="button"
                 onClick={triggerFileInput}
-                className="text-[#030F0CCC] font-medium hover:underline cursor-pointer"
+                className="text-white  cursor-pointer bg-[#001719] px-3.5 h-[36px] rounded-[8px] font-medium text-xs sm:text-sm"
               >
-                Upload New
+               {imagePreview ? 'Change Image ':'Upload New'} 
               </button>
 
               {imagePreview && (
                 <button
                   type="button"
-                  onClick={handleRemoveImage}
-                  className="text-red-500 font-medium hover:underline text-xs sm:text-sm  cursor-pointer"
+                  onClick={resetImage}
+                  className="text-red-500 font-medium text-xs sm:text-sm cursor-pointer"
                 >
                   Remove
                 </button>
               )}
-            </div>
-
-            <p className="text-xs text-center xs:text-start xs:text-sm text-gray-500">
-              Max size: 4MB. Supported formats: JPG, PNG, SVG.
+                <p className="text-xs text-gray-500">
+              Recommended Size: 1200 × 600 px (JPG / PNG)
             </p>
 
-            {errorMessage && (
-              <p className="text-sm text-red-500">{errorMessage}</p>
+            </div>
+
+          
+            {(errorMessage || error) && (
+              <p className="text-xs text-red-500">
+                {errorMessage || error}
+              </p>
             )}
           </div>
         </div>
-        {error && <p className="text-xs text-bright-red">{error}</p>}
 
-        
-
-        {/* Hidden File Input */}
+        {/* Hidden Input */}
         <input
           ref={fileInputRef}
           type="file"
