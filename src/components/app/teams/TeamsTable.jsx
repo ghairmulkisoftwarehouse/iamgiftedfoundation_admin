@@ -4,6 +4,7 @@ import Status from "../../global/Status";
 import TealPagination   from '../../global/TealPagination'
 import PageLimit   from '../../global/PageLimit'
 import Titlebtn  from '../../global/Titlebtn';
+import TeamForm  from '../create-team/TeamForm'
 
 
 
@@ -90,7 +91,7 @@ const dataTable = [
     <div className="w-full table-container bg-white flex flex-col gap-1 p-4">
       <div className="flex flex-row justify-between items-center w-full px-3 pt-2">
         <p className="text-black font-semibold">Teams</p>
-        <Titlebtn label = "Add New"/>
+      <Titlebtn label="Add New" url="/app/create-team/1" />
         
 
       </div>

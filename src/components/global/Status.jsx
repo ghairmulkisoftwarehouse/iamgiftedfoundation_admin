@@ -12,13 +12,13 @@ const Status = ({ status }) => {
                 ? 
                     'bg-thistle'
                 : 
-                status === 'completed' || status === 'approved' || status === 'claimed' || status === 'active' || status === 'accepted' || status === 'Successful'
+                status === 'completed' || status === 'approved' || status === 'claimed' || status === 'active' || status === 'Active'  || status === 'accepted' || status === 'Successful'
                 ?
-                    'bg-[#D8ECF7]  text-black'
+                    'bg-[#ECF8F0CC]  text-[#1C8C6E]'
                 : 
                 status === 'declined' || status === 'cancelled' || status === 'rejected' || 'expired'
                 ? 
-                    'bg-red-500 bg-opacity-30 text-[#FF0000]'
+                    'bg-[#DB000026] text-[#DB0000]'
                 : 
                 status === 'dispatched'
                 ? 

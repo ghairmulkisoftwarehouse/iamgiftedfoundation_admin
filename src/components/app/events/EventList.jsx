@@ -1,5 +1,5 @@
-import Search from '../../../components/global/Search';
-import Titlebtn from '../../../components/global/Titlebtn';
+import Search from '../../global/Search';
+import Titlebtn from '../../global/Titlebtn';
 import img from '../../../assets/images/programimg.png';
 import DotSvg from '../../../assets/svgs/DotSvg';
 import { FaRegClock } from 'react-icons/fa';
@@ -23,7 +23,7 @@ const cardsData = Array.from({ length: 10 }, (_, i) => ({
 }));
 
 
-const ProgramsList = () => {
+const EventList = () => {
   return (
     <div className="w-full flex flex-col gap-4">
       {/* Header */}
@@ -32,7 +32,7 @@ const ProgramsList = () => {
           <Search />
         </div>
         <div className=' flex justify-end order-1 sm:order-2'>
-           <Titlebtn label={'Add New'} url='/app/create-programs'  />
+           <Titlebtn label={'Add New'} url='/app/create-events'  />
         </div>
      
       </div>
@@ -196,4 +196,4 @@ const ProgramsList = () => {
   );
 };
 
-export default ProgramsList;
+export default EventList;

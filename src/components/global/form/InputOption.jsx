@@ -42,7 +42,7 @@ const InputOption = ({ label, name, value = "", onChange, error, readOnly = fals
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           placeholder="Select an option"
-          className={`w-full h-full px-4 pr-10 rounded-[10px] outline-none text-black text-sm
+          className={`w-full h-full px-4 pr-10 rounded-[10px] outline-none text-black  text-[13px] sm:text-sm
             ${readOnly && "text-gray-500 bg-transparent select-none"}
           `}
         />
@@ -68,7 +68,7 @@ const InputOption = ({ label, name, value = "", onChange, error, readOnly = fals
                     e.stopPropagation();
                     handleSelect(item);
                   }}
-                  className={`px-4 py-2 text-sm cursor-pointer hover:bg-primary/5 ${
+                  className={`px-4 py-2  text-[13px] sm:text-sm cursor-pointer hover:bg-primary/5 ${
                     item.title === value ? "bg-primary/10 font-medium" : ""
                   }`}
                 >

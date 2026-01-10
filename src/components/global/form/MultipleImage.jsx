@@ -86,7 +86,7 @@ const MultipleImage = ({ value = [], onChange,label="Media Uploads", error }) =>
           value.length > 0 ? "bg-white" : "bg-lightmist"
         } ${
           isDragging ? "border-blue-400" : error ? "border-red-500" : "border-gray-300"
-        } rounded-md border-2 border-dashed h-auto min-h-[109px] p-3 flex flex-col justify-center cursor-pointer gap-2`}
+        } rounded-md border-2 border-dashed h-auto min-h-[150px] p-3 flex flex-col justify-center cursor-pointer gap-2`}
         onClick={() => fileInputRef.current?.click()}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
