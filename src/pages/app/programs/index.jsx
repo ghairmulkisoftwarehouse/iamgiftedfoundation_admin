@@ -17,7 +17,7 @@ const Programs = () => {
 
          </div>
           <div className='  w-full xl:w-[30%] '>
-                 {/* <ProgramDetail/> */}
+                 <ProgramDetail/>
 
 
          </div>

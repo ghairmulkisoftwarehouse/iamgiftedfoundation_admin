@@ -3,6 +3,7 @@
 
 import Heading  from '../../../components/global/Heading';
 import EventList  from '../../../components/app/events/EventList';
+import EventDetail from '../../../components/app/events/EventDetail';
 const Events = () => {
   return (
        <div className='flex  flex-col  gap-6 w-full'>
@@ -15,7 +16,7 @@ const Events = () => {
 
          </div>
           <div className='  w-full xl:w-[30%] '>
-                 {/* <ProgramDetail/> */}
+                 <EventDetail/>
 
 
          </div>

@@ -9,6 +9,7 @@ import { Provider } from 'react-redux';
 import store from './redux/store.jsx';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ToastContainer } from 'react-toastify';
+import { CookiesProvider } from 'react-cookie'; 
 import 'react-toastify/dist/ReactToastify.css';
 
 const queryClient = new QueryClient();
@@ -17,6 +18,7 @@ const root = createRoot(document.getElementById('root'));
 
 root.render(
   <StrictMode>
+  
     <Provider store={store}>
       <BrowserRouter>
         <QueryClientProvider client={queryClient}>

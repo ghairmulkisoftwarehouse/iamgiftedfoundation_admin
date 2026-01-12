@@ -18,10 +18,12 @@ import Dashboard from "../pages/app/dashboard/index.jsx";
 import AppUser  from '../pages/app/app-user'
 import  Events  from '../pages/app/events';
 import  CreateEvents    from '../pages/app/events/create-events'
+import EventsDetail   from '../pages/app/events/events-detail'
 import Donations  from '../pages/app/donations'
 import Community   from '../pages/app/community';
 import  Teams  from '../pages/app/teams';
 import  Programs   from '../pages/app/programs';
+import ProgramDetail   from '../pages/app/programs/program-detail'
 import CreatePrograms  from '../pages/app/programs/create-programs'
 import PerFundraising  from '../pages/app/per-fundraising'
 import  FundraisnigDetail  from '../pages/app/per-fundraising/fundraisnigdetail'
@@ -61,6 +63,7 @@ const Router = [
             { path : '/app/dashboard' , exact : true , element : <Dashboard /> } ,
           { path : '/app/app-user' , exact : true , element : <AppUser /> } ,
             { path : '/app/events' , exact : true , element : <Events /> } ,
+              { path : '/app/events/:id' , exact : true , element : <EventsDetail /> } ,
               { path : '/app/create-events' , exact : true , element : <CreateEvents /> } ,
             
           
@@ -68,6 +71,7 @@ const Router = [
           { path : '/app/community' , exact : true , element : <Community /> } ,
                { path : '/app/teams' , exact : true , element : <Teams /> } ,
         { path : '/app/Programs' , exact : true , element : <Programs /> } ,
+         { path : '/app/Programs/:id' , exact : true , element : <ProgramDetail /> } ,
          { path : '/app/create-programs' , exact : true , element : <CreatePrograms /> } ,
         
             { path : '/app/peer-to-peer-fundraising' , exact : true , element : <PerFundraising /> } ,

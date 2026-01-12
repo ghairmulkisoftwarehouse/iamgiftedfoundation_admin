@@ -3,21 +3,45 @@ import useClickOutside from "../../../utils/clickOutside";
 import { useRef } from "react";
 import img from "../../../assets/images/img1.jpg";
 import ArrowSvg from "../../../assets/svgs/ArrowSvg";
+import SubmitLoading  from '../../../components/global/SubmitLoading';
+import { useDispatch,useSelector } from "react-redux";
+import { logout } from "../../../redux/actions/authActions";
 
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
+import { getToken, removeToken } from '../../../utils/cookies';
 
 
 export default function Usermenu() {
   const menuRef = useRef();
   const [showMenu, toggleShowMenu] = useToggle();
   useClickOutside(menuRef, () => toggleShowMenu(false));
+   const dispatch=useDispatch();
+   const navigate=useNavigate();
 
+     const token = getToken();
+     console.log('token',token)
+   
+
+  const { loading,user } = useSelector((state) => state.auth);
+  
+ console.log('user',user)
+
+const handleLogout = async () => {
+  try {
+    await dispatch(logout(navigate, toast));
+  } catch (err) {
+    console.error("Logout failed:", err);
+    toast.error(err?.message || "Logout failed. Please try again.");
+  }
+};
 
 
 
   return (
     <div
-      className="flex items-center gap-3 cursor-pointer relative"
+      className="flex items-center gap-0.5 xs:gap-3 cursor-pointer relative"
       onClick={toggleShowMenu}
       ref={menuRef}
     >
@@ -28,13 +52,13 @@ export default function Usermenu() {
           className="w-full h-full object-cover"
         />
       </div>
-       <div className=" flex flex-col ">
+       <div className=" flex flex-col    hidden xs:block">
           <h3 className="text-[#1A1C1E]/50  text-sm font-normal  hidden sm:block">Hey, Welcome!</h3>
           <h2 className="text-[#1A1C1E] font-semibold hidden xs:block">M.Salman</h2>
 
        </div>
    
-      <div className='hidden sm:block'>
+      <div >
   <ArrowSvg  rotated={showMenu}     />
       </div>
     
@@ -65,15 +89,18 @@ export default function Usermenu() {
         {/* Static dropdown content */}
         <div className="mt-2 border-t border-gray-200">
 
-  <div className="px-4 py-2 text-sm text-dark1 hover:bg-gray-100 cursor-pointer">
-    Dashboard
-  </div>
-
-
-
-  <div className="px-4 py-2 text-sm text-dark1 hover:bg-gray-100 cursor-pointer">
-    Settings
-  </div>
+        <div className="px-4 py-2 text-sm text-dark1 hover:bg-gray-100 cursor-pointer">
+          Dashboard
+        </div>
+        <div className="px-4 py-2 text-sm text-dark1 hover:bg-gray-100 cursor-pointer">
+          Settings
+        </div>
+          <button
+          onClick={handleLogout}
+          className="px-4 py-2 text-sm text-bright-red hover:bg-gray-100 w-full text-left font-medium"
+        >
+          {loading ? <SubmitLoading/>: "Logout"}
+        </button>
 
         </div>
       </div>

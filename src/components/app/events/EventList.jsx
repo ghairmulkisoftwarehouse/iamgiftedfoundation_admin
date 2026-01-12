@@ -5,6 +5,7 @@ import DotSvg from '../../../assets/svgs/DotSvg';
 import { FaRegClock } from 'react-icons/fa';
 import TealPagination   from '../../global/TealPagination'
 import PageLimit   from '../../global/PageLimit'
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -24,6 +25,10 @@ const cardsData = Array.from({ length: 10 }, (_, i) => ({
 
 
 const EventList = () => {
+   const navigate=useNavigate()
+
+
+
   return (
     <div className="w-full flex flex-col gap-4">
       {/* Header */}
@@ -39,20 +44,20 @@ const EventList = () => {
 
     
  <div className="flex flex-col gap-4 w-full">
-  {cardsData.map((item) => (
-    <div
+  {cardsData.map((item,index) => (
+     <div
       key={item.id}
-      className="
+      onClick={() => navigate(`/app/events/${item.id}`)}
+      className={`
         group
-        bg-white py-3 px-3 rounded-2xl
+        py-3 px-3 rounded-2xl
         flex flex-col gap-2.5
         md:flex-row md:justify-between md:items-center
-
         transition-all duration-500 ease-in-out
-        
         hover:shadow-lg hover:shadow-black/10
         cursor-pointer
-      "
+        ${index  === 0 ? "bg-[#9BD6F6]/30" : "bg-white"}
+      `}
     >
       {/* Left Section */}
       <div className="flex flex-row gap-1.5">

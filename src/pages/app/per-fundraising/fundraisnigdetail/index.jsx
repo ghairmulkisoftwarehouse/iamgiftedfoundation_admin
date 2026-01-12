@@ -3,7 +3,6 @@ import FundraisingCard   from '../../../../components/app/fundraisnigdetail/Fund
 import FundraisingTable   from '../../../../components/app/fundraisnigdetail/fundraisingTable/FundraisingTable';
 import FundraisingInfo   from '../../../../components/app/fundraisnigdetail/FundraisingInfo';
 import FundraisingChart   from  '../../../../components/app/fundraisnigdetail/FundraisingChart';
-
 const FundraisnigDetail = () => {
   return (
       <div className='flex  flex-col  gap-6 w-full'>
@@ -47,7 +46,7 @@ const FundraisnigDetail = () => {
          </div>  
             
               
-            </div>
+      </div>
   )
 }
 

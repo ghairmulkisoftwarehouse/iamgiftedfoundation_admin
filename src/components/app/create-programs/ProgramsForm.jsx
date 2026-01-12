@@ -56,8 +56,8 @@ const ProgramsForm = () => {
     coverImage: null,
   });
 
-  setImagePreview(""); // clear cover image preview
-  setErrors({});       // clear all errors
+  setImagePreview(""); 
+  setErrors({});      
 };
 
 const handleSubmit = () => {

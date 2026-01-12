@@ -5,8 +5,19 @@ import LogoSvg from '../../assets/svgs/LogoSvg.jsx';
 import LeftPinkButterfullySvg from '../../assets/svgs/LeftPinkButterfullySvg.jsx';
 import RightPinkButterfullySvg from '../../assets/svgs/RightPinkButterfullysvg.jsx';
 import { validateLoginForm } from '../../validations/loginValidation.js';
+import { useDispatch,useSelector } from 'react-redux';
+import {login}  from  '../../redux/actions/authActions.js'
+import { useNavigate } from 'react-router-dom';
+import SubmitLoading from '../../components/global/SubmitLoading';
+
 
 const Login = () => {
+
+ const dispatch =useDispatch();
+ const navigate=useNavigate();
+
+  const { loading  } = useSelector(state => state.auth);
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -27,21 +38,24 @@ const Login = () => {
     }
   };
 
-  const handleSubmit = async () => {
-    const validationErrors = validateLoginForm(formData);
-    setErrors(validationErrors);
+const handleSubmit = async () => {
+  const validationErrors = validateLoginForm(formData);
+  setErrors(validationErrors);
 
-    if (Object.keys(validationErrors).length > 0) return;
+  if (Object.keys(validationErrors).length > 0) return;
 
-    const payload = {
-      email: formData.email,
-      password: formData.password,
-    };
-
-    console.log('Form submitted:', payload);
-
-    setFormData({ email: '', password: '' });
+  const payload = {
+    identifier: formData.email,
+    password: formData.password,
   };
+
+  console.log('Form submitted:', payload);
+
+  dispatch(login(payload, navigate));
+
+  setFormData({ email: '', password: '' });
+};
+
 
   return (
     <div className="w-full h-screen flex items-center justify-center px-4 relative">
@@ -84,13 +98,16 @@ const Login = () => {
             error={errors.password}
           />
 
-       <button
+   <button
   onClick={handleSubmit}
+  disabled={loading}
   className="w-full h-[50px] text-sm sm:text-base rounded-full bg-black text-white cursor-pointer relative
-             transition-colors duration-500 ease-in-out hover:bg-gray-200 hover:text-black"
+             transition-colors duration-500 ease-in-out hover:bg-gray-200 hover:text-black
+             disabled:opacity-70 disabled:cursor-not-allowed"
 >
-  Login
+  {loading ? <SubmitLoading size={12} /> : 'Continue'}
 </button>
+
         </div>
       </div>
     </div>
