@@ -1,8 +1,6 @@
-import { lazy } from "react";
-import Loadable from "../components/global/Loadable";
 import { Navigate } from "react-router-dom";
-// import PublicRoute from "./PublicRoute";
-// import ProtectedRoute from "./ProtectedRoute";
+import PublicRoute from "./PublicRoute";
+import ProtectedRoute from "./ProtectedRoute";
 
 
 
@@ -52,53 +50,66 @@ const Router = [
         path : '/auth' ,
         element : <BlankLayout  /> ,       
         children : [
-            { path : '/auth/login' , exact : true , element : <Login /> } ,
+            { path : '/auth/login' , exact : true , element : <PublicRoute element={<Login />} /> } ,
             { path : '*' , element : <Navigate to='/page-not-found' /> }
         ]
     } ,
+  {
+  path: '/app',
+  element: <MainLayout />,
+  children: [
+    { path: 'dashboard', element: <ProtectedRoute element={<Dashboard />} /> },
+
+    { path: 'app-user', element: <ProtectedRoute element={<AppUser />} /> },
+
+    { path: 'events', element: <ProtectedRoute element={<Events />} /> },
+    { path: 'events/:id', element: <ProtectedRoute element={<EventsDetail />} /> },
+    { path: 'create-events', element: <ProtectedRoute element={<CreateEvents />} /> },
+
+    { path: 'donations', element: <ProtectedRoute element={<Donations />} /> },
+    { path: 'community', element: <ProtectedRoute element={<Community />} /> },
+
+    { path: 'teams', element: <ProtectedRoute element={<Teams />} /> },
+
+    { path: 'Programs', element: <ProtectedRoute element={<Programs />} /> },
+    { path: 'Programs/:id', element: <ProtectedRoute element={<ProgramDetail />} /> },
+    { path: 'create-programs', element: <ProtectedRoute element={<CreatePrograms />} /> },
+
     {
-        path : '/app' ,
-        element : <MainLayout /> ,
-        children : [
-            { path : '/app/dashboard' , exact : true , element : <Dashboard /> } ,
-          { path : '/app/app-user' , exact : true , element : <AppUser /> } ,
-            { path : '/app/events' , exact : true , element : <Events /> } ,
-              { path : '/app/events/:id' , exact : true , element : <EventsDetail /> } ,
-              { path : '/app/create-events' , exact : true , element : <CreateEvents /> } ,
-            
-          
-           { path : '/app/donations' , exact : true , element : <Donations /> } ,
-          { path : '/app/community' , exact : true , element : <Community /> } ,
-               { path : '/app/teams' , exact : true , element : <Teams /> } ,
-        { path : '/app/Programs' , exact : true , element : <Programs /> } ,
-         { path : '/app/Programs/:id' , exact : true , element : <ProgramDetail /> } ,
-         { path : '/app/create-programs' , exact : true , element : <CreatePrograms /> } ,
-        
-            { path : '/app/peer-to-peer-fundraising' , exact : true , element : <PerFundraising /> } ,
-              { path : '/app/peer-to-peer-fundraising/:id' , exact : true , element : <FundraisnigDetail /> } ,
-            { path : '/app/create-fundraising' , exact : true , element : <CreateFundraising /> } ,
-               { path : '/app/create-Impact/:id' , exact : true , element : <CreateImpact /> } ,
-                { path : '/app/create-team/:id' , exact : true , element : <Createteam /> } ,
-            { path : '/app/panel-user' , exact : true , element : <PanelUser /> } ,
-              { path : '/app/create-new-user' , exact : true , element : <CreateNewUser /> } ,
+      path: 'peer-to-peer-fundraising',
+      element: <ProtectedRoute element={<PerFundraising />} />,
+    },
+    {
+      path: 'peer-to-peer-fundraising/:id',
+      element: <ProtectedRoute element={<FundraisnigDetail />} />,
+    },
+    {
+      path: 'create-fundraising',
+      element: <ProtectedRoute element={<CreateFundraising />} />,
+    },
 
-            
+    {
+      path: 'create-Impact/:id',
+      element: <ProtectedRoute element={<CreateImpact />} />,
+    },
+    {
+      path: 'create-team/:id',
+      element: <ProtectedRoute element={<Createteam />} />,
+    },
 
-                
-            
-              
-            
+    {
+      path: 'panel-user',
+      element: <ProtectedRoute element={<PanelUser />} />,
+    },
+    {
+      path: 'create-new-user',
+      element: <ProtectedRoute element={<CreateNewUser />} />,
+    },
 
-        
-
-               
-          
-            
-          
-            { path : '*' , element : <Navigate to='/page-not-found' /> }
-
-        ]
-    } ,
+    { path: '*', element: <Navigate to="/page-not-found" /> },
+  ],
+}
+,
     {
         path : '/page-not-found' ,
         element : <BlankLayout /> ,

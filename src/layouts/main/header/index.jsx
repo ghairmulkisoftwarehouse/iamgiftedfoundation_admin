@@ -1,5 +1,4 @@
-import React, { memo } from 'react'
-import { baseURL } from '../../../config/api';
+import React, { memo,useState,useEffect } from 'react'
 import  LanguageSvg  from '../../../assets/svgs/LanguageSvg';
 import CommentSvg   from '../../../assets/svgs/CommentSvg';
 import  NotificationSvg   from '../../../assets/svgs/NotificationSvg';
@@ -9,17 +8,60 @@ import Usermenu  from './UserMenu';
 import { usePannelContext } from '../../../context/PannelContext';
 import formatLabel from '../../../utils/formatLabel';
 import { useLocation } from 'react-router-dom';
+import { useQuery } from 'react-query';
+import Axios from '../../../config/api';
+import { setProfile } from '../../../redux/slices/profileSlice';
+import { useDispatch,useSelector } from 'react-redux';
+import devLog from '../../../utils/logsHelper';
+import { baseURL } from '../../../config/api';
+import  img from '../../../assets/images/img1.jpg';
+import { ClipLoader } from 'react-spinners'; 
+
+
 
 
 const Header = () => {
       const location = useLocation();
 
      const {  setShowPannel } = usePannelContext();
+
+   const  dispatch=useDispatch();
+    const { doc } = useSelector((state) => state.profile);
+   devLog(' this is a profile  doc',doc)
+
        const pathSegments = location.pathname.split('/'); // ['', 'app', 'dashboard']
   let heading = '';
   if (pathSegments[1] === 'app' && pathSegments[2]) {
     heading = pathSegments[2].charAt(0).toUpperCase() + pathSegments[2].slice(1); // Capitalize first letter
   }
+
+
+
+
+  const { data, isLoading, error } = useQuery(
+    ['my-profile'],
+    async () => {
+      const res = await Axios.get('/user/my-profile');
+      return res.data;
+    },
+    {
+      refetchOnWindowFocus: false,
+      onSuccess: (res) => {
+        dispatch(setProfile(res?.data));
+      },
+    }
+  );
+
+
+
+  
+  const fullname =  doc?.profile?.fullName || doc?.doc?.username  ;
+    const email =  doc?.doc?.email;
+  const myrole =  doc?.doc?.roles?.[0];
+  const profileImage = doc?.doc?.image ? `${baseURL}/${doc?.doc?.image?.relativeAddress}` : img;
+
+
+
 
 
     return (
@@ -78,7 +120,11 @@ const Header = () => {
 
 
       </div>
-      <Usermenu/>
+    {isLoading ? (
+            <ClipLoader size={16}  color='#000000'  />
+          ) : (
+            <Usermenu fullname={fullname} role={myrole} profileImage={profileImage} email={email} />
+          )}
 
     </div>
      

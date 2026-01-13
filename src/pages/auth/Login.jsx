@@ -6,9 +6,10 @@ import LeftPinkButterfullySvg from '../../assets/svgs/LeftPinkButterfullySvg.jsx
 import RightPinkButterfullySvg from '../../assets/svgs/RightPinkButterfullysvg.jsx';
 import { validateLoginForm } from '../../validations/loginValidation.js';
 import { useDispatch,useSelector } from 'react-redux';
-import {login}  from  '../../redux/actions/authActions.js'
+import {login}  from  '../../redux/actions/authActions.js';
 import { useNavigate } from 'react-router-dom';
 import SubmitLoading from '../../components/global/SubmitLoading';
+import devLog from '../../utils/logsHelper.js';
 
 
 const Login = () => {
@@ -38,7 +39,7 @@ const Login = () => {
     }
   };
 
-const handleSubmit = async () => {
+const handleSubmit = () => {
   const validationErrors = validateLoginForm(formData);
   setErrors(validationErrors);
 
@@ -49,12 +50,14 @@ const handleSubmit = async () => {
     password: formData.password,
   };
 
-  console.log('Form submitted:', payload);
+
+  devLog('Login payload:', payload); 
+
+
 
   dispatch(login(payload, navigate));
-
-  setFormData({ email: '', password: '' });
 };
+
 
 
   return (

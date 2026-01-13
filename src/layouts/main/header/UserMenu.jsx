@@ -10,23 +10,22 @@ import { logout } from "../../../redux/actions/authActions";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-import { getToken, removeToken } from '../../../utils/cookies';
 
 
-export default function Usermenu() {
+export default function UserMenu({
+  fullname ,
+  role ,
+  profileImage ,
+  email ,
+}) {
   const menuRef = useRef();
   const [showMenu, toggleShowMenu] = useToggle();
   useClickOutside(menuRef, () => toggleShowMenu(false));
    const dispatch=useDispatch();
    const navigate=useNavigate();
 
-     const token = getToken();
-     console.log('token',token)
-   
 
-  const { loading,user } = useSelector((state) => state.auth);
-  
- console.log('user',user)
+  const { loading } = useSelector((state) => state.auth);
 
 const handleLogout = async () => {
   try {
@@ -39,6 +38,8 @@ const handleLogout = async () => {
 
 
 
+
+
   return (
     <div
       className="flex items-center gap-0.5 xs:gap-3 cursor-pointer relative"
@@ -47,14 +48,14 @@ const handleLogout = async () => {
     >
       <div className="w-[40px] h-[40px]   overflow-hidden rounded-full">
         <img
-          src={img}
+          src={profileImage}
           alt="user avatar"
           className="w-full h-full object-cover"
         />
       </div>
        <div className=" flex flex-col    hidden xs:block">
           <h3 className="text-[#1A1C1E]/50  text-sm font-normal  hidden sm:block">Hey, Welcome!</h3>
-          <h2 className="text-[#1A1C1E] font-semibold hidden xs:block">M.Salman</h2>
+          <h2 className="text-[#1A1C1E] font-semibold hidden xs:block">{fullname}</h2>
 
        </div>
    
@@ -72,15 +73,15 @@ const handleLogout = async () => {
       >
         <div className="px-4 pt-4">
           <div className="flex items-center space-x-3">
-            <img
-              src={img}
-              alt="User"
-              className="w-10 h-10 rounded-full object-cover"
-            />
+             <img
+          src={profileImage}
+          alt="Profile"
+          className="w-[35px] h-[35px] lg:w-[40px] lg:h-[41px] rounded-full object-cover"
+        />
             <div>
-              <h3 className="text-sm font-semibold text-gray-900">admin</h3>
+              <h3 className="text-sm font-semibold text-gray-900">{fullname}</h3>
               <p className="text-xs text-green-600 font-medium capitalize">
-                user
+                  {role}
               </p>
             </div>
           </div>
@@ -96,10 +97,11 @@ const handleLogout = async () => {
           Settings
         </div>
           <button
-          onClick={handleLogout}
-          className="px-4 py-2 text-sm text-bright-red hover:bg-gray-100 w-full text-left font-medium"
+    onClick={handleLogout}       
+    
+       className="px-4 py-2 text-sm text-bright-red hover:bg-gray-100 w-full text-left font-medium"
         >
-          {loading ? <SubmitLoading/>: "Logout"}
+          {loading ? <SubmitLoading color="#000000"/>: "Logout"}
         </button>
 
         </div>
