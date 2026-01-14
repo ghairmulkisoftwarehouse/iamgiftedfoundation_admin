@@ -1,5 +1,5 @@
 import ArrowTopSvg from "../../../../assets/svgs/ArrowTopSvg";
-
+import img from "../../../../assets/images/img1.jpg";
 
 import SelectOption  from '../../../../components/global/SelectOption';
 
@@ -59,7 +59,7 @@ const dataTable = [
               <tr>
                 <th className="px-3 py-4 rounded-tl-[12px] rounded-bl-[12px]">
                <div className="flex items-center gap-0.5">  
-            Type
+               Id
                <ArrowTopSvg/>
                 </div>
                </th>
@@ -69,6 +69,14 @@ const dataTable = [
                <ArrowTopSvg/>
                 </div>
                 </th>
+
+                   <th className="px-3 py-4">
+                    <div className="flex items-center gap-0.5">  
+            Image
+               <ArrowTopSvg/>
+                </div>
+                </th>
+                
                 <th className="px-3 py-4">
                    <div className="flex items-center gap-0.5">  
           Description
@@ -76,20 +84,7 @@ const dataTable = [
                 </div>
                 
                 </th>
-                <th className="px-3 py-4">
-                
-                  <div className="flex items-center gap-0.5">  
-         Founds Uses
-               <ArrowTopSvg/>
-                </div>
-                </th>
-                <th className="px-3 py-4">
-                    <div className="flex items-center gap-0.5">  
-                Impect Count               
-                
-                <ArrowTopSvg/>
-                </div>
-              </th>
+             
          
               </tr>
             </thead>
@@ -105,20 +100,25 @@ const dataTable = [
                   <td className="px-3 py-4 whitespace-nowrap ">
                      {row.title}
                   </td>
-
+       <td className="px-3 py-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-[32px] h-[32px] overflow-hidden rounded-full">
+                                             <img
+                                               src={img}
+                                               alt="user avatar"
+                                               className="w-full h-full object-cover"
+                                             />
+                                           </div>
+                  
+                    </div>
+                  </td>
                <td className="px-3 py-4 max-w-[280px] md:max-w-[300px] break-words ">
   <span className="text-black/65">
     {row.description}
   </span>
 </td>
 
-                  <td className="px-3 py-4  whitespace-nowrap">
-                    {row.fundsUses}
-                  </td>
-
-                  <td className="px-3 py-4 whitespace-nowrap">
-                    {row.impactCount}
-                  </td>
+                
                 </tr>
               ))}
             </tbody>

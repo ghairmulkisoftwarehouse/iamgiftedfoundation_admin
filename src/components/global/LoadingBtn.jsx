@@ -4,7 +4,7 @@ import { ClipLoader } from 'react-spinners'
 const LoadingBtn = () => {
     return (
         <p className='flex items-center gap-2 justify-center w-full'>
-            <ClipLoader size={16}  color='white' />
+            <ClipLoader size={16}  color='black' />
             <span>Loading...</span>
         </p>
     )

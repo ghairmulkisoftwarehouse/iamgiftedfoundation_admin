@@ -9,10 +9,24 @@ import InputTags   from '../../../components/global/form/InputTags';
 import Editor   from '../../../components/global/form/Editor';
 import ErrorBoundary  from '../../../components/global/ErrorBoundary';
 import MultipleImage   from '../../../components/global/form/MultipleImage';
-import {validateEventForm} from '../../../validations/eventValidation'
-
+import {validateFundraisingForm} from '../../../validations/fundraisingValidation'
+import { useDispatch,useSelector } from 'react-redux';
+import SubmitLoading   from '../../../components/global/SubmitLoading';
+import {Add_Campaign} from '../../../redux/actions/compaignActions'
+import { useQueryClient } from "react-query";
+import { toast } from 'react-toastify';
+import devLog from '../../../utils/logsHelper';
+import { useNavigate } from 'react-router-dom';
 
 const FundraisningForm = () => {
+
+  const dispatch=useDispatch();
+    const navigate=useNavigate(); 
+      const queryClient = useQueryClient();
+
+     const {createLoading} = useSelector(state => state.campaign);
+
+
    const [imagePreview, setImagePreview] = useState("");
   const [errors, setErrors] = useState({});
 
@@ -56,20 +70,50 @@ const FundraisningForm = () => {
     coverImage: null,
   });
 
-  setImagePreview(""); // clear cover image preview
-  setErrors({});       // clear all errors
+  setImagePreview("");
+  setErrors({});       
 };
 
-const handleSubmit = () => {
-  const validationErrors = validateEventForm(formData);
+const handleSubmit = async () => {
+  const validationErrors = validateFundraisingForm(formData);
   setErrors(validationErrors);
 
   if (Object.keys(validationErrors).length > 0) return;
 
-  console.log("Form submitted:", formData);
+  try {
+    const galleryUrls = Array.isArray(formData.gallery)
+      ? formData.gallery.map(item => item.url)
+      : [];
 
-  resetForm();
+    const payload = {
+      title: formData.title,
+
+      ...(imagePreview && {
+        featuredImageDataURI: imagePreview,
+      }),
+
+      ...(formData.description && {
+        body: formData.description,
+      }),
+
+      ...(galleryUrls.length > 0 && {
+        attachmentsDataURIs: galleryUrls,
+      }),
+    };
+
+    devLog('this is payload', payload);
+
+    await dispatch(Add_Campaign(payload, toast, navigate));
+
+    queryClient.invalidateQueries(['fetch-all-campaign']);
+
+    resetForm();
+  } catch (error) {
+    console.error(error);
+    toast.error('Failed to add campaign');
+  }
 };
+
 
 
   return (
@@ -207,24 +251,27 @@ const handleSubmit = () => {
 
     </div>
 
-          <div className="flex flex-row gap-2 items-center justify-end w-full  px-3.5 ">
-     <button
+       <div className="flex flex-row gap-2 items-center justify-end w-full px-3.5">
+  <button
     type="button"
-    onClick={resetForm}  
+    onClick={resetForm}
     className="btn-secondary w-[50%] sm:w-[148px] h-[50px]"
+    disabled={createLoading}
   >
     Cancel
   </button>
-        <button
-          onClick={handleSubmit}
-          className="btn-primary w-[50%] sm:w-[210px] h-[50px]"
-        >
-          Event Create
-        </button>
 
+  <button
+    type="button"
+    onClick={handleSubmit}
+    disabled={createLoading}
+    className={`btn-primary w-[50%] sm:w-[210px] h-[50px] 
+      ${createLoading ? 'opacity-60 cursor-not-allowed' : ''}`}
+  >
+    {createLoading ? <SubmitLoading size={12} /> : 'Create Event'}
+  </button>
+</div>
 
-      
-      </div>
     
     </div>
   )

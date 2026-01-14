@@ -53,7 +53,7 @@ const FundraisingCard = () => {
                         </div>
             
               </div>
-                   <div className="w-full  bg-[#B2BCC599] rounded-full h-2 overflow-hidden">
+                   <div className="w-full  bg-[#B2BCC599] rounded-full h-2 overflow-hidden mb-5">
                         <div
                             className="
                             bg-[#9BD6F6] h-2 rounded-full
@@ -65,7 +65,7 @@ const FundraisingCard = () => {
 
                   </div> 
 
-                  <div className='grid grid-cols-1 xs:grid-cols-3 gap-2 w-full   pt-3'>
+                  {/* <div className='grid grid-cols-1 xs:grid-cols-3 gap-2 w-full   pt-3'>
                   <div className='       rounded-[10px] bg-[#F4F9FD] py-4
                             flex flex-col items-center justify-center
                             transition-all duration-300 ease-in-out
@@ -95,7 +95,7 @@ const FundraisingCard = () => {
 
                   </div>
                  
-                  </div>
+                  </div> */}
                
 
      

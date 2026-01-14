@@ -1,11 +1,12 @@
 
 import img from '../../../assets/images/Desertimg.png'
 import DotSvg from '../../../assets/svgs/DotSvg';
+import multipleimg from '../../../assets/images/multipleimg.png'
 
 const EventCard = () => {
   return (
-    <div  className=" bg-white w-full flex flex flex-col gap-2    rounded-[15px]">
-       <div className="rounded-tl-[15px] rounded-tr-[15px] w-full h-[250px]  sm:h-[200px] xl:h-[300px] overflow-hidden">
+    <div  className=" bg-white w-full flex flex flex-col gap-2  p-4   rounded-[15px]">
+       <div className="   rounded-[15px] w-full h-[250px]  sm:h-[200px] xl:h-[300px] overflow-hidden">
             <img
             src={img}
             alt="img"
@@ -17,8 +18,26 @@ const EventCard = () => {
             />
         </div>
 
+  <div className="grid grid-cols-2   sm:flex sm:flex-row sm:flex-wrap gap-3 pt-3.5">
+  {Array.from({ length: 5 }).map((_, index) => (
+    <div
+      key={index}
+      className="  sm:w-[140px] h-[90px] rounded-[10px] overflow-hidden relative group"
+    >
+      <img
+        src={multipleimg}
+        alt={`img-${index + 1}`}
+        className="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
+      />
+      {/* Optional overlay on hover */}
+      <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[10px]" />
+    </div>
+  ))}
+</div>
+
+
       
-      <div className=' px-3 py-2.5  w-full flex flex-col   gap-2'>
+      <div className='   w-full flex flex-col   gap-2'>
                 <div className=' flex justify-between items-center  w-full'>
                         <div className=' text-sm'>
                             Disaster Relief
@@ -65,33 +84,33 @@ const EventCard = () => {
 
                   </div> 
 
-                  <div className='grid grid-cols-1 xs:grid-cols-3 gap-2 w-full   pt-3'>
-                  <div className='       rounded-[10px] bg-[#F4F9FD] py-4
+                  <div className=' w-full  flex flex-col xs:flex-row  xs:flex-wrap gap-2.5  pt-3'>
+                  <div className='   w-full  xs:w-fit  px-4   md:px-0  md:w-[180px]        rounded-[10px] bg-[#F4F9FD] py-4
                             flex flex-col items-center justify-center
                             transition-all duration-300 ease-in-out
                             hover:-translate-y-1 hover:shadow-lg hover:bg-white
                             cursor-pointer'>
-                  <h2 className=' font-medium text-m md:text-base '>$100</h2>
-                  <p className=' text-xs md:text-sm text-black/60'  >Donation</p>
+                  <p className=' text-xs md:text-sm text-black/60'  >Date and Time</p>
+                  <h2 className=' font-medium text-m md:text-base '>21 Jun 12-3PM </h2>
 
                   </div>
-                 <div className='       rounded-[10px] bg-[#F4F9FD] py-4
+                 <div className='    w-full  xs:w-fit  px-4   md:px-0  md:w-[180px]        rounded-[10px] bg-[#F4F9FD] py-4
                             flex flex-col items-center justify-center
                             transition-all duration-300 ease-in-out
                             hover:-translate-y-1 hover:shadow-lg hover:bg-white
                             cursor-pointer'>
-                  <h2 className=' font-medium text-m md:text-base '>$100</h2>
-                  <p className=' text-xs md:text-sm text-black/60'  >Donation</p>
+                <p className=' text-xs md:text-sm text-black/60'  >Place</p>
+                  <h2 className=' font-medium text-m md:text-base '>Model Town Multan </h2>
 
                   </div>
 
-                   <div className='       rounded-[10px] bg-[#F4F9FD] py-4
+                   <div className='    w-full  xs:w-fit  px-4   md:px-0  md:w-[180px]       rounded-[10px] bg-[#F4F9FD] py-4
                             flex flex-col items-center justify-center
                             transition-all duration-300 ease-in-out
                             hover:-translate-y-1 hover:shadow-lg hover:bg-white
                             cursor-pointer'>
-                  <h2 className=' font-medium text-m md:text-base '>$100</h2>
-                  <p className=' text-xs md:text-sm text-black/60'  >Donation</p>
+                             <p className=' text-xs md:text-sm text-black/60'  >Organizer</p>
+                  <h2 className=' font-medium text-m md:text-base '>EcoFuture Labs </h2>
 
                   </div>
                  

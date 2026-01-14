@@ -9,66 +9,103 @@ import InputTags   from '../../global/form/InputTags';
 import Editor   from '../../global/form/Editor';
 import ErrorBoundary  from '../../global/ErrorBoundary';
 import MultipleImage   from '../../global/form/MultipleImage';
-import {validateProgramForm} from '../../../validations/programValidation'
+import {validateEventForm} from '../../../validations/eventValidation'
+import  {Add_Event} from '../../../redux/actions/eventActions';
+import { useDispatch,useSelector } from 'react-redux';
+import SubmitLoading   from '../../../components/global/SubmitLoading';
+import { useQueryClient } from "react-query";
+import { toast } from 'react-toastify';
+import devLog from '../../../utils/logsHelper';
+import { useNavigate } from 'react-router-dom';
 
 
 const EventsForm = () => {
-   const [imagePreview, setImagePreview] = useState("");
+  const dispatch = useDispatch();
+  const queryClient = useQueryClient();
+  const  navigate =useNavigate();
+  const { createLoading } = useSelector((state) => state.event);
+
+  const [imagePreview, setImagePreview] = useState('');
   const [errors, setErrors] = useState({});
 
   const [formData, setFormData] = useState({
-    title: "",
-    category: "",
+    title: '',
+    category: '',
     tags: [],
-    description: "",
-    organizationName: "",
-    phoneNumber: "",
-    email: "",
-    gallery:[],
-    website: "",
+    description: '',
+    organizationName: '',
+    phoneNumber: '',
+    email: '',
+    gallery: [],
+    website: '',
     coverImage: null,
-
   });
+
 
   const handleChange = (field) => (e) => {
     setFormData((prev) => ({ ...prev, [field]: e.target.value }));
 
     if (errors[field]) {
-      setErrors((prev) => {
-        const updated = { ...prev };
-        delete updated[field];
-        return updated;
-      });
+      const updated = { ...errors };
+      delete updated[field];
+      setErrors(updated);
     }
   };
 
   const resetForm = () => {
-  setFormData({
-    title: "",
-    category: "",
-    tags: [],
-    description: "",
-    organizationName: "",
-    phoneNumber: "",
-    email: "",
-    gallery: [],
-    website: "",
-    coverImage: null,
-  });
+    setFormData({
+      title: '',
+      category: '',
+      tags: [],
+      description: '',
+      organizationName: '',
+      phoneNumber: '',
+      email: '',
+      gallery: [],
+      website: '',
+      coverImage: null,
+    });
 
-  setImagePreview(""); // clear cover image preview
-  setErrors({});       // clear all errors
-};
+    setImagePreview('');
+    setErrors({});
+  };
 
-const handleSubmit = () => {
-  const validationErrors = validateProgramForm(formData);
+const handleSubmit = async () => {
+  const validationErrors = validateEventForm(formData);
   setErrors(validationErrors);
-
   if (Object.keys(validationErrors).length > 0) return;
 
-  console.log("Form submitted:", formData);
+  try {
+    const galleryUrls = formData.gallery?.length
+      ? formData.gallery.map(item => item.url)
+      : [];
 
-  resetForm();
+    const payload = {
+      title: formData.title,
+
+      ...(imagePreview && {
+        featuredImageDataURI: imagePreview,
+      }),
+
+      ...(formData.description && {
+        body: formData.description,
+      }),
+
+      ...(galleryUrls.length > 0 && {
+        imagesDataURIs: galleryUrls,
+      }),
+    };
+
+    devLog('this is payload', payload);
+
+    await dispatch(Add_Event(payload, toast,navigate));
+    queryClient.invalidateQueries('fetch-all-event');
+
+    resetForm();
+  } catch (error) {
+    console.error(error);
+    toast.error('Failed to add Event');
+  }
 };
 
 
@@ -219,7 +256,8 @@ const handleSubmit = () => {
           onClick={handleSubmit}
           className="btn-primary w-[50%] sm:w-[210px] h-[50px]"
         >
-Create Event
+          {createLoading ? <SubmitLoading size={12} /> : 'Create Event'}
+
         </button>
 
 

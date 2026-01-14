@@ -55,7 +55,7 @@ const ProgramTable = () => {
   return (
     <div className="w-full table-container bg-white flex flex-col gap-1 p-4 ">
       <div className="flex flex-row justify-between items-center w-full px-3 pt-2">
-        <p className="text-black font-semibold">Recent Donations</p>
+        <p className="text-black font-semibold">Join to Program</p>
         <SelectOption title="Latest" options={typeOptions} />
 
       </div>
@@ -71,7 +71,7 @@ const ProgramTable = () => {
               <tr>
                 <th className="px-3 py-4 rounded-tl-[12px] rounded-bl-[12px]">
                <div className="flex items-center gap-0.5">  
-              Donation ID
+             ID
                <ArrowTopSvg/>
                 </div>
                </th>
@@ -81,27 +81,14 @@ const ProgramTable = () => {
                <ArrowTopSvg/>
                 </div>
                 </th>
-                <th className="px-3 py-4">
-                   <div className="flex items-center gap-0.5">  
-           Donor
+                  <th className="px-3 py-4 rounded-tr-[12px] rounded-br-[12px]">
+                    <div className="flex items-center gap-0.5">  
+             User
                <ArrowTopSvg/>
                 </div>
-                
-                </th>
-                <th className="px-3 py-4">
-                
-                  <div className="flex items-center gap-0.5">  
-         Amount
-               <ArrowTopSvg/>
-                </div>
-                </th>
-                     <th className="px-3 py-4">
-                   <div className="flex items-center gap-0.5">  
-               Massage
-               <ArrowTopSvg/>
-                </div>
-                
-                </th>
+              </th>
+             
+            
                 <th className="px-3 py-4 rounded-tr-[12px] rounded-br-[12px]">
                     <div className="flex items-center gap-0.5">  
           Status
@@ -136,16 +123,9 @@ const ProgramTable = () => {
 
               
 
-                  <td className="px-3 py-4 ">
-                     ${row.amount}
-                  </td>
+              
 
-                            <td className="px-3 py-4   max-w-[280px] md:max-w-[300px] break-words">
-  <span className="text-black/65">
-    {row.description}
-  </span>
-</td>
-
+   
                   <td className="px-3 py-4">
                   <Status status={row.status} />
                   </td>

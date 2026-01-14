@@ -108,7 +108,7 @@ const handleSubmit = () => {
              transition-colors duration-500 ease-in-out hover:bg-gray-200 hover:text-black
              disabled:opacity-70 disabled:cursor-not-allowed"
 >
-  {loading ? <SubmitLoading size={12} /> : 'Continue'}
+  {loading ? <SubmitLoading size={12} /> : 'Login'}
 </button>
 
         </div>

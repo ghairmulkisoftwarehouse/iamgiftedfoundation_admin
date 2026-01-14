@@ -6,8 +6,15 @@ import { useNavigate } from "react-router-dom";
 import { logout } from "../redux/actions/authActions";
 import { getUser, removeUser } from "../utils/authLocalStorage";
 
-export const baseURL = 'http://54.162.89.235:4750';  
 
+
+
+
+// // adil server   http://192.168.18.188:4750
+///  live  server http://54.162.89.235:4750'
+
+
+export const baseURL = 'http://54.162.89.235:4750';  
 const Axios = axios.create({
    baseURL: `${baseURL}/api`,
   timeout: 10000,

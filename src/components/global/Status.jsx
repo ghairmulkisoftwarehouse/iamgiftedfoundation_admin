@@ -12,7 +12,7 @@ const Status = ({ status }) => {
                 ? 
                     'bg-thistle'
                 : 
-                status === 'completed' || status === 'approved' || status === 'claimed' || status === 'active' || status === 'Active'  || status === 'accepted' || status === 'Successful'
+                status === 'completed' || status === 'approved' || status === 'claimed' || status === 'active' || status === 'Active'  || status === 'accepted' || status === 'Successful' || status === 'Going'
                 ?
                     'bg-[#ECF8F0CC]  text-[#1C8C6E]'
                 : 

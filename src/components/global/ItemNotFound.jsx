@@ -1,4 +1,4 @@
-import NotFoundSvg from 'assets/svgs/NotFoundSvg'
+import NotFoundSvg from '../../assets/svgs/NotFoundSvg'
 import React, { memo } from 'react'
 import { useWindowSize } from 'react-use';
 

@@ -15,7 +15,7 @@ const EventTable = () => {
       name: "John Due",
       description: "Sending Love & Support",
       amount: 3000,
-      status: "Successful",
+      status: "Going",
     },
     {
       id: "#D-321330",
@@ -23,7 +23,7 @@ const EventTable = () => {
       name: "John Due",
       description: "Sending Love & Support",
       amount: 3000,
-      status: "Successful",
+      status: "Going",
     },
     {
       id: "#D-321330",
@@ -31,7 +31,7 @@ const EventTable = () => {
       name: "anonymous",
       description: "Sending Love & Support",
       amount: 3000,
-      status: "Pending",
+      status: "Going",
     },
      {
       id: "#D-321330",
@@ -39,7 +39,7 @@ const EventTable = () => {
       name: "John Due",
       description: "Sending Love & Support",
       amount: 3000,
-      status: "Successful",
+      status: "Going",
     },
     {
       id: "#D-321330",
@@ -47,7 +47,7 @@ const EventTable = () => {
       name: "anonymous",
       description: "Sending Love & Support",
       amount: 3000,
-      status: "Pending",
+      status: "Going",
     },
   ];
   const typeOptions = ["Donor", "Participation", "Volunteer"];
@@ -88,20 +88,7 @@ const EventTable = () => {
                 </div>
                 
                 </th>
-                <th className="px-3 py-4">
-                
-                  <div className="flex items-center gap-0.5">  
-         Amount
-               <ArrowTopSvg/>
-                </div>
-                </th>
-                     <th className="px-3 py-4">
-                   <div className="flex items-center gap-0.5">  
-               Massage
-               <ArrowTopSvg/>
-                </div>
-                
-                </th>
+             
                 <th className="px-3 py-4 rounded-tr-[12px] rounded-br-[12px]">
                     <div className="flex items-center gap-0.5">  
           Status
@@ -136,15 +123,7 @@ const EventTable = () => {
 
               
 
-                  <td className="px-3 py-4 ">
-                     ${row.amount}
-                  </td>
-
-                            <td className="px-3 py-4   max-w-[280px] md:max-w-[300px] break-words">
-  <span className="text-black/65">
-    {row.description}
-  </span>
-</td>
+      
 
                   <td className="px-3 py-4">
                   <Status status={row.status} />

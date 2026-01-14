@@ -1,4 +1,4 @@
-export const validateEventForm = (data) => {
+export const validateFundraisingForm = (data) => {
   const errors = {};
 
   // Title

@@ -1,26 +1,43 @@
-import { memo } from 'react';
+
+
+
+
+import { memo, useEffect, useState } from 'react';
 import SearchSvg from '../../assets/svgs/SearchSvg';
 
-const Search = () => {
+const Search = ({ keyword, setKeyword }) => {
+  const [inputValue, setInputValue] = useState(keyword);
+
+
+  useEffect(() => {
+    if (inputValue === '') {
+      setKeyword('');
+    }
+  }, [inputValue, setKeyword]);
+
+  const handleSearch = () => {
+    setKeyword(inputValue);
+  };
+
   return (
     <div className="flex flex-row gap-2 w-full">
-      {/* Search Input */}
       <div className="bg-white w-[75%] h-[40px] rounded-[10px] relative flex items-center border border-[#DCE4E8]">
-        {/* Search Icon */}
-        <div className="absolute left-4 top-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-400">
+        <div className="absolute left-4 top-1/2 -translate-x-1/2 -translate-y-1/2">
           <SearchSvg />
         </div>
 
         <input
           type="text"
           placeholder="Search here"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
           className="w-full h-full pl-8 outline-none text-sm rounded-[10px]"
         />
       </div>
 
-      {/* Search Button */}
-      <button
+    <button
         type="button"
+        onClick={handleSearch}
         className="
           w-[25%] h-[40px] rounded-[10px]
           flex items-center justify-center text-sm

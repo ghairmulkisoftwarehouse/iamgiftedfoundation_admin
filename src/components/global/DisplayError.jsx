@@ -1,4 +1,4 @@
-import ErrorSvg from 'assets/svgs/ErrorSvg'
+import ErrorSvg  from '../../assets/svgs/ErrorSvg';
 import React, { memo } from 'react'
 import { useWindowSize } from 'react-use'
 
