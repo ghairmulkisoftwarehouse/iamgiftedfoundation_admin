@@ -1,6 +1,6 @@
 
 
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import ImageUpload   from '../../global/form/ImageUpload';
 import InputName  from '../../global/form/InputName';
 import InputEmail   from '../../global/form/InputEmail';
@@ -17,6 +17,9 @@ import { useQueryClient } from "react-query";
 import { toast } from 'react-toastify';
 import devLog from '../../../utils/logsHelper';
 import { useNavigate } from 'react-router-dom';
+import DateInput  from '../../../components/global/form/DateInput';
+import moment from 'moment';
+import { combineDateTime } from '../../../utils/combineDateTime';
 
 
 const EventsForm = () => {
@@ -27,6 +30,37 @@ const EventsForm = () => {
 
   const [imagePreview, setImagePreview] = useState('');
   const [errors, setErrors] = useState({});
+
+  const [startDate, setStartDate] = useState('');
+  const [startTime, setStartTime] = useState("");
+
+    const [endDate, setEndDate] = useState("");
+  const [endTime, setEndTime] = useState('');
+
+  const startOfDay = moment.utc().startOf('day').format('HH:mm');
+const endOfDay = moment.utc().endOf('day').format('HH:mm');
+
+
+useEffect(() => {
+  if (startDate) {
+    // set start time if empty
+    if (!startTime) {
+      setStartTime(startOfDay);
+    }
+
+    // set end date if empty
+    if (!endDate) {
+      setEndDate(startDate);
+    }
+
+    // set end time if empty
+    if (!endTime) {
+      setEndTime(endOfDay);
+    }
+  }
+}, [startDate]);
+
+ 
 
   const [formData, setFormData] = useState({
     title: '',
@@ -52,6 +86,16 @@ const EventsForm = () => {
     }
   };
 
+  const handleDateChange = (field, setValue) => (value) => {
+    setValue(value);
+    if (errors[field]) {
+      const updated = { ...errors };
+      delete updated[field];
+      setErrors(updated);
+    }
+  };
+
+
   const resetForm = () => {
     setFormData({
       title: '',
@@ -71,9 +115,12 @@ const EventsForm = () => {
   };
 
 const handleSubmit = async () => {
-  const validationErrors = validateEventForm(formData);
+  const validationErrors = validateEventForm(formData, startDate, startTime, endDate, endTime);
   setErrors(validationErrors);
   if (Object.keys(validationErrors).length > 0) return;
+
+  const startDateTime = combineDateTime(startDate, startTime);
+  const endDateTime = combineDateTime(endDate, endTime);
 
   try {
     const galleryUrls = formData.gallery?.length
@@ -82,31 +129,30 @@ const handleSubmit = async () => {
 
     const payload = {
       title: formData.title,
+      startDate: startDateTime,
 
-      ...(imagePreview && {
-        featuredImageDataURI: imagePreview,
-      }),
-
-      ...(formData.description && {
-        body: formData.description,
-      }),
-
-      ...(galleryUrls.length > 0 && {
-        imagesDataURIs: galleryUrls,
-      }),
+      endDate: endDateTime,
+      ...(imagePreview && { featuredImageDataURI: imagePreview }),
+      ...(formData.description && { body: formData.description }),
+      ...(galleryUrls.length > 0 && { imagesDataURIs: galleryUrls }),
     };
 
     devLog('this is payload', payload);
 
-    await dispatch(Add_Event(payload, toast,navigate));
+    await dispatch(Add_Event(payload, toast, navigate));
     queryClient.invalidateQueries('fetch-all-event');
 
     resetForm();
+    setStartDate('');
+    setStartTime('');
+    setEndDate('');
+    setEndTime('');
   } catch (error) {
     console.error(error);
     toast.error('Failed to add Event');
   }
 };
+
 
 
   return (
@@ -149,7 +195,21 @@ const handleSubmit = async () => {
             onChange={handleChange("category")}
             error={errors.category}
           />
+   <DateInput
+  label="Start Date"
+  value={{ date: startDate, time: startTime }}
+  onDateChange={handleDateChange('startDate', setStartDate)}
+  onTimeChange={handleDateChange('startDate', setStartTime)}
+  error={errors.startDate}
+/>
 
+<DateInput
+  label="End Date"
+  value={{ date: endDate, time: endTime }}
+  onDateChange={handleDateChange('endDate', setEndDate)}
+  onTimeChange={handleDateChange('endDate', setEndTime)}
+  error={errors.endDate}
+/>
             <div className="sm:col-span-2">
            <InputTags
   label="Tags"

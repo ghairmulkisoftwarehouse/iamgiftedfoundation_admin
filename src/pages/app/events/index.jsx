@@ -9,15 +9,22 @@ import { useDispatch,useSelector } from 'react-redux';
 import { useQuery } from 'react-query';
 import { setStats } from '../../../redux/slices/eventSlice';
 import devLog from '../../../utils/logsHelper';
+import Loader from '../../../components/global/Loader';
+import DisplayError from '../../../components/global/DisplayError';
+
+
 
 
 const Events = () => {
 
  const   dispatch=useDispatch();
 
-   const { docs } = useSelector(state => state.event);
+  const  [detail,setDetail]=useState('');
+
+   const { docs, } = useSelector(state => state.event);
    
  devLog(' this is a docs',docs)
+ const eventDoc=docs[0];
 
 
 
@@ -46,12 +53,23 @@ const [limit, setLimit] = useState(10);
     );
 
 
+
+
+
+
+
+
+
   return (
        <div className='flex  flex-col  gap-6 w-full'>
               <Heading/>
            
          <div className=' w-full  flex flex-col xl:flex-row gap-4'>
-         <div className='  w-full  xl:w-[70%] '>
+         <div           className={`
+            w-full
+            ${detail ? 'xl:w-full' : 'xl:w-[70%]'}
+            transition-all duration-300
+          `}>
       
             <EventList
          keyword={keyword}
@@ -63,15 +81,26 @@ const [limit, setLimit] = useState(10);
                isLoading={isLoading} 
                isError={isError}
                 error={error}
+                detail={detail}
 
             />
 
          </div>
-          <div className='  w-full xl:w-[30%] '>
-                 <EventDetail/>
-
-
-         </div>
+              {!detail && (
+        <div className="w-full xl:w-[30%]">
+            {isLoading  ? (
+                <Loader />
+            ) : isError ? (
+                <DisplayError message={error?.message || 'Failed to load event'} />
+            ) : eventDoc ? (
+                <EventDetail     eventDetail={eventDoc}   setDetail={setDetail}/>
+            ) : (
+                <div className="w-full h-full flex justify-center items-center py-6 text-gray-500 bg-white rounded-[15px]">
+                No Data Available
+                </div>
+            )}
+</div>
+              )}
 
          </div>  
             

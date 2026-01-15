@@ -10,25 +10,44 @@ import Editor   from '../../global/form/Editor';
 import ErrorBoundary  from '../../global/ErrorBoundary';
 import MultipleImage   from '../../global/form/MultipleImage';
 import {validateProgramForm} from '../../../validations/programValidation'
+import {useQueryClient } from 'react-query';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch,useSelector } from 'react-redux';
+import SubmitLoading   from '../../../components/global/SubmitLoading';
+import { toast } from 'react-toastify';
+import devLog from '../../../utils/logsHelper';
+import {Add_Programs} from '../../../redux/actions/programsAction';
+import ProgramSelectInput from '../../global/form/programSelectInput';
 
 
 const ProgramsForm = () => {
+
+   const dispatch = useDispatch();
+   const  navigate =useNavigate();
+     const queryClient = useQueryClient();
+   const { createLoading } = useSelector(state => state.program);
+
+
+ 
+
    const [imagePreview, setImagePreview] = useState("");
   const [errors, setErrors] = useState({});
+      const [formData, setFormData] = useState({
+        title: "",
+        category: "",
+        tags: [],
+        description: "",
+        organizationName: "",
+        phoneNumber: "",
+        email: "",
+        gallery:[],
+        website: "",
+        coverImage: null,
 
-  const [formData, setFormData] = useState({
-    title: "",
-    category: "",
-    tags: [],
-    description: "",
-    organizationName: "",
-    phoneNumber: "",
-    email: "",
-    gallery:[],
-    website: "",
-    coverImage: null,
+      });
 
-  });
+
+ devLog('formData category',formData.category)
 
   const handleChange = (field) => (e) => {
     setFormData((prev) => ({ ...prev, [field]: e.target.value }));
@@ -41,6 +60,19 @@ const ProgramsForm = () => {
       });
     }
   };
+
+  const handleSelectChange = (field) => (value) => {
+  setFormData((prev) => ({ ...prev, [field]: value }));
+
+  if (errors[field]) {
+    setErrors((prev) => {
+      const updated = { ...prev };
+      delete updated[field];
+      return updated;
+    });
+  }
+};
+
 
   const resetForm = () => {
   setFormData({
@@ -60,16 +92,50 @@ const ProgramsForm = () => {
   setErrors({});      
 };
 
-const handleSubmit = () => {
+
+
+const handleSubmit = async () => {
   const validationErrors = validateProgramForm(formData);
   setErrors(validationErrors);
-
   if (Object.keys(validationErrors).length > 0) return;
 
-  console.log("Form submitted:", formData);
+  try {
+    const galleryUrls = formData.gallery?.length
+      ? formData.gallery.map(item => item.url)
+      : [];
 
-  resetForm();
+    const payload = {
+      category:formData.category,
+      title: formData.title,
+
+      ...(imagePreview && {
+        featuredImageDataURI: imagePreview,
+      }),
+
+      ...(formData.description && {
+        body: formData.description,
+      }),
+
+      ...(galleryUrls.length > 0 && {
+        imagesDataURIs: galleryUrls,
+      }),
+    };
+
+    devLog('this is payload', payload);
+
+    await dispatch(Add_Programs(payload, toast,navigate));
+    queryClient.invalidateQueries('fetch-all-program');
+
+    resetForm();
+  } catch (error) {
+    console.error(error);
+    toast.error('Failed to add Event');
+  }
 };
+
+
+
+
 
 
   return (
@@ -106,12 +172,15 @@ const handleSubmit = () => {
             error={errors.title}
           />
 
-          <InputName
+
+           <ProgramSelectInput
             label="Category"
-            value={formData.category}
-            onChange={handleChange("category")}
+              value={formData.category}
+            onSelect={handleSelectChange("category")}
             error={errors.category}
-          />
+            
+           />
+         
 
             <div className="sm:col-span-2">
            <InputTags
@@ -207,7 +276,7 @@ const handleSubmit = () => {
 
     </div>
 
-          <div className="flex flex-row gap-2 items-center justify-end w-full  px-3.5 ">
+            <div className="flex flex-row gap-2 items-center justify-end w-full  px-3.5 ">
      <button
     type="button"
     onClick={resetForm}  
@@ -217,9 +286,12 @@ const handleSubmit = () => {
   </button>
         <button
           onClick={handleSubmit}
-          className="btn-primary w-[50%] sm:w-[210px] h-[50px]"
+         className={`btn-primary w-[50%] sm:w-[210px] h-[50px] 
+      ${createLoading ? 'opacity-60 cursor-not-allowed' : ''}`}
+          
         >
-Create Program
+          {createLoading ? <SubmitLoading size={12} /> : 'Create Program'}
+
         </button>
 
 

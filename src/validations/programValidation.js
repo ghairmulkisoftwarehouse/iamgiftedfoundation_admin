@@ -14,9 +14,9 @@ export const validateProgramForm = (data) => {
   }
 
   // Tags
-  if (!data.tags || data.tags.length === 0) {
-    errors.tags = "Please add at least one tag";
-  }
+  // if (!data.tags || data.tags.length === 0) {
+  //   errors.tags = "Please add at least one tag";
+  // }
 
 //   // Description
 //   if (!data.description || data.description.trim().length < 4) {
@@ -24,40 +24,40 @@ export const validateProgramForm = (data) => {
 //   }
 
   // Cover Image
-  if (!data.coverImage) {
-    errors.coverImage = "Cover image is required";
-  }
+  // if (!data.coverImage) {
+  //   errors.coverImage = "Cover image is required";
+  // }
 
 //   // Gallery Images
-  if (!data.gallery || data.gallery.length === 0) {
-    errors.gallery = "Please upload at least one gallery image";
-  }
+  // if (!data.gallery || data.gallery.length === 0) {
+  //   errors.gallery = "Please upload at least one gallery image";
+  // }
 
   // Organization Name
-  if (!data.organizationName.trim()) {
-    errors.organizationName = "Organization name is required";
-  }
+  // if (!data.organizationName.trim()) {
+  //   errors.organizationName = "Organization name is required";
+  // }
 
   // Phone Number
-  if (!data.phoneNumber.trim()) {
-    errors.phoneNumber = "Phone number is required";
-  } else if (!/^[0-9]{7,15}$/.test(data.phoneNumber)) {
-    errors.phoneNumber = "Invalid phone number";
-  }
+  // if (!data.phoneNumber.trim()) {
+  //   errors.phoneNumber = "Phone number is required";
+  // } else if (!/^[0-9]{7,15}$/.test(data.phoneNumber)) {
+  //   errors.phoneNumber = "Invalid phone number";
+  // }
 
   // Email
-  if (!data.email.trim()) {
-    errors.email = "Email is required";
-  } else if (
-    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(data.email)
-  ) {
-    errors.email = "Invalid email address";
-  }
+  // if (!data.email.trim()) {
+  //   errors.email = "Email is required";
+  // } else if (
+  //   !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(data.email)
+  // ) {
+  //   errors.email = "Invalid email address";
+  // }
 
   // Website (optional)
-  if (data.website && !/^https?:\/\/.+\..+/.test(data.website)) {
-    errors.website = "Invalid website URL";
-  }
+  // if (data.website && !/^https?:\/\/.+\..+/.test(data.website)) {
+  //   errors.website = "Invalid website URL";
+  // }
 
   return errors;
 };

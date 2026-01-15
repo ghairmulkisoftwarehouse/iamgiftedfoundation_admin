@@ -44,6 +44,7 @@ const InputTags = ({
   const handleRemove = (id) => {
     onChange(value.filter((tag) => tag.id !== id));
   };
+  
 
   return (
     <div className="w-full flex flex-col gap-2" ref={containerRef}>

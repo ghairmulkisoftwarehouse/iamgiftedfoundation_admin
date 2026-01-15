@@ -12,22 +12,12 @@ import Loader   from '../../../components/global/Loader'
 import { useSelector } from 'react-redux';
 import devLog from '../../../utils/logsHelper';
 import { baseURL } from '../../../config/api';
+import moment from 'moment/moment';
 
 
 
 
-const cardsData = Array.from({ length: 10 }, (_, i) => ({
-  id: i + 1,
-  title: "Clean Water for Every Village",
-  organizer: "AquaAid Foundation",
-  category: "Community & Environment",
-  progress: 60,
-  applied: 34000,
-  total: 50000,
-  daysLeft: 12,
-  status: "Active",
-  img: img, // your image import
-}));
+
 
 
 const EventList = ({
@@ -40,6 +30,7 @@ const EventList = ({
     isLoading,
     isError,
     error,
+    detail
 
 }) => {
    const navigate=useNavigate()
@@ -50,6 +41,10 @@ const EventList = ({
  devLog(' this is a docs',docs)
 
 
+
+
+
+ 
   return (
     <div className="w-full flex flex-col gap-4">
       {/* Header */}
@@ -71,8 +66,11 @@ const EventList = ({
     <DisplayError message={error} />
   ) : docs && docs.length > 0 ? (
     docs.map((item, index) => {
-      // Calculate days left
- 
+  
+   const daysLeft =
+     item?.endDate && moment(item.endDate).isAfter(moment())
+       ? moment(item.endDate).diff(moment(), 'days')
+       : 0;
 
       const progress = Math.min(
         Math.round((item.appliedMembers?.length || 0 / (item.totalMembers || 1)) * 100),
@@ -90,7 +88,14 @@ const EventList = ({
             transition-all duration-500
             hover:shadow-lg hover:shadow-black/10
             cursor-pointer
-            ${index === 0 ? 'bg-[#9BD6F6]/30' : 'bg-white'}
+             ${
+          index === 0
+            ? detail
+              ? 'bg-white'
+              : 'bg-[#9BD6F6]/30'
+            : 'bg-white'
+        }
+    
           `}
         >
           {/* Left */}
@@ -150,7 +155,7 @@ const EventList = ({
 
               <div className="block md:hidden flex items-center gap-1">
                 <FaRegClock />
-                <p className="text-sm md:text-sm">12 <span className=' font-medium   text-black/80'> days left</span></p>   
+                <p className="text-sm md:text-sm">{daysLeft} <span className=' font-medium   text-black/80'> days left</span></p>   
               </div>
             </div>
           </div>
@@ -164,7 +169,7 @@ const EventList = ({
 
             <div className="flex items-center gap-1">
               <FaRegClock />
-          <p className=" text-sm md:text-sm">12 <span className=' font-medium   text-black/50'> days left</span></p>   
+          <p className=" text-sm md:text-sm">{daysLeft}<span className=' font-medium   text-black/50'> days left</span></p>   
 
             </div>
           </div>

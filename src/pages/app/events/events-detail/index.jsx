@@ -4,8 +4,8 @@ import Heading  from '../../../../components/global/Heading';
 
 import EventCard   from '../../../../components/app/eventdetail/EventCard';
 import EventTable   from '../../../../components/app/eventdetail/EventTable/EventTable';
-import EventInfo   from '../../../../components/app/eventdetail/EventInfo';
-import EventChart   from  '../../../../components/app/eventdetail/EventChart';
+// import EventInfo   from '../../../../components/app/eventdetail/EventInfo';
+// import EventChart   from  '../../../../components/app/eventdetail/EventChart';
 const EventsDetail = () => {
   return (
     <div className='flex  flex-col  gap-6 w-full'>

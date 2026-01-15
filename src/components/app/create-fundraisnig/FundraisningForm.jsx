@@ -1,5 +1,3 @@
-
-
 import { useState } from 'react';
 import ImageUpload   from '../../../components/global/form/ImageUpload';
 import InputName  from '../../../components/global/form/InputName';

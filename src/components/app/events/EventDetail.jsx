@@ -1,11 +1,30 @@
-
 import BloodTestSvg from '../../../assets/svgs/BloodTestSvg';
 import { RxCross1 } from "react-icons/rx";
 import DotSvg from '../../../assets/svgs/DotSvg';
-import ProgramImg from '../../../assets/images/programdeatil.png';
+import devLog from '../../../utils/logsHelper';
+import { baseURL } from '../../../config/api';
+import img from '../../../assets/images/img1.jpg';
+import DOMPurify from "dompurify";
+import moment from 'moment/moment';
 
 
-const EventDetail = () => {
+
+const EventDetail = ({eventDetail,setDetail}) => {
+    devLog(' this is a eventDetail',eventDetail)
+
+     const startDate = eventDetail?.startDate
+    ? moment(eventDetail.startDate).format('MMM DD, YYYY')
+    : 'N/A';
+  const endDate = eventDetail?.endDate
+    ? moment(eventDetail.endDate).format('MMM DD, YYYY')
+    : 'N/A';
+
+  // Calculate days left if endDate exists
+  const daysLeft =
+    eventDetail?.endDate && moment(eventDetail.endDate).isAfter(moment())
+      ? moment(eventDetail.endDate).diff(moment(), 'days')
+      : 0;
+
 
   return (
       <div className="bg-white rounded-[15px] p-4 flex flex-col gap-4">
@@ -23,61 +42,39 @@ const EventDetail = () => {
             <DotSvg />
            Active
           </div>
+             <button   
+               onClick={()=>setDetail(true)}
+            className="text-gray-500 h-[30px] w-[30px] rounded-md hover:text-black hover:bg-primary/20 flex items-center justify-center  cursor-pointer"
+          >
           <RxCross1/>
+          </button>
+          
 
 
 
       </div>
-      <h2 className=' font-medium text-base md:text-lg leading-4'>Green Tech for Rural Energy</h2>
+      <h2 className=' font-medium text-base md:text-lg leading-7'>{eventDetail?.title}</h2>
         
         <div className='bg-[#F4F6F6]  rounded-[15px] flex flex-col gap-2'>
         <div className=' w-full  h-[212px]  rounded-[16px] overflow-hidden'>
         <img 
-          src={ProgramImg}
-          alt='img'
+         src={eventDetail.featuredImage?.relativeAddress ? `${baseURL}/${eventDetail?.featuredImage?.relativeAddress}` : img}
+                     alt={eventDetail.title}
+          
           className=' w-full   h-full object-cover'/>
 
         </div>
-      <div className="grid grid-cols-3 gap-1 xs:gap-2 w-full p-4">
-  <div
-    className="
-      bg-white py-3 rounded-[12px]
-        cursor-pointer
-      flex flex-col items-center gap-0.5
-      transition-all duration-700 ease-in-out
-      hover:shadow-md hover:-translate-y-0.5
-    "
-  >
-    <h2 className="text-xs xs:text-[13px] sm:text-sm font-semibold">11:49</h2>
-    <p className="text-xs xs:text-[13px] sm:text-sm text-black/60">Time</p>
-  </div>
+       <div className="grid grid-cols-2 gap-2 w-full p-4">
+          <div className="bg-white py-3 rounded-[12px] flex flex-col items-center gap-0.5 cursor-pointer transition-all duration-700 ease-in-out hover:shadow-md hover:-translate-y-0.5">
+            <h2 className="text-xs xs:text-[13px] sm:text-sm font-semibold">{startDate}</h2>
+            <p className="text-xs xs:text-[13px] sm:text-sm text-black/60">Date and Time</p>
+          </div>
 
-  <div
-    className="
-      bg-white py-3 rounded-[12px]
-        cursor-pointer
-      flex flex-col items-center gap-0.5
-      transition-all duration-700 ease-in-out
-      hover:shadow-md hover:-translate-y-0.5
-    "
-  >
-    <h2 className="text-xs xs:text-[13px] sm:text-sm font-semibold">236</h2>
-    <p className="text-xs xs:text-[13px] sm:text-sm text-black/60">Shares</p>
-  </div>
-
-  <div
-    className="
-      bg-white py-3 rounded-[12px]
-       cursor-pointer
-      flex flex-col items-center gap-0.5
-      transition-all duration-700 ease-in-out
-      hover:shadow-md hover:-translate-y-0.5
-    "
-  >
-    <h2 className="text-xs xs:text-[13px] sm:text-sm font-semibold">5</h2>
-    <p className="text-xs xs:text-[13px] sm:text-sm text-black/60">Days left</p>
-  </div>
-</div>
+          <div className="bg-white py-3 rounded-[12px] flex flex-col items-center gap-0.5 cursor-pointer transition-all duration-700 ease-in-out hover:shadow-md hover:-translate-y-0.5">
+            <h2 className="text-xs xs:text-[13px] sm:text-sm font-semibold">{daysLeft}</h2>
+            <p className="text-xs xs:text-[13px] sm:text-sm text-black/60">Days Left</p>
+          </div>
+        </div>
 
     
 
@@ -96,10 +93,10 @@ const EventDetail = () => {
 
             <div className="flex flex-col gap-0.5">
               <h2 className="font-medium text-[13px] md:text-sm">
-                EcoFuture Labs
+              N/A
               </h2>
               <p className="text-[10px] md:text-xs text-[#878787]">
-                Verified Organization
+              N/A
               </p>
             </div>
           </div>
@@ -109,9 +106,13 @@ const EventDetail = () => {
  
        <div className=' flex flex-col gap-1'>
         <h2 className=' text-[13px] sm:text-sm  font-medium'>Story</h2>
-        <p className=' text-black/90    text-xs sm:text-[13px]  leading-6'>Green Tech for Rural Energy is a forward-thinking initiative by EcoFuture Labs, dedicated to providing sustainable solar and wind-powered energy solutions in underserved rural areas. <br/>
-        This campaign focuses on installing compact, renewable energy systems that can power homes, schools, and small businesses, reducing reliance on fossil fuels and creating long-term environmental benefits.
-Each donation brings clean energy closer to communities that need it most, lighting up lives, empowering growth, and building a greener tomorrow.</p>
+
+      <div
+      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(eventDetail?.body) }}
+      className="text-black/90    text-xs sm:text-[13px]  leading-6"
+    />
+
+       
 
        </div>
         

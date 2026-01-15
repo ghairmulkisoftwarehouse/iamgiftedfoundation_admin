@@ -1,12 +1,17 @@
 import { memo } from 'react';
-import LoadingBtn from './LoadingBtn';
+import CustomLoader   from './CustomLoader'
 
 const Loader = ({ h = 200 }) => {
     return (
-        <div className={`w-full h-[200px] rounded-md border border-gray-700 flex items-center justify-center mt-2 box-shadow`}>
-            <LoadingBtn />
+        <div 
+            style={{ height: h }} // Dynamic height
+            className="w-full rounded-md bg-white flex items-center justify-center mt-2 box-shadow"
+        >
+            <div className="flex items-center">
+                <CustomLoader />
+                <span className="ml-2 font-medium">Loading...</span> 
+            </div>
         </div>
     )
 }
-
 export default memo(Loader)
