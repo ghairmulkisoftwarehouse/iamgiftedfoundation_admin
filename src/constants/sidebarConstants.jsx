@@ -1,5 +1,6 @@
 import DashboardSvg from '../assets/svgs/sidebar/DashboardSvg';
 import CommunitySvg from '../assets/svgs/sidebar/CommunitySvg';
+import CategoriesSvg   from '../assets/svgs/sidebar/CategoriesSvg';
 import AppUserSvg   from '../assets/svgs/sidebar/AppUserSvg';
 import DonationSvg from '../assets/svgs/sidebar/DonationSvg';
 import EventSvg from '../assets/svgs/sidebar/EventSvg';
@@ -7,6 +8,7 @@ import PanelUserSvg from '../assets/svgs/sidebar/PanelUserSvg';
 import SettingSvg from '../assets/svgs/sidebar/SettingSvg';
 import ProgramsSvg from '../assets/svgs/sidebar/ProgramsSvg';
 import PeertoPeerSvg from '../assets/svgs/sidebar/PeertoPeerSvg';
+
 import UserSvg from '../assets/svgs/sidebar/UserSvg';
 
 export const menuItems = [
@@ -15,6 +17,8 @@ export const menuItems = [
   { name: "Events", icon: EventSvg ,path : '/app/events' },
   { name: "Programs", icon: ProgramsSvg,path : '/app/Programs' },
   { name: "Donations", icon: DonationSvg,path:'/app/donations' },
+    { name:"Categories", icon: CategoriesSvg,path:'/app/categories' },
+
   { name: "Peer to Peer Fundraising", icon: PeertoPeerSvg,path : '/app/peer-to-peer-fundraising' },
   { name: "Community", icon: CommunitySvg,path : '/app/community' },
   { name: "Teams", icon: CommunitySvg ,path : '/app/teams' },

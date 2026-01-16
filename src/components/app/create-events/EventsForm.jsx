@@ -3,6 +3,7 @@
 import { useState,useEffect } from 'react';
 import ImageUpload   from '../../global/form/ImageUpload';
 import InputName  from '../../global/form/InputName';
+import InputNumber from '../../global/form/InputNumber';
 import InputEmail   from '../../global/form/InputEmail';
 import InputPhoneNumber   from '../../global/form/InputPhoneNumber';
 import InputTags   from '../../global/form/InputTags';
@@ -31,40 +32,30 @@ const EventsForm = () => {
   const [imagePreview, setImagePreview] = useState('');
   const [errors, setErrors] = useState({});
 
-  const [startDate, setStartDate] = useState('');
-  const [startTime, setStartTime] = useState("");
-
-    const [endDate, setEndDate] = useState("");
+  const [startDate, setStartDate] = useState(null); // Date object
+  const [startTime, setStartTime] = useState('');
+  const [endDate, setEndDate] = useState(null); // Date object
   const [endTime, setEndTime] = useState('');
-
   const startOfDay = moment.utc().startOf('day').format('HH:mm');
-const endOfDay = moment.utc().endOf('day').format('HH:mm');
 
 
 useEffect(() => {
   if (startDate) {
-    // set start time if empty
-    if (!startTime) {
-      setStartTime(startOfDay);
-    }
-
-    // set end date if empty
-    if (!endDate) {
-      setEndDate(startDate);
-    }
-
-    // set end time if empty
-    if (!endTime) {
-      setEndTime(endOfDay);
-    }
+    setStartTime(moment.utc().startOf("day").format("HH:mm"));
+  
   }
-}, [startDate]);
+    if (endDate) {
+    setEndTime(moment.utc().startOf("day").format("HH:mm"));
+  }
+}, [startDate,endDate]);
+
+
 
  
 
   const [formData, setFormData] = useState({
     title: '',
-    category: '',
+    range: '',
     tags: [],
     description: '',
     organizationName: '',
@@ -99,7 +90,7 @@ useEffect(() => {
   const resetForm = () => {
     setFormData({
       title: '',
-      category: '',
+      range: '',
       tags: [],
       description: '',
       organizationName: '',
@@ -109,7 +100,11 @@ useEffect(() => {
       website: '',
       coverImage: null,
     });
-
+    setStartDate(null);
+            setStartTime('');
+            setEndDate(null);
+            setEndTime('');
+            setImagePreview('');
     setImagePreview('');
     setErrors({});
   };
@@ -143,9 +138,9 @@ const handleSubmit = async () => {
     queryClient.invalidateQueries('fetch-all-event');
 
     resetForm();
-    setStartDate('');
+    setStartDate(null);
     setStartTime('');
-    setEndDate('');
+    setEndDate(null);
     setEndTime('');
   } catch (error) {
     console.error(error);
@@ -189,11 +184,13 @@ const handleSubmit = async () => {
             error={errors.title}
           />
 
-          <InputName
-            label="Category"
-            value={formData.category}
-            onChange={handleChange("category")}
-            error={errors.category}
+
+
+          <InputNumber
+            label="Event Invite Range"
+            value={formData.range}
+            onChange={handleChange("range")}
+            error={errors.range}
           />
    <DateInput
   label="Start Date"

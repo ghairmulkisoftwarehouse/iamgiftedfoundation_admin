@@ -10,10 +10,15 @@ export const validateEventForm = (data, startDate, startTime, endDate, endTime) 
     errors.title = "Title must be at least 5 characters";
   }
 
-  // Category
-  if (!data.category.trim()) {
-    errors.category = "Category is required";
+
+  if (!data.range?.toString().trim()) {
+    errors.range = "Range is required";
+  } else if (isNaN(data.range)) {
+    errors.range = "Range must be a number";
+  } else if (Number(data.range) <= 0) {
+    errors.range = "Range must be greater than 0";
   }
+
 
   // Start & End Dates
   if (!startDate) {

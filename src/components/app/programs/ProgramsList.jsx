@@ -40,12 +40,12 @@ const ProgramsList = ({
   setLimit,
   isLoading,
   isError,
-  error
+  error,detail
 }) => {
 
   const navigate=useNavigate();
 
-   const { docs , pages ,docsCount, } = useSelector(state => state.event);
+   const { docs , pages ,docsCount, } = useSelector(state => state.program);
    
  devLog(' this is a docs',docs)
 
@@ -81,7 +81,7 @@ const ProgramsList = ({
       return (
         <div
           key={item._id}
-          onClick={() => navigate(`/app/events/${item._id}`)}
+          onClick={() => navigate(`/app/Programs/${item._id}`)}
           className={`
             group py-3 px-3 rounded-2xl
             flex flex-col gap-2.5
@@ -89,7 +89,13 @@ const ProgramsList = ({
             transition-all duration-500
             hover:shadow-lg hover:shadow-black/10
             cursor-pointer
-            ${index === 0 ? 'bg-[#9BD6F6]/30' : 'bg-white'}
+             ${
+          index === 0
+            ? detail
+              ? 'bg-white'
+              : 'bg-[#9BD6F6]/30'
+            : 'bg-white'
+        }
           `}
         >
           {/* Left */}

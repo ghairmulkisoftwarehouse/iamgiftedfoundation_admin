@@ -1,57 +1,84 @@
+
 import ArrowTopSvg from "../../../assets/svgs/ArrowTopSvg";
 import img from "../../../assets/images/img1.jpg";
-import Status from "../../global/Status";
 import TealPagination   from '../../global/TealPagination'
 import PageLimit   from '../../global/PageLimit';
 import TrashSvg  from '../../../assets/svgs/TrashSvg';
-import EyetSVG from "../../../assets/svgs/EyetSVG";
-import { useSelector } from "react-redux";
-import devLog from "../../../utils/logsHelper";
-// import { baseURL } from '../../../config/api';
-import ItemNotFound   from '../../../components/global/ItemNotFound';
-import DisplayError from '../../global/DisplayError';
-import Loader   from '../../../components/global/Loader'
+import EditSvg   from '../../../assets/svgs/EditSvg';
+import Titlebtn  from '../../global/Titlebtn';
 import { useNavigate } from "react-router-dom";
-import SelectOption from "../../global/SelectOption";
-const AppUserTable = ({
-  
-  currentPage,
-  setCurrentPage,
-  limit,
-  setLimit,
-  isLoading,
-  isError,
-  error,
-  setSelectRole,
-
-}) => {
 
 
-  const { docs,pages ,docsCount} = useSelector(state => state.appUser);   
- devLog(' this is a docs',docs)
-
-const naviagate=useNavigate();
+const CategoriesTable = () => {
 
 
-const typeOptions = ["Donor", "Participant", "Volunteer"];
+ const  navigate=useNavigate();
+
+const tableData = [
+  {
+    idCode: "#D-321330",
+    title: "Sarah Blue",
+    description: "Lorem Ipsum is simply dummy text of the printing"
+  },
+  {
+    idCode: "#D-321331",
+    title: "John Smith",
+    description: "Lorem Ipsum is simply dummy text of the industry"
+  },
+  {
+    idCode: "#D-321332",
+    title: "Emma Johnson",
+    description: "Lorem Ipsum has been the industry's standard"
+  },
+  {
+    idCode: "#D-321333",
+    title: "Michael Brown",
+    description: "Dummy text ever since the 1500s"
+  },
+  {
+    idCode: "#D-321334",
+    title: "Olivia Wilson",
+    description: "When an unknown printer took a galley"
+  },
+  {
+    idCode: "#D-321335",
+    title: "David Miller",
+    description: "Of type and scrambled it to make"
+  },
+  {
+    idCode: "#D-321336",
+    title: "Sophia Taylor",
+    description: "A type specimen book for testing"
+  },
+  {
+    idCode: "#D-321337",
+    title: "Daniel Anderson",
+    description: "It has survived not only five centuries"
+  },
+  {
+    idCode: "#D-321338",
+    title: "Isabella Thomas",
+    description: "But also the leap into electronic typesetting"
+  }
+];
+
+
+
 
   return (
     <div className="w-full table-container bg-white flex flex-col gap-1 p-4">
       <div className="flex flex-row justify-between items-center w-full px-3 pt-2">
-        <p className="text-black font-semibold">App User</p>
-       <SelectOption
-  title="Type"
-  options={typeOptions}
-  onSelect={setSelectRole}
-/>
+        <p className="text-black font-semibold">Categories</p>
+    
+                <Titlebtn label="Add New" url="/app/create-categories" />
 
       </div>
 
-    {isLoading ? (
-        <Loader />
-      ) : isError ? (
-        <DisplayError message={error?.message || "Something went wrong"} />
-      ) : docs?.length > 0 ? (
+      {tableData.length === 0 ? (
+        <p className="text-center py-6 text-gray-400">
+          No Recent App User found.
+        </p>
+      ) : (
         <div className="overflow-x-auto maintable">
         
           <table className="w-full mt-5 min-w-max md:min-w-full">
@@ -59,39 +86,31 @@ const typeOptions = ["Donor", "Participant", "Volunteer"];
               <tr>
                 <th className="px-3 py-4 flex items-center gap-0.5 rounded-tl-[12px] rounded-bl-[12px]">
                   <div className="flex items-center gap-0.5">
-                    <span>ID Code</span>
+                    <span>ID</span>
                     <ArrowTopSvg />
                   </div>
                 </th>
 
                 <th className="px-3 py-4">
                   <div className="flex items-center gap-0.5">
-                    <span>Users</span>
+                    <span>Image</span>
                     <ArrowTopSvg />
                   </div>
                 </th>
 
                 <th className="px-3 py-4">
                   <div className="flex items-center gap-0.5">
-                    <span>Type</span>
+                    <span>Title</span>
                     <ArrowTopSvg />
                   </div>
                 </th>
 
                 <th className="px-3 py-4">
                   <div className="flex items-center gap-0.5">
-                    <span>Email</span>
+                    <span>Description</span>
                     <ArrowTopSvg />
                   </div>
                 </th>
-
-                <th className="px-3 py-4">
-                  <div className="flex items-center gap-0.5">
-                    <span>Create Date</span>
-                    <ArrowTopSvg />
-                  </div>
-                </th>
-
                 <th className="px-3 py-4 rounded-tr-[12px] rounded-br-[12px]">
                   <div className="flex items-center gap-0.5">
                     <span>Action</span>
@@ -102,11 +121,9 @@ const typeOptions = ["Donor", "Participant", "Volunteer"];
             </thead>
 
             <tbody>
-              {docs.map((row, index) => (
+              {tableData.map((row, index) => (
                 <tr key={index}>
-                  <td className="px-3 py-4">
-                    {index+1}
-                  </td>
+                  <td className="px-3 py-4">{row.idCode}</td>
 
                 <td className="px-3 py-4 whitespace-nowrap ">
                     <div className="flex items-center gap-2">
@@ -117,32 +134,31 @@ const typeOptions = ["Donor", "Participant", "Volunteer"];
                           className="w-full h-full object-cover"
                         />
                       </div>
-                    {row?.username}
+                 
                     </div>
                   </td>
-
-                  <td className="px-3 py-4  ">
-                         {row?.roles[0]}
+                   <td className="px-3 py-4 whitespace-nowrap">
+                        {row.title}
                   </td>
-
-                  <td className="px-3 py-4 whitespace-nowrap">
-                            {row?.email}
-                  </td>
-
-                  <td className="px-3 py-4">
-                   N/a
-                 
+                   <td className="px-3 py-4 break-words  whitespace-normal  max-w-[280px]">
+                  <span className="text-black/65">{row.description}</span>
+                    
                   </td>
 
                   <td className="px-3 py-4">
                       <div className="flex flex-row gap-1.5 items-center">
 
-                    <div
-                       onClick={()=>naviagate('/app/app-user-profile/1')}
-                      className="w-fit px-2.5 py-2.5 rounded-lg bg-primary cursor-pointer"
+                 
+                      <div
+                            onClick={() => navigate(`/app/update-categories/1`)}
+                  
+                      className="w-fit px-2.5 py-2.5 rounded-lg bg-cyan-Blue cursor-pointer"
                     >
-                      <EyetSVG />
-                    </div>   
+                      <EditSvg/>
+                    </div>
+                    
+
+                   
                       <div
                        
                         className="w-fit px-2.5 py-2.5 rounded-lg bg-darkred cursor-pointer"
@@ -157,24 +173,22 @@ const typeOptions = ["Donor", "Participant", "Volunteer"];
             </tbody>
           </table>
         </div>
-    ): (
-              <ItemNotFound message="No App User found." />
-            )}
+      )}
 
-           <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center w-full px-3  flex-wrap-none">
+        <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center w-full px-3  flex-wrap-none">
         <div className=" flex items-center gap-2 text-xs sm:text-sm text-[#313131]">
         <div>Show</div>
          <div className="w-fit h-[40px] ">
-        <PageLimit totalpages={docsCount || 10} limit={limit} setLimit={setLimit}/>
+        <PageLimit totalpages={ 10} limit={10} setLimit={4}/>
         </div>
-         <div>of {docsCount} results</div>
+         <div>of 2560 results</div>
 
         </div>
           
                <TealPagination 
-             totalPages={pages}
-        currentPage={currentPage}
-       setCurrentPage={setCurrentPage}
+           totalPages={2}
+              currentPage={1}
+             setCurrentPage={1}
       />
                                       {/* Limit Dropdown */}
       
@@ -188,4 +202,4 @@ const typeOptions = ["Donor", "Participant", "Volunteer"];
   );
 };
 
-export default AppUserTable;
+export default CategoriesTable;

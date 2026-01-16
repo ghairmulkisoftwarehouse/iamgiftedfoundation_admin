@@ -6,15 +6,20 @@ import ProgramDetail   from '../../../components/app/programs/ProgramDetail';
 import Axios from '../../../config/api';
 import { useDispatch,useSelector } from 'react-redux';
 import { useQuery } from 'react-query';
-import { setStats } from '../../../redux/slices/eventSlice';
+import { setStats } from '../../../redux/slices/programSlice';
 import devLog from '../../../utils/logsHelper';
+import Loader from '../../../components/global/Loader';
+import DisplayError from '../../../components/global/DisplayError';
 
 
 const Programs = () => {
 
    const dispatch=useDispatch();
+     const  [detail,setDetail]=useState('');
+
   const { docs } = useSelector(state => state.program);
- devLog(' this is a docs',docs)
+ const programDoc=docs[0];
+ devLog('programDoc',programDoc)
 
 
 const [keyword, setKeyword] = useState("");
@@ -48,7 +53,11 @@ const [limit, setLimit] = useState(10);
               <Heading/>
            
          <div className=' w-full  flex flex-col xl:flex-row gap-4'>
-         <div className='  w-full  xl:w-[70%] '>
+           <div           className={`
+            w-full
+            ${detail ? 'xl:w-full' : 'xl:w-[70%]'}
+            transition-all duration-300
+          `}>
       
         <ProgramsList
            keyword={keyword}
@@ -60,18 +69,30 @@ const [limit, setLimit] = useState(10);
                isLoading={isLoading} 
                isError={isError}
                 error={error}
-
+   detail={detail}
 
         />
         
 
          </div>
-          <div className='  w-full xl:w-[30%] '>
-                 <ProgramDetail/>
 
 
+            {!detail && (
+                 <div className="w-full xl:w-[30%]">
+                     {isLoading  ? (
+                         <Loader />
+                     ) : isError ? (
+                         <DisplayError message={error?.message || 'Failed to load event'} />
+                     ) : programDoc ? (
+                         <ProgramDetail     programDetail={programDoc}   setDetail={setDetail}/>
+                     ) : (
+                         <div className="w-full h-full flex justify-center items-center py-6 text-gray-500 bg-white rounded-[15px]">
+                         No Data Available
+                         </div>
+                     )}
          </div>
-
+                       )}
+        
          </div>  
             
               

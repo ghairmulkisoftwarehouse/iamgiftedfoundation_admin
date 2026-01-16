@@ -14,10 +14,14 @@ import Login from "../pages/auth/Login.jsx";
 // APP
 import Dashboard from "../pages/app/dashboard/index.jsx";
 import AppUser  from '../pages/app/app-user'
+import AppUserProfile   from '../pages/app/app-user/app-user-profile';
 import  Events  from '../pages/app/events';
 import  CreateEvents    from '../pages/app/events/create-events'
 import EventsDetail   from '../pages/app/events/events-detail'
 import Donations  from '../pages/app/donations'
+import Categories  from '../pages/app/categories';
+import CreateCategories  from '../pages/app/categories/create-categories';
+import  UpdateCategories   from  '../pages/app/categories/update-categories';
 import Community   from '../pages/app/community';
 import  Teams  from '../pages/app/teams';
 import  Programs   from '../pages/app/programs';
@@ -61,12 +65,22 @@ const Router = [
     { path: 'dashboard', element: <ProtectedRoute element={<Dashboard />} /> },
 
     { path: 'app-user', element: <ProtectedRoute element={<AppUser />} /> },
+    { path: 'app-user-profile/:id', element: <ProtectedRoute element={<AppUserProfile />} /> },
+    
 
     { path: 'events', element: <ProtectedRoute element={<Events />} /> },
     { path: 'events/:id', element: <ProtectedRoute element={<EventsDetail />} /> },
     { path: 'create-events', element: <ProtectedRoute element={<CreateEvents />} /> },
 
     { path: 'donations', element: <ProtectedRoute element={<Donations />} /> },
+     { path: 'categories', element: <ProtectedRoute element={<Categories />} /> },
+      { path: 'create-categories', element: <ProtectedRoute element={<CreateCategories />} /> },
+      { path: 'update-categories/:id', element: <ProtectedRoute element={<UpdateCategories />} /> },
+
+     
+
+
+    
     { path: 'community', element: <ProtectedRoute element={<Community />} /> },
 
     { path: 'teams', element: <ProtectedRoute element={<Teams />} /> },

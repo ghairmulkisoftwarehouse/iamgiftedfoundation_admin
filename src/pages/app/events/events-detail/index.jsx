@@ -1,12 +1,55 @@
-
-
 import Heading  from '../../../../components/global/Heading';
-
 import EventCard   from '../../../../components/app/eventdetail/EventCard';
 import EventTable   from '../../../../components/app/eventdetail/EventTable/EventTable';
-// import EventInfo   from '../../../../components/app/eventdetail/EventInfo';
-// import EventChart   from  '../../../../components/app/eventdetail/EventChart';
+import { useParams } from 'react-router-dom';
+import Axios from '../../../../config/api';
+import { setDocDetails } from '../../../../redux/slices/eventSlice';
+import { useQuery } from 'react-query';
+import devLog from '../../../../utils/logsHelper';
+import { useSelector,useDispatch } from 'react-redux';
+import ItemNotFound from '../../../../components/global/ItemNotFound';
+import DisplayError from '../../../../components/global/DisplayError';
+import Loader from '../../../../components/global/Loader';
+
 const EventsDetail = () => {
+const { id } = useParams();
+const dispatch = useDispatch();
+
+const { docDetails } = useSelector(state => state.event);
+
+  devLog(' this is a  docDetails',docDetails?.doc)
+
+  const eventdoc=docDetails?.doc
+
+
+
+const queryKey = ['fetch-singleEvent', id];
+
+const { isLoading, isError, error } = useQuery(
+  queryKey,
+  () => {
+    // Use template literal to inject the id
+    const url = `/admin/event/${id}`;
+    return Axios.get(url);
+  },
+  {
+    refetchOnWindowFocus: false,
+    onSuccess: (data) => {
+      // Destructure safely
+      const {
+        data: { data: { doc } },
+      } = data;
+
+      dispatch(setDocDetails({ doc }));
+    },
+  }
+);
+
+
+
+
+ 
+
   return (
     <div className='flex  flex-col  gap-6 w-full'>
               <Heading/>
@@ -14,7 +57,15 @@ const EventsDetail = () => {
               <div className='  w-full  flex flex-col gap-5'>
         
          
+               {isLoading ? (
+             <Loader />
+           ) : isError ? (
+             <DisplayError message={error?.message || "Something went wrong"} />
+           ) : eventdoc ? (
               <EventCard/>
+           ) : (
+                     <ItemNotFound message="No Event Detail found." />
+                   )}
               <EventTable/>
         
       

@@ -12,11 +12,14 @@ import moment from 'moment/moment';
 const EventDetail = ({eventDetail,setDetail}) => {
     devLog(' this is a eventDetail',eventDetail)
 
-     const startDate = eventDetail?.startDate
-    ? moment(eventDetail.startDate).format('MMM DD, YYYY')
-    : 'N/A';
+ const startDate = eventDetail?.startDate
+  ? moment.utc(eventDetail.startDate).format('MMM DD, YYYY')
+  : 'N/A';
+
+const startTime =    eventDetail?.startDate ? moment.utc(eventDetail.startDate).format('hh:mm A')  : 'N/A';
+
   const endDate = eventDetail?.endDate
-    ? moment(eventDetail.endDate).format('MMM DD, YYYY')
+    ? moment.utc(eventDetail.endDate).format('MMM DD, YYYY')
     : 'N/A';
 
   // Calculate days left if endDate exists
@@ -66,12 +69,14 @@ const EventDetail = ({eventDetail,setDetail}) => {
         </div>
        <div className="grid grid-cols-2 gap-2 w-full p-4">
           <div className="bg-white py-3 rounded-[12px] flex flex-col items-center gap-0.5 cursor-pointer transition-all duration-700 ease-in-out hover:shadow-md hover:-translate-y-0.5">
-            <h2 className="text-xs xs:text-[13px] sm:text-sm font-semibold">{startDate}</h2>
+       
+            <h2 className="text-xs xs:text-[13px]  font-semibold">{startDate} </h2>
+             <h2 className="text-xs xs:text-[13px]  font-semibold">{startTime} </h2>  
             <p className="text-xs xs:text-[13px] sm:text-sm text-black/60">Date and Time</p>
           </div>
 
           <div className="bg-white py-3 rounded-[12px] flex flex-col items-center gap-0.5 cursor-pointer transition-all duration-700 ease-in-out hover:shadow-md hover:-translate-y-0.5">
-            <h2 className="text-xs xs:text-[13px] sm:text-sm font-semibold">{daysLeft}</h2>
+            <h2 className="text-xs xs:text-[13px] font-semibold">{daysLeft}</h2>
             <p className="text-xs xs:text-[13px] sm:text-sm text-black/60">Days Left</p>
           </div>
         </div>

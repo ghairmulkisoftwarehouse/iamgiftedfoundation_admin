@@ -3,7 +3,7 @@ import ArrowSvg from "../../assets/svgs/ArrowSvg";
 import useToggle from "../../hooks/useToggle";
 import useClickOutside from "../../utils/clickOutside";
 
-export default function SelectOption({ title = "Type", options = [] }) {
+export default function SelectOption({ title = "Type", options = [],  onSelect, }) {
   const menuRef = useRef();
   const [showMenu, toggleShowMenu] = useToggle();
   useClickOutside(menuRef, () => toggleShowMenu(false));
@@ -36,7 +36,7 @@ export default function SelectOption({ title = "Type", options = [] }) {
     key={index}
     className="px-4 py-2 text-sm text-dark1 hover:bg-gray-100 cursor-pointer"
     onClick={() => {
-      console.log("Selected:", option);
+      onSelect(option);   
       toggleShowMenu(false);
     }}
   >
