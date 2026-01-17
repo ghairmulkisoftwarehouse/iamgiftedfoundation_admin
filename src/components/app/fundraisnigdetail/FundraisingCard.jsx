@@ -1,14 +1,36 @@
 
-import img from '../../../assets/images/Desertimg.png'
+import { useState } from 'react';
+import img from '../../../assets/images/img1.jpg'
 import DotSvg from '../../../assets/svgs/DotSvg';
-
+import { useSelector } from 'react-redux';
+import moment from 'moment/moment';
+import { baseURL } from '../../../config/api';
 const FundraisingCard = () => {
+const [activeIndex, setActiveIndex] = useState(0);
+const { docDetails } = useSelector(state => state.campaign);
+
+
+  const programdoc=docDetails?.doc;
+
+
+   const startDate = programdoc?.startDate
+    ? moment.utc(programdoc?.startDate).format('MMM DD, YYYY')
+    : 'N/A';
+  
+  const startTime =    programdoc?.startDate ? moment.utc(programdoc.startDate).format('hh:mm A')  : 'N/A';
+
+  
+
   return (
-    <div  className=" bg-white w-full flex flex flex-col gap-2    rounded-[15px]">
-       <div className="rounded-tl-[15px] rounded-tr-[15px] w-full h-[250px]  sm:h-[200px] xl:h-[300px] overflow-hidden">
+    <div  className=" bg-white w-full flex flex flex-col gap-2  p-4   rounded-[15px]">
+       <div className="   rounded-[15px] w-full h-[250px]  sm:h-[200px] xl:h-[300px] overflow-hidden">
             <img
-            src={img}
-            alt="img"
+              src={
+      programdoc?.attachments?.[activeIndex]?.relativeAddress
+        ? `${baseURL}/${programdoc.attachments[activeIndex].relativeAddress}`
+        : img
+    }
+                alt={programdoc.title}
             className="
                 w-full h-full object-cover
                 transition-transform duration-700 ease-in-out
@@ -17,11 +39,32 @@ const FundraisingCard = () => {
             />
         </div>
 
+  <div className="grid grid-cols-2 sm:flex sm:flex-row sm:flex-wrap gap-3 pt-3.5">
+  {programdoc?.attachments && programdoc?.attachments.length > 0 && (
+    programdoc?.attachments.map((img, index) => (
+      <div
+        key={img?._id}
+            onClick={() => setActiveIndex(index)}
+        className="sm:w-[140px] h-[90px] rounded-[10px] overflow-hidden relative group cursor-pointer"
+      >
+        <img
+          src={`${baseURL}/${img?.relativeAddress}`} 
+          alt={`img-${index + 1}`}
+          className="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
+        />
+        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[10px]" />
+      </div>
+    ))
+  )}
+</div>
+
+
+
       
-      <div className=' px-3 py-2.5  w-full flex flex-col   gap-2'>
+      <div className='   w-full flex flex-col   gap-2'>
                 <div className=' flex justify-between items-center  w-full'>
                         <div className=' text-sm'>
-                            Disaster Relief
+                            N/A
                         </div>
                          <div
                             className="
@@ -39,63 +82,65 @@ const FundraisingCard = () => {
                 </div>
                  
                  <div className=' text-[15px]  sm:text-base xl:text-lg font-medium'>
-                   Rebuild Hope After the Earthquake
+                     {programdoc?.title}
                  </div>
                   
                   <div className='flex flex-col gap-0.5'>
                   <div className="flex justify-between items-center w-full  font-medium">
-                        <p className="text-black  text-[10px] xs:text-xs md:text-sm">Progress: 91%</p>
+                        <p className="text-black  text-[10px] xs:text-xs md:text-sm">Progress: 0%</p>
                        <div >
-                       <span className="font-medium text-sm sm:text-base">$120,000</span>
+                       <span className="font-medium text-sm sm:text-base">0</span>
                        <span className=" text-xs sm:text-sm text-black/60 font-medium">
-                         /$150,000
+                         /0
                        </span>
                         </div>
             
               </div>
-                   <div className="w-full  bg-[#B2BCC599] rounded-full h-2 overflow-hidden mb-5">
+                   <div className="w-full  bg-[#B2BCC599] rounded-full h-2 overflow-hidden">
                         <div
                             className="
                             bg-[#9BD6F6] h-2 rounded-full
                             transition-all duration-700 ease-in-out
                             "
-                            style={{ width: `60%` }}
+                            style={{ width: `0%` }}
                         />
                                 </div>  
 
                   </div> 
 
-                  {/* <div className='grid grid-cols-1 xs:grid-cols-3 gap-2 w-full   pt-3'>
-                  <div className='       rounded-[10px] bg-[#F4F9FD] py-4
+                  <div className=' w-full  flex flex-col xs:flex-row  xs:flex-wrap gap-2.5  pt-3'>
+                  <div className='   w-full  xs:w-fit  px-4   md:px-0  md:w-[180px]        rounded-[10px] bg-[#F4F9FD] py-4
                             flex flex-col items-center justify-center
                             transition-all duration-300 ease-in-out
                             hover:-translate-y-1 hover:shadow-lg hover:bg-white
                             cursor-pointer'>
-                  <h2 className=' font-medium text-m md:text-base '>$100</h2>
-                  <p className=' text-xs md:text-sm text-black/60'  >Donation</p>
+                  <p className=' text-xs md:text-sm text-black/60'  >Date and Time</p>
+                  <h2 className=' font-medium text-m md:text-base '>{startDate}</h2>
+                      <h2 className=' font-medium text-m md:text-base '>   {startTime}</h2>
+                 
 
                   </div>
-                 <div className='       rounded-[10px] bg-[#F4F9FD] py-4
+                 <div className='    w-full  xs:w-fit  px-4   md:px-0  md:w-[180px]        rounded-[10px] bg-[#F4F9FD] py-4
                             flex flex-col items-center justify-center
                             transition-all duration-300 ease-in-out
                             hover:-translate-y-1 hover:shadow-lg hover:bg-white
                             cursor-pointer'>
-                  <h2 className=' font-medium text-m md:text-base '>$100</h2>
-                  <p className=' text-xs md:text-sm text-black/60'  >Donation</p>
+                <p className=' text-xs md:text-sm text-black/60'  >Place</p>
+                  <h2 className=' font-medium text-m md:text-base '>{programdoc?.address || 'N/A'} </h2>
 
                   </div>
 
-                   <div className='       rounded-[10px] bg-[#F4F9FD] py-4
+                   <div className='    w-full  xs:w-fit  px-4   md:px-0  md:w-[180px]       rounded-[10px] bg-[#F4F9FD] py-4
                             flex flex-col items-center justify-center
                             transition-all duration-300 ease-in-out
                             hover:-translate-y-1 hover:shadow-lg hover:bg-white
                             cursor-pointer'>
-                  <h2 className=' font-medium text-m md:text-base '>$100</h2>
-                  <p className=' text-xs md:text-sm text-black/60'  >Donation</p>
+                             <p className=' text-xs md:text-sm text-black/60'  >Organizer</p>
+                  <h2 className=' font-medium text-m md:text-base '>N/A </h2>
 
                   </div>
                  
-                  </div> */}
+                  </div>
                
 
      

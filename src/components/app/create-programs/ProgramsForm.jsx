@@ -1,6 +1,6 @@
 
 
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import ImageUpload   from '../../global/form/ImageUpload';
 import InputName  from '../../global/form/InputName';
 import InputEmail   from '../../global/form/InputEmail';
@@ -18,6 +18,9 @@ import { toast } from 'react-toastify';
 import devLog from '../../../utils/logsHelper';
 import {Add_Programs} from '../../../redux/actions/programsAction';
 import ProgramSelectInput from '../../global/form/programSelectInput';
+import DateInput  from '../../../components/global/form/DateInput';
+import { combineDateTime } from '../../../utils/combineDateTime';
+import moment from 'moment';
 
 
 const ProgramsForm = () => {
@@ -31,10 +34,15 @@ const ProgramsForm = () => {
  
 
    const [imagePreview, setImagePreview] = useState("");
+      const [startDate, setStartDate] = useState(null); 
+  const [startTime, setStartTime] = useState('');
+  const [endDate, setEndDate] = useState(null);
+  const [endTime, setEndTime] = useState('');
   const [errors, setErrors] = useState({});
       const [formData, setFormData] = useState({
         title: "",
         category: "",
+        joinProgram:"",
         tags: [],
         description: "",
         organizationName: "",
@@ -61,6 +69,30 @@ const ProgramsForm = () => {
     }
   };
 
+
+
+     const handleDateChange = (field, setValue) => (value) => {
+    setValue(value);
+    if (errors[field]) {
+      const updated = { ...errors };
+      delete updated[field];
+      setErrors(updated);
+    }
+  };
+
+
+
+useEffect(() => {
+  if (startDate) {
+    setStartTime(moment.utc().startOf("day").format("HH:mm"));
+  }
+
+  if (endDate) {
+    setEndTime(moment.utc().startOf("day").format("HH:mm"));
+  }
+}, [startDate, endDate]);
+
+
   const handleSelectChange = (field) => (value) => {
   setFormData((prev) => ({ ...prev, [field]: value }));
 
@@ -78,6 +110,7 @@ const ProgramsForm = () => {
   setFormData({
     title: "",
     category: "",
+        joinProgram:"",
     tags: [],
     description: "",
     organizationName: "",
@@ -95,9 +128,11 @@ const ProgramsForm = () => {
 
 
 const handleSubmit = async () => {
-  const validationErrors = validateProgramForm(formData);
+  const validationErrors = validateProgramForm(formData,startDate, startTime, endDate, endTime);
   setErrors(validationErrors);
   if (Object.keys(validationErrors).length > 0) return;
+  const startDateTime = combineDateTime(startDate, startTime);
+      const endDateTime = combineDateTime(endDate, endTime);
 
   try {
     const galleryUrls = formData.gallery?.length
@@ -107,6 +142,8 @@ const handleSubmit = async () => {
     const payload = {
       category:formData.category,
       title: formData.title,
+         startDate: startDateTime,
+      endDate: endDateTime,
 
       ...(imagePreview && {
         featuredImageDataURI: imagePreview,
@@ -180,7 +217,33 @@ const handleSubmit = async () => {
             error={errors.category}
             
            />
-         
+
+
+
+                       <DateInput
+  label="Start Date"
+  value={{ date: startDate, time: startTime }}
+  onDateChange={handleDateChange('startDate', setStartDate)}
+  onTimeChange={handleDateChange('startDate', setStartTime)}
+  error={errors.startDate}
+/>
+
+<DateInput
+  label="End Date"
+  value={{ date: endDate, time: endTime }}
+  onDateChange={handleDateChange('endDate', setEndDate)}
+  onTimeChange={handleDateChange('endDate', setEndTime)}
+  error={errors.endDate}
+/>
+ <div className="sm:col-span-2">
+
+ <InputName
+            label="Program Join"
+            value={formData.joinProgram}
+            onChange={handleChange("joinProgram")}
+            error={errors.joinProgram}
+          />
+</div>
 
             <div className="sm:col-span-2">
            <InputTags

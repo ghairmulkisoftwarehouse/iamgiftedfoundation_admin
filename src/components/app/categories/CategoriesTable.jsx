@@ -7,60 +7,24 @@ import TrashSvg  from '../../../assets/svgs/TrashSvg';
 import EditSvg   from '../../../assets/svgs/EditSvg';
 import Titlebtn  from '../../global/Titlebtn';
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 
-const CategoriesTable = () => {
+const CategoriesTable = ( 
 
+    currentPage,
+  setCurrentPage,
+  limit,
+  setLimit,
+  isLoading,
+  isError,
+  error,
+) => {
+
+   const { docs, pages ,docsCount } = useSelector(state => state.category);
 
  const  navigate=useNavigate();
 
-const tableData = [
-  {
-    idCode: "#D-321330",
-    title: "Sarah Blue",
-    description: "Lorem Ipsum is simply dummy text of the printing"
-  },
-  {
-    idCode: "#D-321331",
-    title: "John Smith",
-    description: "Lorem Ipsum is simply dummy text of the industry"
-  },
-  {
-    idCode: "#D-321332",
-    title: "Emma Johnson",
-    description: "Lorem Ipsum has been the industry's standard"
-  },
-  {
-    idCode: "#D-321333",
-    title: "Michael Brown",
-    description: "Dummy text ever since the 1500s"
-  },
-  {
-    idCode: "#D-321334",
-    title: "Olivia Wilson",
-    description: "When an unknown printer took a galley"
-  },
-  {
-    idCode: "#D-321335",
-    title: "David Miller",
-    description: "Of type and scrambled it to make"
-  },
-  {
-    idCode: "#D-321336",
-    title: "Sophia Taylor",
-    description: "A type specimen book for testing"
-  },
-  {
-    idCode: "#D-321337",
-    title: "Daniel Anderson",
-    description: "It has survived not only five centuries"
-  },
-  {
-    idCode: "#D-321338",
-    title: "Isabella Thomas",
-    description: "But also the leap into electronic typesetting"
-  }
-];
 
 
 
@@ -74,11 +38,11 @@ const tableData = [
 
       </div>
 
-      {tableData.length === 0 ? (
-        <p className="text-center py-6 text-gray-400">
-          No Recent App User found.
-        </p>
-      ) : (
+      {isLoading ? (
+    <Loader />
+  ) : isError ? (
+    <DisplayError message={error?.message || "Something went wrong"} />
+  ) : docs?.length > 0 ? (
         <div className="overflow-x-auto maintable">
         
           <table className="w-full mt-5 min-w-max md:min-w-full">
@@ -121,9 +85,9 @@ const tableData = [
             </thead>
 
             <tbody>
-              {tableData.map((row, index) => (
-                <tr key={index}>
-                  <td className="px-3 py-4">{row.idCode}</td>
+              {docs.map((row, ) => (
+                <tr key={docs?._id}>
+                  <td className="px-3 py-4">{row?.longAutoIncrementId}</td>
 
                 <td className="px-3 py-4 whitespace-nowrap ">
                     <div className="flex items-center gap-2">
@@ -138,10 +102,10 @@ const tableData = [
                     </div>
                   </td>
                    <td className="px-3 py-4 whitespace-nowrap">
-                        {row.title}
+                        {row?.title}
                   </td>
                    <td className="px-3 py-4 break-words  whitespace-normal  max-w-[280px]">
-                  <span className="text-black/65">{row.description}</span>
+                  <span className="text-black/65"></span>
                     
                   </td>
 
@@ -173,22 +137,24 @@ const tableData = [
             </tbody>
           </table>
         </div>
-      )}
-
-        <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center w-full px-3  flex-wrap-none">
+      ) : (
+              <ItemNotFound message="No Community found." />
+            )}
+            
+       <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center w-full px-3  flex-wrap-none">
         <div className=" flex items-center gap-2 text-xs sm:text-sm text-[#313131]">
         <div>Show</div>
          <div className="w-fit h-[40px] ">
-        <PageLimit totalpages={ 10} limit={10} setLimit={4}/>
+        <PageLimit totalpages={docsCount || 10} limit={limit} setLimit={setLimit}/>
         </div>
-         <div>of 2560 results</div>
+         <div>of {docsCount} results</div>
 
         </div>
           
                <TealPagination 
-           totalPages={2}
-              currentPage={1}
-             setCurrentPage={1}
+             totalPages={pages}
+        currentPage={currentPage}
+       setCurrentPage={setCurrentPage}
       />
                                       {/* Limit Dropdown */}
       

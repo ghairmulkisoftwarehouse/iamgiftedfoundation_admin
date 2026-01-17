@@ -1,4 +1,7 @@
-export const validateProgramForm = (data) => {
+import { combineDateTime } from "../utils/combineDateTime"; 
+
+
+export const validateProgramForm = (data, startDate, startTime, endDate, endTime) => {
   const errors = {};
 
   // Title
@@ -12,6 +15,37 @@ export const validateProgramForm = (data) => {
   if (!data.category.trim()) {
     errors.category = "Category is required";
   }
+
+
+
+
+  
+if (!data.joinProgram?.toString().trim()) {
+  errors.joinProgram = "Program Join is required";
+} else if (isNaN(Number(data.joinProgram))) {
+  errors.joinProgram = "Program Join must be a number";
+} else if (Number(data.joinProgram) <= 0) {
+  errors.joinProgram = "Program Join must be greater than 0";
+}
+
+
+
+    if (!startDate) {
+      errors.startDate = "Start date is required";
+    }
+    if (!endDate) {
+      errors.endDate = "End date is required";
+    }
+  
+    // Only check order if both dates exist
+    if (startDate && endDate && startTime != null && endTime != null) {
+      const start = combineDateTime(startDate, startTime);
+      const end = combineDateTime(endDate, endTime);
+      if (start && end && new Date(start) > new Date(end)) {
+        errors.startDate = "Start date cannot be later than end date";
+        errors.endDate = "End date cannot be earlier than start date";
+      }
+    }
 
   // Tags
   // if (!data.tags || data.tags.length === 0) {

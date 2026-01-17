@@ -9,5 +9,9 @@ export const validateCategoriesForm = (data) => {
     errors.title = "Title must be at least 5 characters";
   }
 
+
+
+
+
   return errors;
 };

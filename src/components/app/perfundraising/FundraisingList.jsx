@@ -88,7 +88,7 @@ const FundraisingList = ({
       
 
           {/* Progress */}
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 mt-auto">
             <div className="w-full bg-[#B2BCC599] rounded-full h-2 overflow-hidden">
               <div
                 className="bg-light-cyan h-2 rounded-full transition-all duration-700 ease-out"

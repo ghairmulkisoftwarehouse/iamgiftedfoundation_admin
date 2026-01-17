@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import ImageUpload   from '../../../components/global/form/ImageUpload';
 import InputName  from '../../../components/global/form/InputName';
 import InputEmail   from '../../../components/global/form/InputEmail';
@@ -15,6 +15,10 @@ import { useQueryClient } from "react-query";
 import { toast } from 'react-toastify';
 import devLog from '../../../utils/logsHelper';
 import { useNavigate } from 'react-router-dom';
+import { combineDateTime } from '../../../utils/combineDateTime';
+import DateInput  from '../../../components/global/form/DateInput';
+import moment from 'moment';
+
 
 const FundraisningForm = () => {
 
@@ -22,11 +26,25 @@ const FundraisningForm = () => {
     const navigate=useNavigate(); 
       const queryClient = useQueryClient();
 
+    const [startDate, setStartDate] = useState(null); 
+  const [startTime, setStartTime] = useState('');
+  const [endDate, setEndDate] = useState(null);
+  const [endTime, setEndTime] = useState('');
+  
      const {createLoading} = useSelector(state => state.campaign);
-
-
    const [imagePreview, setImagePreview] = useState("");
   const [errors, setErrors] = useState({});
+
+
+useEffect(() => {
+  if (startDate) {
+    setStartTime(moment.utc().startOf("day").format("HH:mm"));
+  }
+
+  if (endDate) {
+    setEndTime(moment.utc().startOf("day").format("HH:mm"));
+  }
+}, [startDate, endDate]);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -54,6 +72,16 @@ const FundraisningForm = () => {
     }
   };
 
+   const handleDateChange = (field, setValue) => (value) => {
+    setValue(value);
+    if (errors[field]) {
+      const updated = { ...errors };
+      delete updated[field];
+      setErrors(updated);
+    }
+  };
+
+
   const resetForm = () => {
   setFormData({
     title: "",
@@ -67,16 +95,22 @@ const FundraisningForm = () => {
     website: "",
     coverImage: null,
   });
+    setStartDate(null);
+            setStartTime('');
+            setEndDate(null);
+            setEndTime('');
 
   setImagePreview("");
   setErrors({});       
 };
 
 const handleSubmit = async () => {
-  const validationErrors = validateFundraisingForm(formData);
+  const validationErrors = validateFundraisingForm(formData,startDate, startTime, endDate, endTime);
   setErrors(validationErrors);
 
   if (Object.keys(validationErrors).length > 0) return;
+    const startDateTime = combineDateTime(startDate, startTime);
+    const endDateTime = combineDateTime(endDate, endTime);
 
   try {
     const galleryUrls = Array.isArray(formData.gallery)
@@ -85,6 +119,9 @@ const handleSubmit = async () => {
 
     const payload = {
       title: formData.title,
+         startDate: startDateTime,
+
+      endDate: endDateTime,
 
       ...(imagePreview && {
         featuredImageDataURI: imagePreview,
@@ -154,6 +191,23 @@ const handleSubmit = async () => {
             onChange={handleChange("category")}
             error={errors.category}
           />
+
+
+             <DateInput
+  label="Start Date"
+  value={{ date: startDate, time: startTime }}
+  onDateChange={handleDateChange('startDate', setStartDate)}
+  onTimeChange={handleDateChange('startDate', setStartTime)}
+  error={errors.startDate}
+/>
+
+<DateInput
+  label="End Date"
+  value={{ date: endDate, time: endTime }}
+  onDateChange={handleDateChange('endDate', setEndDate)}
+  onTimeChange={handleDateChange('endDate', setEndTime)}
+  error={errors.endDate}
+/>
 
             <div className="sm:col-span-2">
            <InputTags
@@ -266,7 +320,7 @@ const handleSubmit = async () => {
     className={`btn-primary w-[50%] sm:w-[210px] h-[50px] 
       ${createLoading ? 'opacity-60 cursor-not-allowed' : ''}`}
   >
-    {createLoading ? <SubmitLoading size={12} /> : 'Create Event'}
+    {createLoading ? <SubmitLoading size={12} /> : 'Create Fundraisning'}
   </button>
 </div>
 

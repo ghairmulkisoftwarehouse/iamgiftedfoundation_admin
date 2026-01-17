@@ -41,11 +41,11 @@ const EventsForm = () => {
 
 useEffect(() => {
   if (startDate) {
-    setStartTime(moment.utc().startOf("day").format("HH:mm"));
+    setStartTime(startOfDay)
   
   }
     if (endDate) {
-    setEndTime(moment.utc().startOf("day").format("HH:mm"));
+    setEndTime(startOfDay);
   }
 }, [startDate,endDate]);
 
