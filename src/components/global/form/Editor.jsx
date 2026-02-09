@@ -16,7 +16,7 @@ function Editor({ content, setContent,error }) {
    buttons: [
       "bold", "italic", "underline", "strikethrough", // basic formatting
       "|",
-      "ul", "ol", // lists
+      "ul", "ol", 
       "|",
       "align", // alignment
       "font", "fontsize", // font options
@@ -33,7 +33,13 @@ function Editor({ content, setContent,error }) {
         ref={editor}
         value={content}
         className=" text-xs sm:text-sm"
-        config={config}
+          config={{
+    ...config,
+   
+    pastePlain: false,
+    askBeforePasteHTML: false, 
+    enter: "P", 
+  }}
         onBlur={(newContent) => setContent(newContent)} 
         onChange={() => {}}
       />

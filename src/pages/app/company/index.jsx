@@ -1,21 +1,21 @@
 
 import { useState } from 'react';
 import Heading  from '../../../components/global/Heading';
-import CommunityTable   from '../../../components/app/community/CommunityTable';
+import CompanyTable  from '../../../components/app/company/CompanyTable';
 import Axios from '../../../config/api';
 import { useDispatch,useSelector } from 'react-redux';
 import { useQuery } from 'react-query';
 import { setStats } from '../../../redux/slices/companySlice';
 import devLog from '../../../utils/logsHelper';
-// import Loader from '../../../components/global/Loader';
-// import DisplayError from '../../../components/global/DisplayError';
 
-const Community = () => {
 
-const dispatch=useDispatch();
- const { docs, } = useSelector(state => state.company);
 
-  devLog(' this is a docs  company',docs)  
+const Company = () => {
+
+    const dispatch=useDispatch();
+    const { docs, } = useSelector(state => state.company);
+
+  devLog(' this is a docs',docs)  
 
 const [currentPage, setCurrentPage] = useState(1);
 const [limit, setLimit] = useState(10);
@@ -25,7 +25,7 @@ const [limit, setLimit] = useState(10);
     const { isLoading, isError, error } = useQuery(
         queryKey,
         () => {
-            let url = `/admin/post/?pageSize=${limit}&page=${currentPage}&sortBy=createdAt_descending`;      
+            let url = `/company?pageSize=${limit}&page=${currentPage}&sortBy=createdAt_descending`;      
           
             return Axios.get(url);
         },
@@ -39,14 +39,12 @@ const [limit, setLimit] = useState(10);
     );
 
 
-
     return (
      
             <div className='flex  flex-col  gap-6 w-full'>
               <Heading/>
-              <CommunityTable
-            
-            currentPage={currentPage}
+              <CompanyTable
+                     currentPage={currentPage}
             setCurrentPage={setCurrentPage}
                 limit={limit}
                   setLimit={setLimit}
@@ -55,11 +53,11 @@ const [limit, setLimit] = useState(10);
                 error={error}
 
               />
+           
               
             </div>
-          
-       
+               
     )
 }
 
-export default Community;
+export default Company;

@@ -108,7 +108,7 @@ const { docDetails } = useSelector(state => state.campaign);
 
                   </div> 
 
-                  <div className=' w-full  flex flex-col xs:flex-row  xs:flex-wrap gap-2.5  pt-3'>
+                  {/* <div className=' w-full  flex flex-col xs:flex-row  xs:flex-wrap gap-2.5  pt-3'>
                   <div className='   w-full  xs:w-fit  px-4   md:px-0  md:w-[180px]        rounded-[10px] bg-[#F4F9FD] py-4
                             flex flex-col items-center justify-center
                             transition-all duration-300 ease-in-out
@@ -140,7 +140,7 @@ const { docDetails } = useSelector(state => state.campaign);
 
                   </div>
                  
-                  </div>
+                  </div> */}
                
 
      

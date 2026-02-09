@@ -6,11 +6,26 @@ import Editor   from '../../global/form/Editor';
 import ErrorBoundary  from '../../global/ErrorBoundary';
 import {validateCategoriesForm} from '../../../validations/categoriesValidation';
 import ImageUpload   from '../../../components/global/form/ImageUpload';
+import {Add_Category} from '../../../redux/actions/categoryActions';
+import { useDispatch,useSelector } from 'react-redux';
+import { useQueryClient } from "react-query";
+import { toast } from 'react-toastify';
+import devLog from '../../../utils/logsHelper';
+import { useNavigate } from 'react-router-dom';
+
+import SubmitLoading   from '../../../components/global/SubmitLoading';
+
 
 
 
 const CategoriesForm = () => {
   const [errors, setErrors] = useState({});
+   const dispatch=useDispatch();
+   const navigate=useNavigate();
+  const queryClient = useQueryClient();
+
+     const { createLoading } = useSelector(state => state.category);
+
 
   const [imagePreview, setImagePreview] = useState('');
   const [formData, setFormData] = useState({
@@ -45,7 +60,12 @@ const CategoriesForm = () => {
   setErrors({});       
 };
 
-const handleSubmit = () => {
+
+
+
+
+
+const handleSubmit = async () => {
   const validationErrors = validateCategoriesForm(formData);
   setErrors(validationErrors);
 
@@ -53,8 +73,31 @@ const handleSubmit = () => {
 
   console.log("Form submitted:", formData);
 
-  resetForm();
+
+
+  try {
+
+
+    const payload = {
+      title: formData.title,
+
+     
+    };
+
+    devLog('this is payload', payload);
+
+    await dispatch(Add_Category(payload, toast, navigate));
+    queryClient.invalidateQueries('fetch-all-categories');
+
+    resetForm();
+  
+  } catch (error) {
+    console.error(error);
+    toast.error('Failed to add Event');
+  }
 };
+
+
 
 
   return (
@@ -119,12 +162,16 @@ const handleSubmit = () => {
   >
     Cancel
   </button>
-        <button
-          onClick={handleSubmit}
-          className="btn-primary w-[50%] sm:w-[210px] h-[50px]"
-        >
-         Create Categories
-        </button>
+       <button
+  onClick={handleSubmit}
+  className={`btn-primary w-[50%] sm:w-[210px] h-[50px] ${
+    createLoading ? "opacity-60 cursor-not-allowed" : ""
+  }`}
+  disabled={createLoading} 
+>
+  {createLoading ? <SubmitLoading size={12} /> : "Create Categories"}
+</button>
+
 
 
       

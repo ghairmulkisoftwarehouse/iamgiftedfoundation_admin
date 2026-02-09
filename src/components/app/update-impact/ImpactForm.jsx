@@ -4,15 +4,16 @@ import Editor from '../../global/form/Editor';
 import ErrorBoundary from '../../global/ErrorBoundary';
 import ProgramInput   from '../../../components/global/form/ProgramInput';
 import PillerSelectInput  from '../../../components/global/form/PillerSelectInput';
-import { validateImpactForm } from '../../../validations/ImpactValidation';
+import { validateUpadateImpactForm } from '../../../validations/updateImpactValidation';
 import ImpactCategoryInput  from '../../../components/global/form/ImpactCategoryInput';
 import PillerSelectedInput   from './fromImpact/PillerSelectedInput';
-import {Add_Impact} from '../../../redux/actions/impactActions';
+import {update_Impact} from '../../../redux/actions/impactActions';
 import { toast } from "react-toastify";
 import { useQueryClient } from "react-query";
 import { useSelector,useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import SubmitLoading   from '../../../components/global/SubmitLoading';
+import { useParams } from 'react-router-dom';
 
 // import MultipleImage from '../../global/form/MultipleImage';
 // import InputOption from '../../global/form/InputOption';
@@ -20,10 +21,15 @@ import SubmitLoading   from '../../../components/global/SubmitLoading';
 const ImpactForm = () => {
   const [errors, setErrors] = useState({});
 
+  const {id}=useParams();
+
+
+  console.log('  this is a  id',id)
+
     const dispatch = useDispatch();
   const queryClient = useQueryClient();  
    const     navigate=useNavigate();                           
-  const { createLoading, } = useSelector((state) => state.impact);
+  const { patchLoading, } = useSelector((state) => state.impact);
 
 
  const [formData, setFormData] = useState({
@@ -86,16 +92,17 @@ const resetForm = () => {
 
 const handleSubmit = async () => {
   // Validate form
-  const validationErrors = validateImpactForm(formData);
+  const validationErrors = validateUpadateImpactForm(formData);
   setErrors(validationErrors);
 
   if (Object.keys(validationErrors).length > 0) return;
 
   // Prepare payload
   const payload = {
-    title: formData.title,
+    ...(formData.title && { title: formData.title }),
    ...( formData.description && {description: formData.description}),
-    piller: formData.piller,
+     ...(formData.piller && { piller: formData.piller }),
+
     ...( formData.program && {program: formData.program}),
    ...( formData.supportCount && {supportCount: formData.supportCount}),
       ...( formData.amount && {amount: formData.amount}),
@@ -107,7 +114,8 @@ const handleSubmit = async () => {
   console.log("Form submitted payload:", payload);
 
   try {
-    await dispatch(Add_Impact(payload, toast, navigate));
+ await dispatch(update_Impact(id, payload, toast, navigate));
+
     queryClient.invalidateQueries(["fetch-all-impact"]);
     resetForm();   
   } catch (error) {
@@ -200,12 +208,12 @@ const handleSubmit = async () => {
 
         <button
   onClick={handleSubmit}
-  disabled={createLoading}
+  disabled={patchLoading}
   className={`btn-primary w-[50%] sm:w-[210px] h-[50px] ${
-    createLoading ? 'opacity-50 cursor-not-allowed' : ''
+    patchLoading ? 'opacity-50 cursor-not-allowed' : ''
   }`}
 >
-  {createLoading ? <SubmitLoading size={12} /> : 'Create Impact'}
+  {patchLoading ? <SubmitLoading size={12} /> : 'Update Impact'}
 </button>
 
       

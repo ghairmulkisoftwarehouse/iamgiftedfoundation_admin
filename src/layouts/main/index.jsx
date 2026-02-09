@@ -22,7 +22,7 @@ const MainLayout = () => {
             <div 
             ref={sidebarRef}
             className={`
-                fixed   lg:left-0 transition-all bg-white  h-screen  duration-300 w-[250px] z-[9999] 
+                fixed   lg:left-0 transition-all bg-white  h-screen  duration-300 w-[250px] z-[80] 
                 border-r-2 border-r-lightGray/20 
                  ${showPannel ? "left-0" : "-left-[150%]"}`}>
                 <Sidebar />

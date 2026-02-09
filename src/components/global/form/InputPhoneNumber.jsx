@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, {useRef, useState } from 'react';
 import { codelist } from '../../../constants/dataConstants';
 import AngleArrowSvg from '../../../assets/svgs/AngleArrowSvg';
 
+import useClickOutside from "../../../utils/clickOutside";
 const InputPhoneNumber = ({
   label,
   type = 'text',
@@ -12,6 +13,7 @@ const InputPhoneNumber = ({
   readOnly = false,
   ...rest
 }) => {
+    const containerRef = useRef(null);  
   const [focused, setFocused] = useState(false);
   const [open, setOpen] = useState(false);
   const [selectedCode, setSelectedCode] = useState(
@@ -20,8 +22,10 @@ const InputPhoneNumber = ({
 
   const isActive = focused || (value !== undefined && value !== '');
 
+useClickOutside(containerRef, () => setOpen(false));
+
   return (
-    <div className="w-full flex flex-col gap-1">
+    <div className="w-full flex flex-col gap-1" ref={containerRef}>
       <div
         className={`w-full relative h-[50px] transition-all duration-300 rounded-[10px] border ${
           error ? 'border-red-500' : focused || isActive ? 'border-black' : 'border-lightGray'

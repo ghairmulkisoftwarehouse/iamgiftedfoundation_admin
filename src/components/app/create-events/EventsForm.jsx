@@ -32,9 +32,9 @@ const EventsForm = () => {
   const [imagePreview, setImagePreview] = useState('');
   const [errors, setErrors] = useState({});
 
-  const [startDate, setStartDate] = useState(null); // Date object
+  const [startDate, setStartDate] = useState(null);
   const [startTime, setStartTime] = useState('');
-  const [endDate, setEndDate] = useState(null); // Date object
+  const [endDate, setEndDate] = useState(null);
   const [endTime, setEndTime] = useState('');
   const startOfDay = moment.utc().startOf('day').format('HH:mm');
 
@@ -64,6 +64,10 @@ useEffect(() => {
     gallery: [],
     website: '',
     coverImage: null,
+    address:"",
+    city:"",
+    state:"", 
+
   });
 
 
@@ -99,6 +103,9 @@ useEffect(() => {
       gallery: [],
       website: '',
       coverImage: null,
+       address:"",
+    city:"",
+    state:"", 
     });
     setStartDate(null);
             setStartTime('');
@@ -127,6 +134,10 @@ const handleSubmit = async () => {
       startDate: startDateTime,
 
       endDate: endDateTime,
+         ...(formData.address && { address: formData.address }),
+          ...(formData.city && { city: formData.city }),
+           ...(formData.state && { state: formData.state }),
+
       ...(imagePreview && { featuredImageDataURI: imagePreview }),
       ...(formData.description && { body: formData.description }),
       ...(galleryUrls.length > 0 && { imagesDataURIs: galleryUrls }),
@@ -186,7 +197,7 @@ const handleSubmit = async () => {
 
 
 
-          <InputNumber
+       <InputNumber
             label="Event Invite Range"
             value={formData.range}
             onChange={handleChange("range")}
@@ -259,6 +270,42 @@ const handleSubmit = async () => {
      </div>
 
     </div>
+
+
+
+     <div className=" flex flex-col xl:flex-row items-start gap-4 xl:gap-2.5  w-full pb-6 border-b px-5 border-black/40">
+     <div className=" w-full xl:w-[25%]   flex flex-col gap-0.5">
+    <h2 className="font-medium text-base sm:text-lg xl:text-[20px]">Event Address</h2>
+<p className="text-xs sm:text-sm text-black/50 leading-[21px]">
+  Enter the full address of your event here so attendees know where to come.
+</p>
+        
+     </div>
+     <div className=" w-full xl:w-[75%] grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-4 ">
+         <InputName
+      label="Address"
+      value={formData.address}
+      onChange={handleChange("address")}
+      error={errors.address}
+    />
+    <InputName
+      label="City"
+      value={formData.city}
+      onChange={handleChange("city")}
+      error={errors.city}
+    />
+    <InputName
+      label="State"
+      value={formData.state}
+      onChange={handleChange("state")}
+      error={errors.state}
+    />
+
+    
+     </div>
+
+    </div>
+
 
 
  {/* Organizer  basic  */}

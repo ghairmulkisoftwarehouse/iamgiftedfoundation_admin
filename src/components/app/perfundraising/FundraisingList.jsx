@@ -63,6 +63,7 @@ const FundraisingList = ({
             navigate(`/app/peer-to-peer-fundraising/${item._id}`)
           }
           className="group border border-black/20 rounded-[20px] p-3 flex flex-col gap-3 w-full transition-all duration-700 ease-out hover:shadow-2xl
+           h-fit
           pb-4 cursor-pointer bg-white"
         >
           {/* Image */}
@@ -88,7 +89,7 @@ const FundraisingList = ({
       
 
           {/* Progress */}
-          <div className="flex flex-col gap-1 mt-auto">
+          <div className="flex flex-col gap-1 ">
             <div className="w-full bg-[#B2BCC599] rounded-full h-2 overflow-hidden">
               <div
                 className="bg-light-cyan h-2 rounded-full transition-all duration-700 ease-out"

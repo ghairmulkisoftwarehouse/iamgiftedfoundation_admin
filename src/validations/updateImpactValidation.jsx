@@ -1,13 +1,13 @@
-export const validateImpactForm = (data) => {
+export const validateUpadateImpactForm = (data) => {
   const errors = {};
 
-  if (!data.title || data.title.trim() === "") {
-    errors.title = "Title is required.";
-  }
+//   if (!data.title || data.title.trim() === "") {
+//     errors.title = "Title is required.";
+//   }
 
-  if (!data.piller) {
-    errors.piller = "Pillar is required.";
-  }
+//   if (!data.piller) {
+//     errors.piller = "Pillar is required.";
+//   }
 
   if (
     data.supportCount !== "" &&

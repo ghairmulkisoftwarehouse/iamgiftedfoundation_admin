@@ -30,11 +30,14 @@ import CreatePrograms  from '../pages/app/programs/create-programs'
 import PerFundraising  from '../pages/app/per-fundraising'
 import  FundraisnigDetail  from '../pages/app/per-fundraising/fundraisnigdetail'
 import CreateFundraising   from '../pages/app/per-fundraising/create-fundraising'
-import CreateImpact   from '../pages/app/per-fundraising/create-Impact'
+import Impact   from '../pages/app/impact/index.jsx';
+import CreateImpact   from '../pages/app/impact/create-Impact';
+import UpdateImpact   from '../pages/app/impact/update-impact';
 import  Createteam  from  '../pages/app/teams/create-team';
 import PanelUser   from '../pages/app/panel-user';
 import CreateNewUser   from '../pages/app/panel-user/create-new-user';
-
+import Company    from '../pages/app/company'
+import CreateCompany  from '../components/app/create-company/CompanyForm.jsx';
 
 
 // 404
@@ -63,32 +66,27 @@ const Router = [
   element: <MainLayout />,
   children: [
     { path: 'dashboard', element: <ProtectedRoute element={<Dashboard />} /> },
-
     { path: 'app-user', element: <ProtectedRoute element={<AppUser />} /> },
     { path: 'app-user-profile/:id', element: <ProtectedRoute element={<AppUserProfile />} /> },
-    
-
     { path: 'events', element: <ProtectedRoute element={<Events />} /> },
     { path: 'events/:id', element: <ProtectedRoute element={<EventsDetail />} /> },
     { path: 'create-events', element: <ProtectedRoute element={<CreateEvents />} /> },
-
     { path: 'donations', element: <ProtectedRoute element={<Donations />} /> },
      { path: 'categories', element: <ProtectedRoute element={<Categories />} /> },
+      { path: 'company', element: <ProtectedRoute element={<Company />} /> },
+       { path: 'create-company', element: <ProtectedRoute element={<CreateCompany />} /> },
+        
+
+
       { path: 'create-categories', element: <ProtectedRoute element={<CreateCategories />} /> },
       { path: 'update-categories/:id', element: <ProtectedRoute element={<UpdateCategories />} /> },
 
-     
-
-
-    
+      
     { path: 'community', element: <ProtectedRoute element={<Community />} /> },
-
     { path: 'teams', element: <ProtectedRoute element={<Teams />} /> },
-
     { path: 'Programs', element: <ProtectedRoute element={<Programs />} /> },
     { path: 'Programs/:id', element: <ProtectedRoute element={<ProgramDetail />} /> },
     { path: 'create-programs', element: <ProtectedRoute element={<CreatePrograms />} /> },
-
     {
       path: 'peer-to-peer-fundraising',
       element: <ProtectedRoute element={<PerFundraising />} />,
@@ -101,16 +99,27 @@ const Router = [
       path: 'create-fundraising',
       element: <ProtectedRoute element={<CreateFundraising />} />,
     },
-
     {
-      path: 'create-Impact/:id',
+      path: 'impact',
+      element: <ProtectedRoute element={<Impact />} />,
+    },
+
+       {
+      path: 'create-impact',
       element: <ProtectedRoute element={<CreateImpact />} />,
     },
+      {
+      path: 'update-impact/:id',
+      element: <ProtectedRoute element={<UpdateImpact />} />,
+    },
+
+
+    
+   
     {
       path: 'create-team/:id',
       element: <ProtectedRoute element={<Createteam />} />,
     },
-
     {
       path: 'panel-user',
       element: <ProtectedRoute element={<PanelUser />} />,
@@ -119,7 +128,6 @@ const Router = [
       path: 'create-new-user',
       element: <ProtectedRoute element={<CreateNewUser />} />,
     },
-
     { path: '*', element: <Navigate to="/page-not-found" /> },
   ],
 }

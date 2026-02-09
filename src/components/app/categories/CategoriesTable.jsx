@@ -8,6 +8,11 @@ import EditSvg   from '../../../assets/svgs/EditSvg';
 import Titlebtn  from '../../global/Titlebtn';
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import ItemNotFound   from '../../../components/global/ItemNotFound';
+import DisplayError from "../../global/DisplayError";
+import Loader from "../../global/Loader";
+
+
 
 
 const CategoriesTable = ( 
