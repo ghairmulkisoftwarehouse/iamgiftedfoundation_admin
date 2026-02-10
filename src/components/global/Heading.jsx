@@ -24,4 +24,4 @@ const Heading = () => {
     )
 }
 
-export default memo(Heading)
+  export default memo(Heading)

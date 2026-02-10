@@ -13,6 +13,7 @@ import DisplayError from '../../global/DisplayError';
 import Loader   from '../../../components/global/Loader'
 import { useNavigate } from "react-router-dom";
 import SelectOption from "../../global/SelectOption";
+import { baseURL } from "../../../config/api";
 const AppUserTable = ({
   
   currentPage,
@@ -33,7 +34,7 @@ const AppUserTable = ({
 const naviagate=useNavigate();
 
 
-const typeOptions = ["Donor", "Participant", "Volunteer"];
+const typeOptions = [ 'All', "Donor", "Participant", "Volunteer"];
 
   return (
     <div className="w-full table-container bg-white flex flex-col gap-1 p-4">
@@ -60,35 +61,31 @@ const typeOptions = ["Donor", "Participant", "Volunteer"];
                 <th className="px-3 py-4 flex items-center gap-0.5 rounded-tl-[12px] rounded-bl-[12px]">
                   <div className="flex items-center gap-0.5">
                     <span>ID Code</span>
-                    <ArrowTopSvg />
                   </div>
                 </th>
 
                 <th className="px-3 py-4">
                   <div className="flex items-center gap-0.5">
                     <span>Users</span>
-                    <ArrowTopSvg />
                   </div>
                 </th>
 
                 <th className="px-3 py-4">
                   <div className="flex items-center gap-0.5">
                     <span>Type</span>
-                    <ArrowTopSvg />
                   </div>
                 </th>
 
                 <th className="px-3 py-4">
                   <div className="flex items-center gap-0.5">
                     <span>Email</span>
-                    <ArrowTopSvg />
+                
                   </div>
                 </th>
 
                 <th className="px-3 py-4">
                   <div className="flex items-center gap-0.5">
                     <span>Create Date</span>
-                    <ArrowTopSvg />
                   </div>
                 </th>
 
@@ -103,7 +100,7 @@ const typeOptions = ["Donor", "Participant", "Volunteer"];
 
             <tbody>
               {docs.map((row, index) => (
-                <tr key={index}>
+                <tr key={row?._id}>
                   <td className="px-3 py-4">
                     {index+1}
                   </td>
@@ -112,7 +109,11 @@ const typeOptions = ["Donor", "Participant", "Volunteer"];
                     <div className="flex items-center gap-2">
                       <div className="w-[32px] h-[32px] overflow-hidden rounded-full">
                         <img
-                          src={img}
+                            src={
+                                        row?.image?.relativeAddress
+                                             ? `${baseURL}/${row?.image?.relativeAddress}`
+                                        : img
+                                     }
                           alt="user avatar"
                           className="w-full h-full object-cover"
                         />
@@ -138,7 +139,7 @@ const typeOptions = ["Donor", "Participant", "Volunteer"];
                       <div className="flex flex-row gap-1.5 items-center">
 
                     <div
-                       onClick={()=>naviagate('/app/app-user-profile/1')}
+                       onClick={()=>naviagate(`/app/app-user-profile/${row?._id}`)}
                       className="w-fit px-2.5 py-2.5 rounded-lg bg-primary cursor-pointer"
                     >
                       <EyetSVG />

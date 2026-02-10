@@ -20,26 +20,33 @@ const AppUser = () => {
 const [currentPage, setCurrentPage] = useState(1);
 const [limit, setLimit] = useState(10);
 
-  const queryKey = ['fetch-all-user', currentPage,  limit,selectRole];
+ const queryKey = ['fetch-all-user', currentPage, limit, selectRole];
 
-    const { isLoading, isError, error } = useQuery(
-        queryKey,
-        () => {
-            let url = `/user/?pageSize=${limit}&page=${currentPage}`;      
-           
-    if (selectRole) {
+const { isLoading, isError, error } = useQuery(
+  queryKey,
+  () => {
+    let url = `/user/?pageSize=${limit}&page=${currentPage}`;
+
+    if (selectRole && selectRole !== 'All') {
       url += `&role=${selectRole.toLowerCase()}`;
     }
-            return Axios.get(url);
+
+    return Axios.get(url);
+  },
+  {
+    refetchOnWindowFocus: false,
+    onSuccess: (data) => {
+      const {
+        data: {
+          data: { docs, pages, docsCount, page },
         },
-        {
-            refetchOnWindowFocus: false,
-            onSuccess: (data) => {
-                const { data: { data: { docs, pages, docsCount, page } } } = data;
-                dispatch(setStats({ docs, pages, docsCount, page }));
-            },
-        }
-    );
+      } = data;
+
+      dispatch(setStats({ docs, pages, docsCount, page }));
+    },
+  }
+);
+
 
 
 

@@ -1,5 +1,5 @@
 import Axios from "../../config/api";
-import {  setCreateLoading,setError } from "../slices/categorySlice";
+import {  setCreateLoading,setError ,setDeleteLoading,setPatchLoading} from "../slices/categorySlice";
 import { getUser } from '../../utils/authLocalStorage';
 
 export const Add_Category = (data, toast,navigate) => async (dispatch,) => {
@@ -30,5 +30,60 @@ export const Add_Category = (data, toast,navigate) => async (dispatch,) => {
     toast.error(errorMsg);
   } finally {
     dispatch(setCreateLoading(false));
+  }
+};
+
+export const delete_Category = (id , toast) => async ( dispatch ,) => {
+    try {
+        dispatch(setDeleteLoading(true));
+         const user = getUser();
+    const token = user?.token; 
+    if (!token) throw new Error("User token not found.");
+        const {
+      data: {
+        data: {  message },
+      },
+    } = await Axios.delete(`/category/${id}`,  {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  
+        dispatch(setDeleteLoading(false));
+        toast.success(message);
+    } catch (err) {
+        dispatch(setDeleteLoading(false));
+        console.log('Delete Category error' , err);
+        toast.error(err?.response?.data?.message || err?.message || 'Something went wrong.');
+    }
+}
+
+
+export const update_Category = (id,data, toast,navigate) => async (dispatch) => {
+  try {
+    dispatch(setPatchLoading(true));
+
+    const user = getUser();
+    const token = user?.token;
+    if (!token) throw new Error("User token not found.");
+    const {
+      data: {
+        data: {  message },
+      },
+    } = await Axios.patch(`/company/${id}`,data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    dispatch(setPatchLoading(false));
+    toast.success(message);
+    navigate(`/app/categories`);
+
+  } catch (err) {
+    dispatch(setPatchLoading(false));
+    dispatch(setError(err?.response?.data?.message || err.message));
+    toast.error(err?.response?.data?.data?.message || err.message || "Something went wrong.");
+
   }
 };

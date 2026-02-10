@@ -24,6 +24,7 @@ import CreateCategories  from '../pages/app/categories/create-categories';
 import  UpdateCategories   from  '../pages/app/categories/update-categories';
 import Community   from '../pages/app/community';
 import  Teams  from '../pages/app/teams';
+import Piller from "../pages/app/piller/index.jsx";
 import  Programs   from '../pages/app/programs';
 import ProgramDetail   from '../pages/app/programs/program-detail'
 import CreatePrograms  from '../pages/app/programs/create-programs'
@@ -38,6 +39,8 @@ import PanelUser   from '../pages/app/panel-user';
 import CreateNewUser   from '../pages/app/panel-user/create-new-user';
 import Company    from '../pages/app/company'
 import CreateCompany  from '../components/app/create-company/CompanyForm.jsx';
+import  UpdateCompany   from '../pages/app/company/update-company';
+
 
 
 // 404
@@ -75,18 +78,21 @@ const Router = [
      { path: 'categories', element: <ProtectedRoute element={<Categories />} /> },
       { path: 'company', element: <ProtectedRoute element={<Company />} /> },
        { path: 'create-company', element: <ProtectedRoute element={<CreateCompany />} /> },
-        
-
+      { path: 'update-company/:id', element: <ProtectedRoute element={<UpdateCompany />} /> },
 
       { path: 'create-categories', element: <ProtectedRoute element={<CreateCategories />} /> },
       { path: 'update-categories/:id', element: <ProtectedRoute element={<UpdateCategories />} /> },
 
-      
+        
     { path: 'community', element: <ProtectedRoute element={<Community />} /> },
     { path: 'teams', element: <ProtectedRoute element={<Teams />} /> },
     { path: 'Programs', element: <ProtectedRoute element={<Programs />} /> },
     { path: 'Programs/:id', element: <ProtectedRoute element={<ProgramDetail />} /> },
     { path: 'create-programs', element: <ProtectedRoute element={<CreatePrograms />} /> },
+
+    { path: 'piller', element: <ProtectedRoute element={<Piller />} /> },
+
+    
     {
       path: 'peer-to-peer-fundraising',
       element: <ProtectedRoute element={<PerFundraising />} />,

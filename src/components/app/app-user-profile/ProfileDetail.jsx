@@ -1,7 +1,11 @@
 import img from '../../../assets/images/img1.jpg'
+import { useSelector } from 'react-redux'
+import { baseURL } from '../../../config/api';
 
 
 const ProfileDetail = () => {
+    const { docDetails } = useSelector((state) => state.appUser);
+
   return (
   <div className="bg-white py-7 rounded-[24px] px-6 flex  flex-col md:flex-row md:items-center gap-6">
   
@@ -10,21 +14,28 @@ const ProfileDetail = () => {
     <div className="flex items-center gap-4">
       
       <div className=" w-[80px] h-[80px] xs:w-[100px] xs:h-[100px] xl:w-[120px] xl:h-[120px] rounded-full overflow-hidden">
+      
         <img
-          src={img}
+          src={
+               docDetails?.image?.relativeAddress
+                    ? `${baseURL}/${docDetails?.image?.relativeAddress}`
+               : img
+            }
           alt="img"
           className="w-full h-full object-cover"
         />
+
+        
       </div>
 
       <div className="flex flex-col gap-2 xs:gap-3">
         <h2 className="font-semibold text-xl xs:text-2xl xl:text-[26px] text-[#1A1C1E]">
-          John Due
+          {docDetails?.username}
         </h2>
         <p className="text-[#1A1C1E]/90 font-medium text-sm xs:text-base xl:text-lg">
           Donor:
           <span className="text-[#1A1C1E]/50 font-medium">
-            {" "}#D-321330
+            {" "}#
           </span>
         </p>
       </div>
@@ -41,7 +52,7 @@ const ProfileDetail = () => {
       </div>
 
       <div className=" w-fit sm:w-1/2">
-        <p className=" font-normal  text-black text-sm  xl:text-[15px]">770-889-6484</p>
+        <p className=" font-normal  text-black text-sm  xl:text-[15px]">{docDetails?.phone}</p>
       </div>
 
     </div>
@@ -53,7 +64,7 @@ const ProfileDetail = () => {
       </div>
 
       <div className=" w-fit sm:w-1/2">
-        <p className=" font-normal  text-black text-sm  xl:text-[15px]">johndue@example.com</p>
+        <p className=" font-normal  text-black text-sm  xl:text-[15px]">{docDetails?.email}</p>
       </div>
 
     </div>
@@ -65,7 +76,7 @@ const ProfileDetail = () => {
       </div>
 
       <div className=" w-fit sm:w-1/2">
-        <p className=" font-normal  text-black  text-sm  xl:text-[15px]">Multan</p>
+        <p className=" font-normal  text-black  text-sm  xl:text-[15px]"></p>
       </div>
 
     </div>
@@ -77,7 +88,7 @@ const ProfileDetail = () => {
       </div>
 
       <div className=" w-fit sm:w-1/2">
-        <p className=" font-normal  text-black text-sm  xl:text-[15px]">714 Burwell Heights Road, Bridge</p>
+        <p className=" font-normal  text-black text-sm  xl:text-[15px]"></p>
       </div>
 
     </div>

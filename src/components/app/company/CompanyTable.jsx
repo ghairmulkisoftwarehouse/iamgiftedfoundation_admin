@@ -14,6 +14,7 @@ import {delete_Company} from '../../../redux/actions/companyActions'
 import confirmBox from '../../../utils/confirmBox';
 import { toast } from 'react-toastify';
 import { useQueryClient } from 'react-query';
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -34,7 +35,7 @@ const CompanyTable = ({
 
 const { docs , pages ,docsCount } = useSelector(state => state.company);   
  devLog(' this is a docs',docs)
-
+ const navigate = useNavigate(); 
 
    const dispatch=useDispatch();
    const queryClient = useQueryClient();
@@ -133,12 +134,12 @@ const { docs , pages ,docsCount } = useSelector(state => state.company);
                   <td className="px-3 py-4 ">
                       <td className="px-3 py-4">
                 <div className="flex gap-1.5 items-center">
-                  <div
-                   
-                    className="px-2.5 py-2.5 rounded-lg bg-cyan-Blue cursor-pointer"
-                  >
-                    <EditSvg />
-                  </div>
+                   <div
+      onClick={() => navigate(`/app/update-company/${item?._id}`)}
+      className="px-2.5 py-2.5 rounded-lg bg-cyan-Blue cursor-pointer"
+    >
+      <EditSvg />
+    </div>
 
                   <div
                         onClick={() => handleDeleteCompany(item?._id)}

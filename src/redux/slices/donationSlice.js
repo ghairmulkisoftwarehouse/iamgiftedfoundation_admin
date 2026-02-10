@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const categorySlice = createSlice({
-    name : 'category' ,
+const donationSlice = createSlice({
+    name : 'donation' ,
     initialState : {
         docs : [] ,
         docDetails : null ,
@@ -10,8 +10,6 @@ const categorySlice = createSlice({
         pages : 1 , 
         docsCount : 0 , 
         createLoading:false,
-        patchLoading:false,
-        deleteLoading:false,
        error: null, 
     } , 
     reducers : {
@@ -31,14 +29,6 @@ const categorySlice = createSlice({
            setCreateLoading (state , action) {
             state.createLoading = action.payload;
         } ,
-           setPatchLoading (state , action) {
-            state.patchLoading = action.payload;
-        } ,
-
-           setDeleteLoading (state , action) {
-            state.deleteLoading = action.payload;
-        } ,
-        
           setError: (state, action) => {
       state.error = action.payload;
     },
@@ -47,8 +37,7 @@ const categorySlice = createSlice({
 });
 
 export const { 
-    setStats ,setDocDetails,setLoading,setCreateLoading,setError,
-    setPatchLoading,setDeleteLoading
-} = categorySlice.actions;
+    setStats ,setDocDetails,setLoading,setCreateLoading,setError
+} = donationSlice.actions;
 
-export default categorySlice.reducer;
+export default donationSlice.reducer;

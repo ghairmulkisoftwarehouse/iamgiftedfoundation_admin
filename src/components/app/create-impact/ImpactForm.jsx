@@ -5,7 +5,7 @@ import ErrorBoundary from '../../global/ErrorBoundary';
 import ProgramInput   from '../../../components/global/form/ProgramInput';
 import PillerSelectInput  from '../../../components/global/form/PillerSelectInput';
 import { validateImpactForm } from '../../../validations/ImpactValidation';
-import ImpactCategoryInput  from '../../../components/global/form/ImpactCategoryInput';
+import ImpactCategoryInput  from '../../global/form/ImpactCategoryInput';
 import PillerSelectedInput   from './fromImpact/PillerSelectedInput';
 import {Add_Impact} from '../../../redux/actions/impactActions';
 import { toast } from "react-toastify";

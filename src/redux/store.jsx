@@ -11,6 +11,7 @@ import categorySlice   from './slices/categorySlice';
 import postSlice  from './slices/postSlice';
 import impactSlice  from './slices/impactSlice';
 import pillarSlice   from './slices/pillarSlice';
+import  donationSlice    from './slices/donationSlice';
 const store = configureStore({
     reducer: {
            auth : authSlice ,
@@ -25,6 +26,7 @@ const store = configureStore({
           impact:impactSlice,
           piller:pillarSlice,
           company:companySlice,
+          donation:donationSlice,
           
     }
 });

@@ -1,5 +1,5 @@
 import Axios from "../../config/api";
-import {  setCreateLoading,setError,setDeleteLoading } from "../slices/companySlice";
+import {  setCreateLoading,setError,setDeleteLoading ,setPatchLoading} from "../slices/companySlice";
 import { getUser } from '../../utils/authLocalStorage';
 
 export const Add_Company = (data, toast,navigate) => async (dispatch,) => {
@@ -59,3 +59,32 @@ export const delete_Company = (id , toast) => async ( dispatch ,) => {
         toast.error(err?.response?.data?.message || err?.message || 'Something went wrong.');
     }
 }
+
+
+export const update_Company = (id,data, toast,navigate) => async (dispatch) => {
+  try {
+    dispatch(setPatchLoading(true));
+
+    const user = getUser();
+    const token = user?.token;
+    if (!token) throw new Error("User token not found.");
+    const {
+      data: {
+        data: {  message },
+      },
+    } = await Axios.patch(`/company/${id}`,data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    dispatch(setPatchLoading(false));
+    toast.success(message);
+         navigate(`/app/company`);
+
+  } catch (err) {
+    dispatch(setPatchLoading(false));
+    dispatch(setError(err?.response?.data?.message || err.message));
+    toast.error(err?.response?.data?.data?.message || err.message || "Something went wrong.");
+
+  }
+};

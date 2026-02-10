@@ -10,7 +10,9 @@ const companySlice = createSlice({
         pages : 1 , 
         docsCount : 0 , 
         createLoading:false,
-               deleteLoading:false,
+        deleteLoading:false,
+        patchLoading:false,
+
 
        error: null, 
     } , 
@@ -28,8 +30,14 @@ const companySlice = createSlice({
         setLoading (state , action) {
             state.loading = action.payload;
         } ,
-           setCreateLoading (state , action) {
+
+
+         setCreateLoading (state , action) {
             state.createLoading = action.payload;
+        } ,
+
+           setPatchLoading (state , action) {
+            state.patchLoading = action.payload;
         } ,
           setError: (state, action) => {
       state.error = action.payload;
@@ -41,7 +49,8 @@ const companySlice = createSlice({
 });
 
 export const { 
-    setStats ,setDocDetails,setLoading,setCreateLoading,setError,setDeleteLoading
+    setStats ,setDocDetails,setLoading,setCreateLoading,setError,setDeleteLoading,
+    setPatchLoading
 } = companySlice.actions;
 
 export default companySlice.reducer;
