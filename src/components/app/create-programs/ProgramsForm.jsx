@@ -17,7 +17,7 @@ import SubmitLoading   from '../../../components/global/SubmitLoading';
 import { toast } from 'react-toastify';
 import devLog from '../../../utils/logsHelper';
 import {Add_Programs} from '../../../redux/actions/programsAction';
-import ProgramSelectInput from '../../global/form/programSelectInput';
+import ProgramSelectInput from '../../global/form/ProgramSelectInput';
 import DateInput  from '../../../components/global/form/DateInput';
 import { combineDateTime } from '../../../utils/combineDateTime';
 import moment from 'moment';
