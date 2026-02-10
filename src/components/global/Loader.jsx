@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import CustomLoader   from './CustomLoader'
+import CustomLoader   from './customloader'
 
 const Loader = ({ h = 200 }) => {
     return (
