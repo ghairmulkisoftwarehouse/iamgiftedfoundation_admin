@@ -1,6 +1,6 @@
 
 
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import ImageUpload   from '../../global/form/ImageUpload';
 import InputName  from '../../global/form/InputName';
 import InputEmail   from '../../global/form/InputEmail';
@@ -8,7 +8,7 @@ import InputPhoneNumber   from '../../global/form/InputPhoneNumber';
 import InputTags   from '../../global/form/InputTags';
 import Editor   from '../../global/form/Editor';
 import ErrorBoundary  from '../../global/ErrorBoundary';
-import MultipleImage   from '../../global/form/MultipleImage';
+import MultipleImage   from './fromUpdate/MultipleImage';
 import {validateProgramForm} from '../../../validations/programValidation'
 import {useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router-dom';
@@ -16,21 +16,28 @@ import { useDispatch,useSelector } from 'react-redux';
 import SubmitLoading   from '../../../components/global/SubmitLoading';
 import { toast } from 'react-toastify';
 import devLog from '../../../utils/logsHelper';
-import {Add_Programs} from '../../../redux/actions/programsAction';
-import ProgramSelectInput from '../../global/form/ProgramSelectInput';
-import AllPillerInput   from '../../global/form/AllPillerInput';
-// import DateInput  from '../../../components/global/form/DateInput';
-// import { combineDateTime } from '../../../utils/combineDateTime';
-// import moment from 'moment';
+import {update_Programs} from '../../../redux/actions/programsAction';
+// import ProgramSelectInput from '../../global/form/ProgramSelectInput';
+import AllPillerInput   from './fromUpdate/AllPillerInput';
+import { convertImageUrlToBase64} from '../../../utils/convertImageUrlToBase64';
+import { baseURL } from '../../../config/api';
+import { useParams } from 'react-router-dom';
+import {delete_ProgramsImages}  from '../../../redux/actions/programsAction'
 
 
-const ProgramsForm = () => {
+
+const ProgramsForm = ({programdoc}) => {
 
    const dispatch = useDispatch();
    const  navigate =useNavigate();
      const queryClient = useQueryClient();
-   const { createLoading } = useSelector(state => state.program);
+   const { patchLoading } = useSelector(state => state.program);
    const [imagePreview, setImagePreview] = useState("");
+   
+   const {id}=useParams();
+
+
+ 
 
   const [errors, setErrors] = useState({});
       const [formData, setFormData] = useState({
@@ -43,7 +50,69 @@ const ProgramsForm = () => {
       });
 
 
-      console.log('formData',formData?.piller)
+
+         useEffect(() => {
+    if (programdoc) {
+      setFormData({
+        title: programdoc?.title || '',
+        description:programdoc?.body  || '',
+       piller:programdoc?.piller?._id  || '',
+      
+      });
+    }
+  }, [programdoc]);
+
+
+
+  useEffect(() => {
+  const initializeImage = async () => {
+    const imageUrl = programdoc?.featuredImage?.relativeAddress; 
+    if (!imageUrl) return;
+
+    const fullImageUrl = imageUrl.startsWith("http")
+      ? imageUrl
+      : `${baseURL}/${imageUrl}`;
+
+    const base64Image = await convertImageUrlToBase64(fullImageUrl);
+
+    setImagePreview(base64Image); 
+    setFormData((prev) => ({ ...prev, coverImage: base64Image })); 
+  };
+
+  if (programdoc) initializeImage();
+}, [programdoc]);
+
+
+useEffect(() => {
+  const initializeGallery = async () => {
+    if (!programdoc?.images?.length) return;
+
+    const galleryBase64 = await Promise.all(
+      programdoc.images.map(async (img) => {
+        const fullUrl = img.relativeAddress.startsWith("http")
+          ? img.relativeAddress
+          : `${baseURL}/${img.relativeAddress}`;
+
+        const base64 = await convertImageUrlToBase64(fullUrl);
+
+        return base64
+          ? {
+              url: base64,
+              _id: img._id,
+              isExisting: true,
+            }
+          : null;
+      })
+    );
+
+    setFormData((prev) => ({
+      ...prev,
+      gallery: galleryBase64.filter(Boolean),
+    }));
+  };
+
+  initializeGallery();
+}, [programdoc]);
 
 
   const handleChange = (field) => (e) => {
@@ -96,14 +165,23 @@ const handleSubmit = async () => {
 
 
   try {
-    const galleryUrls = formData.gallery?.length
-      ? formData.gallery.map(item => item.url)
-      : [];
+    const newImages = formData.gallery
+      .filter((img) => !img.isExisting)
+      .map((img) => img.url);
 
     const payload = {
-      piller:formData.piller,
-      title: formData.title,
+      // piller:formData.piller,
+      // title: formData.title,
+      
+   ...(formData.title && {
+          title: formData.title,
+      }),
+
+      
     
+      ...(formData.piller && {
+         piller:formData.piller,
+      }),
 
       ...(imagePreview && {
         featuredImageDataURI: imagePreview,
@@ -113,14 +191,14 @@ const handleSubmit = async () => {
         body: formData.description,
       }),
 
-      ...(galleryUrls.length > 0 && {
-        imagesDataURIs: galleryUrls,
+         ...(newImages.length > 0 && {
+        imagesDataURIs: newImages,
       }),
     };
 
     devLog('this is payload', payload);
 
-    await dispatch(Add_Programs(payload, toast,navigate));
+    await dispatch(update_Programs(id,payload, toast,navigate));
     queryClient.invalidateQueries('fetch-all-program');
 
     resetForm();
@@ -204,13 +282,22 @@ const handleSubmit = async () => {
             error={errors.description}
             />
           </ErrorBoundary>
-            <MultipleImage
-            value={formData.gallery}
-            onChange={(images) =>
-              setFormData((prev) => ({ ...prev, gallery: images }))
-            }
-            error={errors.gallery}
-          />
+         <MultipleImage
+  value={formData.gallery}
+  onChange={(images, removedImage) => {
+
+    if (removedImage?.isExisting && removedImage?._id) {
+      dispatch(delete_ProgramsImages(removedImage._id, toast));
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      gallery: images,
+    }));
+  }}
+  error={errors.gallery}
+/>
+
     
      </div>
 
@@ -229,10 +316,10 @@ const handleSubmit = async () => {
         <button
           onClick={handleSubmit}
          className={`btn-primary w-[50%] sm:w-[210px] h-[50px] 
-      ${createLoading ? 'opacity-60 cursor-not-allowed' : ''}`}
+      ${patchLoading ? 'opacity-60 cursor-not-allowed' : ''}`}
           
         >
-          {createLoading ? <SubmitLoading size={12} /> : 'Create Program'}
+          {patchLoading ? <SubmitLoading size={12} /> : 'Update Program'}
 
         </button>
 
@@ -245,3 +332,6 @@ const handleSubmit = async () => {
 }
 
 export default ProgramsForm
+
+
+

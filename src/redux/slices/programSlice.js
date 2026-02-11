@@ -10,6 +10,8 @@ const programSlice = createSlice({
         pages : 1 , 
         docsCount : 0 , 
         createLoading:false,
+               patchLoading:false,
+
        error: null, 
     } , 
     reducers : {
@@ -29,15 +31,21 @@ const programSlice = createSlice({
            setCreateLoading (state , action) {
             state.createLoading = action.payload;
         } ,
+           setPatchLoading:(state, action) => {
+      state.patchLoading = action.payload;
+    },
           setError: (state, action) => {
       state.error = action.payload;
+    },
+           setDeleteLoading:(state, action) => {
+      state.deleteLoading = action.payload;
     },
      
     }
 });
 
 export const { 
-    setStats ,setDocDetails,setLoading,setCreateLoading,setError
+    setStats ,setDocDetails,setLoading,setCreateLoading,setError,setDeleteLoading,setPatchLoading
 } = programSlice.actions;
 
 export default programSlice.reducer;

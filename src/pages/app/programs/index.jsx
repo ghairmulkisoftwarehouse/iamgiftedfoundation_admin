@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import Heading  from '../../../components/global/Heading';
 import ProgramsList  from '../../../components/app/programs/ProgramsList';
 import ProgramDetail   from '../../../components/app/programs/ProgramDetail';
@@ -18,8 +18,9 @@ const Programs = () => {
      const  [detail,setDetail]=useState('');
 
   const { docs } = useSelector(state => state.program);
- const programDoc=docs[0];
- devLog('programDoc',programDoc)
+  const [selectedIndex, setSelectedIndex] = useState(0);
+const programDoc = docs?.[selectedIndex];
+//  devLog('programDoc',programDoc)
 
 
 const [keyword, setKeyword] = useState("");
@@ -48,14 +49,18 @@ const [limit, setLimit] = useState(10);
 
 
 
+    useEffect(() => {
+  setSelectedIndex(0);
+}, [currentPage, keyword, limit]);
+
   return (
        <div className='flex  flex-col  gap-6 w-full'>
               <Heading/>
            
          <div className=' w-full  flex flex-col xl:flex-row gap-4'>
            <div           className={`
-            w-full
-            ${detail ? 'xl:w-full' : 'xl:w-[70%]'}
+            w-full   xl:w-[70%]
+              
             transition-all duration-300
           `}>
       
@@ -70,6 +75,8 @@ const [limit, setLimit] = useState(10);
                isError={isError}
                 error={error}
    detail={detail}
+     selectedIndex={selectedIndex}
+  setSelectedIndex={setSelectedIndex}
 
         />
         
@@ -78,7 +85,7 @@ const [limit, setLimit] = useState(10);
 
 
             {!detail && (
-                 <div className="w-full xl:w-[30%]">
+                 <div className="w-full   hidden xl:block xl:w-[30%]">
                      {isLoading  ? (
                          <Loader />
                      ) : isError ? (

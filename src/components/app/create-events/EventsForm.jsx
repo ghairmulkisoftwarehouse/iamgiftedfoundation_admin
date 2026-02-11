@@ -145,8 +145,8 @@ const handleSubmit = async () => {
 
     devLog('this is payload', payload);
 
-    await dispatch(Add_Event(payload, toast, navigate));
-    queryClient.invalidateQueries('fetch-all-event');
+    // await dispatch(Add_Event(payload, toast, navigate));
+    // queryClient.invalidateQueries('fetch-all-event');
 
     resetForm();
     setStartDate(null);
@@ -198,13 +198,13 @@ const handleSubmit = async () => {
 
 
        <InputNumber
-            label="Event Invite Range"
+            label="Capcity"
             value={formData.range}
             onChange={handleChange("range")}
             error={errors.range}
           />
    <DateInput
-  label="Start Date"
+  label="Registration Start Date"
   value={{ date: startDate, time: startTime }}
   onDateChange={handleDateChange('startDate', setStartDate)}
   onTimeChange={handleDateChange('startDate', setStartTime)}
@@ -212,13 +212,13 @@ const handleSubmit = async () => {
 />
 
 <DateInput
-  label="End Date"
+  label="Registration End Date"
   value={{ date: endDate, time: endTime }}
   onDateChange={handleDateChange('endDate', setEndDate)}
   onTimeChange={handleDateChange('endDate', setEndTime)}
   error={errors.endDate}
 />
-            <div className="sm:col-span-2">
+            {/* <div className="sm:col-span-2">
            <InputTags
   label="Tags"
   value={formData.tags}
@@ -234,7 +234,7 @@ const handleSubmit = async () => {
   error={errors.tags}
 />
 
-          </div>
+          </div> */}
      </div>
 
     </div>
@@ -315,7 +315,7 @@ const handleSubmit = async () => {
      <p className=" text-xs sm:text-sm  text-black/50 leading-[21px]">Build trust by showing who's behind this campaign</p>
         
      </div>
-     <div className=" w-full xl:w-[75%] grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-4 ">
+     {/* <div className=" w-full xl:w-[75%] grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-4 ">
   <InputName
             label="Organization Name"
             value={formData.organizationName}
@@ -344,7 +344,7 @@ const handleSubmit = async () => {
             error={errors.website}
           />
      
-     </div>
+     </div> */}
 
     </div>
 

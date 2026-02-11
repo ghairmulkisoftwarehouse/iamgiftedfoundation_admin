@@ -5,6 +5,8 @@ import DotSvg from '../../../assets/svgs/DotSvg';
 import { useSelector } from 'react-redux';
 import moment from 'moment/moment';
 import { baseURL } from '../../../config/api';
+import DOMPurify from "dompurify";
+
 const ProgramCard = () => {
 const [activeIndex, setActiveIndex] = useState(0);
 const { docDetails } = useSelector(state => state.program);
@@ -13,11 +15,11 @@ const { docDetails } = useSelector(state => state.program);
   const prgramdoc=docDetails?.doc;
 
 
-   const startDate = prgramdoc?.startDate
-    ? moment.utc(prgramdoc.startDate).format('MMM DD, YYYY')
-    : 'N/A';
+  //  const startDate = prgramdoc?.startDate
+  //   ? moment.utc(prgramdoc.startDate).format('MMM DD, YYYY')
+  //   : 'N/A';
   
-  const startTime =    prgramdoc?.startDate ? moment.utc(prgramdoc.startDate).format('hh:mm A')  : 'N/A';
+  const startTime =    prgramdoc?.createdAt ? moment.utc(prgramdoc?.createdAt).format(' MMM DD, YYYY hh:mm A')  : 'N/A';
 
   
 
@@ -62,30 +64,39 @@ const { docDetails } = useSelector(state => state.program);
 
       
       <div className='   w-full flex flex-col   gap-2'>
-                <div className=' flex justify-between items-center  w-full'>
-                        <div className=' text-sm'>
-                            N/A
-                        </div>
-                         <div
-                            className="
-                                w-fit font-medium text-[13px]
-                                flex items-center gap-1
-                                px-3 py-1.5 rounded-full bg-[#E5D5E5]
-                                 cursor-pointer
-                                transition-all duration-500
-                                hover:bg-[#d6bfd6]
-                            "
-                            >
-                            <DotSvg />
-                            Active
-                        </div>
-                </div>
+           <div className='flex flex-col gap-1 text-sm'>
+           <h2 className=' text-[13px] sm:text-sm  font-medium'>Created </h2>
+   <div className=' text-black/90    text-xs sm:text-[13px]'>
+                     {startTime}
+                 </div>
+                 </div>
                  
                  <div className=' text-[15px]  sm:text-base xl:text-lg font-medium'>
-                     {prgramdoc.title}
+                     {prgramdoc?.title}
                  </div>
+
+
+
+                 {
+    prgramdoc?.body  &&(
+         <div className=' flex flex-col gap-1'>
+        <h2 className=' text-[13px] sm:text-sm  font-medium'>Story</h2>
+
+      <div
+      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(prgramdoc?.body) }}
+      className="text-black/90    text-xs sm:text-[13px]  leading-6"
+    />
+
+       
+
+       </div>
+    )
+   }
+
+
+
                   
-                  <div className='flex flex-col gap-0.5'>
+                  {/* <div className='flex flex-col gap-0.5'>
                   <div className="flex justify-between items-center w-full  font-medium">
                         <p className="text-black  text-[10px] xs:text-xs md:text-sm">Progress: 0%</p>
                        <div >
@@ -106,9 +117,9 @@ const { docDetails } = useSelector(state => state.program);
                         />
                                 </div>  
 
-                  </div> 
+                  </div>  */}
 
-                  <div className=' w-full  flex flex-col xs:flex-row  xs:flex-wrap gap-2.5  pt-3'>
+                  {/* <div className=' w-full  flex flex-col xs:flex-row  xs:flex-wrap gap-2.5  pt-3'>
                   <div className='   w-full  xs:w-fit  px-4   md:px-0  md:w-[180px]        rounded-[10px] bg-[#F4F9FD] py-4
                             flex flex-col items-center justify-center
                             transition-all duration-300 ease-in-out
@@ -140,7 +151,7 @@ const { docDetails } = useSelector(state => state.program);
 
                   </div>
                  
-                  </div>
+                  </div> */}
                
 
      

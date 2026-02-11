@@ -5,7 +5,7 @@ import Titlebtn  from '../../global/Titlebtn';
 import TrashSvg  from '../../../assets/svgs/TrashSvg';
 import EditSvg   from '../../../assets/svgs/EditSvg';
 import {useDispatch, useSelector } from "react-redux";
-import devLog from "../../../utils/logsHelper";
+// import devLog from "../../../utils/logsHelper";
 import { baseURL } from '../../../config/api';
 import ItemNotFound   from '../../../components/global/ItemNotFound';
 import DisplayError from '../../global/DisplayError';
@@ -34,7 +34,7 @@ const CompanyTable = ({
  
 
 const { docs , pages ,docsCount } = useSelector(state => state.company);   
- devLog(' this is a docs',docs)
+//  devLog(' this is a docs',docs)
  const navigate = useNavigate(); 
 
    const dispatch=useDispatch();

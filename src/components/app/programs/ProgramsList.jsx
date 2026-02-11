@@ -9,26 +9,18 @@ import PageLimit   from '../../global/PageLimit'
 import ItemNotFound   from '../../../components/global/ItemNotFound';
 import DisplayError from '../../global/DisplayError';
 import Loader   from '../../../components/global/Loader'
-import { useSelector } from 'react-redux';
-import devLog from '../../../utils/logsHelper';
+// import devLog from '../../../utils/logsHelper';
 import { baseURL } from '../../../config/api';
+import EyetSVG from "../../../assets/svgs/EyetSVG";
+import {delete_Programs} from '../../../redux/actions/programsAction';
+import confirmBox from '../../../utils/confirmBox';
+import {useDispatch ,useSelector } from "react-redux";
 
+import { useQueryClient } from 'react-query';
+import { toast } from 'react-toastify';
+import { RxCross1 } from "react-icons/rx";
+import TrashSvg   from '../../../assets/svgs/TrashSvg';
 
-
-
-
-const cardsData = Array.from({ length: 10 }, (_, i) => ({
-  id: i + 1,
-  title: "Clean Water for Every Village",
-  organizer: "AquaAid Foundation",
-  category: "Community & Environment",
-  progress: 60,
-  applied: 34000,
-  total: 50000,
-  daysLeft: 12,
-  status: "Active",
-  img: img, // your image import
-}));
 
 
 const ProgramsList = ({
@@ -40,14 +32,32 @@ const ProgramsList = ({
   setLimit,
   isLoading,
   isError,
-  error,detail
+  error,detail,
+    selectedIndex,
+  setSelectedIndex
 }) => {
 
   const navigate=useNavigate();
 
    const { docs , pages ,docsCount, } = useSelector(state => state.program);
+     const dispatch=useDispatch();
+  const queryClient = useQueryClient();
    
- devLog(' this is a docs',docs)
+//  devLog(' this is a docs',docs)
+
+const handleDeletePrograms = async (id) => {
+        const title = "Confirm Deletion";
+        const message = "Are you sure you want to delete this Program?";
+      
+        const onYesClick = async () => {
+          await dispatch(delete_Programs(id, toast));
+          queryClient.invalidateQueries(["fetch-all-program"]);
+        };
+      
+        confirmBox({ title, message, onYesClick });
+      };
+      
+
 
   return (
     <div className="w-full flex flex-col gap-4">
@@ -70,110 +80,83 @@ const ProgramsList = ({
     <DisplayError message={error} />
   ) : docs && docs.length > 0 ? (
     docs.map((item, index) => {
-      // Calculate days left
  
 
-      const progress = Math.min(
-        Math.round((item.appliedMembers?.length || 0 / (item.totalMembers || 1)) * 100),
-        100
-      );
+    
 
       return (
         <div
-          key={item._id}
-          onClick={() => navigate(`/app/Programs/${item._id}`)}
-          className={`
-            group py-3 px-3 rounded-2xl
-            flex flex-col gap-2.5
-            md:flex-row md:justify-between md:items-center
-            transition-all duration-500
-            hover:shadow-lg hover:shadow-black/10
-            cursor-pointer
-             ${
-          index === 0
-            ? detail
-              ? 'bg-white'
-              : 'bg-[#9BD6F6]/30'
-            : 'bg-white'
-        }
-          `}
-        >
-          {/* Left */}
-          <div className="flex gap-1.5">
-            <div className="w-[116px] h-[70px] overflow-hidden rounded-[8px]">
-             <img
-              src={item.featuredImage?.relativeAddress ? `${baseURL}/${item?.featuredImage?.relativeAddress}` : img}
-              alt={item.title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-            />
+  key={item?._id}
+  onClick={() => setSelectedIndex(index)}
+  className={`
+    group relative py-3 px-3 rounded-2xl
+    flex gap-2.5 flex-row justify-between items-center
+    transition-all duration-500
+    hover:shadow-lg hover:shadow-black/10
+    cursor-pointer
+    ${index === selectedIndex && !detail ? 'bg-[#9BD6F6]/30' : 'bg-white'}
+  `}
+>
 
-            </div>
+{/* <div
+      onClick={(e) => {
+        e.stopPropagation(); 
+        setSelectedIndex(null); 
+      }}
+      className="absolute top-2 right-2 xl:hidden w-6 h-6 flex items-center justify-center text-gray-500 hover:text-red-500 cursor-pointer"
+    >
+      <RxCross1 />
+    </div> */}
+  {/* Left */}
+  <div className="flex items-center gap-1.5 ">
+    <div className="w-[116px] h-[70px] overflow-hidden rounded-[8px]">
+      <img
+        src={item.featuredImage?.relativeAddress ? `${baseURL}/${item?.featuredImage?.relativeAddress}` : img}
+        alt={item.title}
+        className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+      />
+    </div>
 
-            <div className="flex flex-col gap-1.5">
-              <div className="block md:hidden">
-                <span className="flex  w-fit items-center gap-1 px-3 py-1.5 rounded-full bg-[#E5D5E5] text-sm">
-                  <DotSvg />
-                  Active
-                </span>
-              </div>
-                 {
-                  item.category  &&(
-                    <div className="bg-black/10 w-fit text-xs px-3 py-1 rounded-md hidden md:block">
-                {item.category.title}
-              </div>
-                  )
-                 }
-            
-               <div className='  md:max-w-[200px] '>
-                 <p className="font-medium text-[13px] sm:text-sm">{item.title}</p>
-               </div>
-            
-
-              <div className="text-xs flex gap-1">
-                <span className="text-[#94A7B5]">Organizer:</span>
-                <span>{item.hostedBy?.title || 'N/A'}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Middle */}
-          <div className="flex flex-col gap-2  md:border-l border-black/40   md:border-r  px-3">
-            <p className="font-medium text-sm">Apply Member</p>
-
-            <div className="w-full md:w-[214px] bg-[#B2BCC599] rounded-full h-2">
-              <div
-                className="bg-[#9BD6F6] h-2 rounded-full"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-
-            <div className="flex justify-between items-center">
-              <p className="text-sm">
-                <span className="font-medium">{item.appliedMembers?.length || 0}</span>
-                <span className="text-xs text-black/60">/{item.totalMembers || 100}</span>
-              </p>
-
-              <div className="block md:hidden flex items-center gap-1">
-                <FaRegClock />
-                <p className="text-sm md:text-sm">12 <span className=' font-medium   text-black/80'> days left</span></p>   
-              </div>
-            </div>
-          </div>
-
-          {/* Right */}
-          <div className="hidden md:flex flex-col gap-2">
-            <span className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#E5D5E5] text-sm">
-              <DotSvg />
-              Active
-            </span>
-
-            <div className="flex items-center gap-1">
-              <FaRegClock />
-          <p className=" text-sm md:text-sm">12 <span className=' font-medium   text-black/50'> days left</span></p>   
-
-            </div>
-          </div>
+    <div className="flex flex-col gap-1.5">
+      <div className="md:max-w-[200px]">
+        <p className="font-medium text-[13px] sm:text-sm capitalize">{item?.title}</p>
+      </div>
+      {item?.piller && (
+        <div className="bg-black/10 w-fit text-xs px-3 py-1 rounded-md">
+          {item.piller.title}
         </div>
+      )}
+    </div>
+  </div>
+
+  {/* Right */}
+  <div className="flex flex-col gap-2 items-end">
+    {/* Eye button */}
+    <div
+      onClick={(e) => {
+        e.stopPropagation(); // prevent selecting the card when clicking the eye
+        navigate(`/app/Programs/${item?._id}`);
+      }}
+      className="w-fit px-2.5 py-2.5 rounded-lg bg-[#E5D5E5] cursor-pointer"
+    >
+      <EyetSVG stroke="black" />
+    </div>
+                 <div
+  onClick={(e) => {
+    e.stopPropagation(); 
+    handleDeletePrograms(item?._id); 
+  }}
+  className="px-2.5 py-2.5 rounded-lg bg-darkred/90 cursor-pointer block xl:hidden"
+>
+  <TrashSvg />
+</div>
+
+
+    
+    
+  </div>
+</div>
+
       );
     })
   ) : (

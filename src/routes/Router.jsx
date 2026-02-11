@@ -28,6 +28,8 @@ import Piller from "../pages/app/piller/index.jsx";
 import  Programs   from '../pages/app/programs';
 import ProgramDetail   from '../pages/app/programs/program-detail'
 import CreatePrograms  from '../pages/app/programs/create-programs'
+import   UpdatePrograms     from '../pages/app/programs/update-programs';
+
 import PerFundraising  from '../pages/app/per-fundraising'
 import  FundraisnigDetail  from '../pages/app/per-fundraising/fundraisnigdetail'
 import CreateFundraising   from '../pages/app/per-fundraising/create-fundraising'
@@ -89,7 +91,8 @@ const Router = [
     { path: 'Programs', element: <ProtectedRoute element={<Programs />} /> },
     { path: 'Programs/:id', element: <ProtectedRoute element={<ProgramDetail />} /> },
     { path: 'create-programs', element: <ProtectedRoute element={<CreatePrograms />} /> },
-
+ { path: 'update-programs/:id', element: <ProtectedRoute element={<UpdatePrograms />} /> },
+    
     { path: 'piller', element: <ProtectedRoute element={<Piller />} /> },
 
     

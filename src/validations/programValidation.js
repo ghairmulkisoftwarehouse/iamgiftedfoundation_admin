@@ -1,7 +1,7 @@
-import { combineDateTime } from "../utils/combineDateTime"; 
+// import { combineDateTime } from "../utils/combineDateTime"; 
 
 
-export const validateProgramForm = (data, startDate, startTime, endDate, endTime) => {
+export const validateProgramForm = (data) => {
   const errors = {};
 
   // Title
@@ -12,86 +12,10 @@ export const validateProgramForm = (data, startDate, startTime, endDate, endTime
   }
 
   // Category
-  if (!data.category.trim()) {
-    errors.category = "Category is required";
+  if (!data.piller.trim()) {
+    errors.piller = "Piller is required";
   }
 
-
-
-
-  
-if (!data.joinProgram?.toString().trim()) {
-  errors.joinProgram = "Program Join is required";
-} else if (isNaN(Number(data.joinProgram))) {
-  errors.joinProgram = "Program Join must be a number";
-} else if (Number(data.joinProgram) <= 0) {
-  errors.joinProgram = "Program Join must be greater than 0";
-}
-
-
-
-    if (!startDate) {
-      errors.startDate = "Start date is required";
-    }
-    if (!endDate) {
-      errors.endDate = "End date is required";
-    }
-  
-    // Only check order if both dates exist
-    if (startDate && endDate && startTime != null && endTime != null) {
-      const start = combineDateTime(startDate, startTime);
-      const end = combineDateTime(endDate, endTime);
-      if (start && end && new Date(start) > new Date(end)) {
-        errors.startDate = "Start date cannot be later than end date";
-        errors.endDate = "End date cannot be earlier than start date";
-      }
-    }
-
-  // Tags
-  // if (!data.tags || data.tags.length === 0) {
-  //   errors.tags = "Please add at least one tag";
-  // }
-
-//   // Description
-//   if (!data.description || data.description.trim().length < 4) {
-//     errors.description = "Description must be at least 4 characters";
-//   }
-
-  // Cover Image
-  // if (!data.coverImage) {
-  //   errors.coverImage = "Cover image is required";
-  // }
-
-//   // Gallery Images
-  // if (!data.gallery || data.gallery.length === 0) {
-  //   errors.gallery = "Please upload at least one gallery image";
-  // }
-
-  // Organization Name
-  // if (!data.organizationName.trim()) {
-  //   errors.organizationName = "Organization name is required";
-  // }
-
-  // Phone Number
-  // if (!data.phoneNumber.trim()) {
-  //   errors.phoneNumber = "Phone number is required";
-  // } else if (!/^[0-9]{7,15}$/.test(data.phoneNumber)) {
-  //   errors.phoneNumber = "Invalid phone number";
-  // }
-
-  // Email
-  // if (!data.email.trim()) {
-  //   errors.email = "Email is required";
-  // } else if (
-  //   !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(data.email)
-  // ) {
-  //   errors.email = "Invalid email address";
-  // }
-
-  // Website (optional)
-  // if (data.website && !/^https?:\/\/.+\..+/.test(data.website)) {
-  //   errors.website = "Invalid website URL";
-  // }
 
   return errors;
 };

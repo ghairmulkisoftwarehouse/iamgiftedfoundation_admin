@@ -12,6 +12,8 @@ import { useSelector,useDispatch } from 'react-redux';
 import ItemNotFound from '../../../../components/global/ItemNotFound';
 import DisplayError from '../../../../components/global/DisplayError';
 import Loader from '../../../../components/global/Loader';
+import Titlebtn from '../../../../components/global/Titlebtn';
+
 
 
 const ProgramDetail = () => {
@@ -56,7 +58,10 @@ const { isLoading, isError, error } = useQuery(
 
                    <div className=' w-full  flex flex-col xl:flex-row gap-4'>
          <div className='  w-full   flex flex-col gap-5'>
-       
+       <div className=' flex justify-end'>
+       <Titlebtn   width="w-[200px]"  label={'Update Program'} url={`/app/update-programs/${id}`}/>
+
+       </div>
                {isLoading ? (
              <Loader />
            ) : isError ? (
