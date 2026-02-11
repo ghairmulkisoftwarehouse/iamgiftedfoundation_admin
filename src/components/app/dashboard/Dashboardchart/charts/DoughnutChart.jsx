@@ -42,7 +42,7 @@ const DoughnutChart = () => {
       style={{
         position: "relative",
         height: "250px",
-        zIndex: 5,
+        zIndex: 2,
       }}
     >
       {/* Doughnut chart */}

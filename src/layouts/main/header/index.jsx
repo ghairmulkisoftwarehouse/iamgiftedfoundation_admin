@@ -24,6 +24,7 @@ const Header = () => {
       const location = useLocation();
 
      const {  setShowPannel } = usePannelContext();
+           const [scrolled, setScrolled] = useState(false);
 
    const  dispatch=useDispatch();
     const { doc } = useSelector((state) => state.profile);
@@ -35,6 +36,16 @@ const Header = () => {
     heading = pathSegments[2].charAt(0).toUpperCase() + pathSegments[2].slice(1); // Capitalize first letter
   }
 
+
+
+    useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 1);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
 
 
@@ -65,10 +76,15 @@ const Header = () => {
 
 
     return (
-        <div className='   bg-white  lg:bg-transparent  px-4 flex items-center  justify-between   h-[70px]'>
-          
+        <div className='   fixed top-0 left-0 w-full h-[70px]    lg:pl-[250px]   z-10            '>
+     <div
+  className={`px-4 flex items-center justify-between w-full h-full bg-white ${
+    scrolled ? 'lg:bg-white' : 'lg:bg-transparent'
+  }`}
+>
 
-   <div 
+
+             <div 
       onClick={() => setShowPannel(true)}
    className="block lg:hidden text-2xl cursor-pointer">
           <FaBars />
@@ -99,7 +115,7 @@ const Header = () => {
  
 </div>
 
-    <div className="w-[39px] h-[39px] rounded-full p-[2px] bg-white">
+    <div className="w-[39px] h-[39px] rounded-full p-[2px]    bg-white">
   <div
     className="
       w-full h-full rounded-full
@@ -127,6 +143,10 @@ const Header = () => {
           )}
 
     </div>
+
+          </div>
+
+
      
 
         </div>

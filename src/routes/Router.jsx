@@ -54,7 +54,7 @@ const Router = [
         path : '/' ,
         element : <BlankLayout  /> ,       
         children : [
-            { path : '/' , exact : true , element : <Login />} ,
+            { path : '/' , exact : true ,element : <PublicRoute element={<Login />} />} ,
             { path : '*' , element : <Navigate to='/page-not-found' /> }
         ]
     } ,

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef,useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 import Header from './header'
 import Sidebar from './sidebar'
@@ -15,9 +15,11 @@ const MainLayout = () => {
   };
    
 
+    
+
 
     return (
-        <div className='relative '>
+        <div className='relative     '>
       
             <div 
             ref={sidebarRef}
@@ -35,10 +37,10 @@ const MainLayout = () => {
         ></div>
       )}
             {/* Main Content Area */}
-            <div className=' w-full  lg:pl-[250px]'>
+            <div className=' w-full  lg:pl-[250px]        '>
                 <Header />
                 <div 
-                className='sm:p-6 p-4 bg-stroke'
+                className='sm:px-6  pt-[80px] p-4 bg-stroke    '
                 style={{ minHeight : 'calc(100vh - 65px)' , height : '100%'}}
                 >
                     <Outlet />
