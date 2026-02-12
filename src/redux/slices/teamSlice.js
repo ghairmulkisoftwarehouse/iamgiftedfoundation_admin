@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const programSlice = createSlice({
-    name : 'program' ,
+const teamSlice = createSlice({
+    name : 'team' ,
     initialState : {
         docs : [] ,
         docDetails : null ,
@@ -10,8 +10,7 @@ const programSlice = createSlice({
         pages : 1 , 
         docsCount : 0 , 
         createLoading:false,
-               patchLoading:false,
-   
+      patchLoading:false,
        error: null, 
     } , 
     reducers : {
@@ -46,6 +45,6 @@ const programSlice = createSlice({
 
 export const { 
     setStats ,setDocDetails,setLoading,setCreateLoading,setError,setDeleteLoading,setPatchLoading
-} = programSlice.actions;
+} = teamSlice.actions;
 
-export default programSlice.reducer;
+export default teamSlice.reducer;

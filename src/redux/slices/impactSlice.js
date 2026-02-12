@@ -3,7 +3,11 @@ import { createSlice } from "@reduxjs/toolkit";
 const impactSlice = createSlice({
     name : 'impact' ,
     initialState : {
-        impacts : [] ,
+        // impacts : [] ,
+        docs : [] ,
+           page : 1 ,
+        pages : 1 , 
+        docsCount : 0 , 
         loading : false ,  
        error: null, 
        deleteLoading:false,
@@ -12,8 +16,12 @@ const impactSlice = createSlice({
 
     } , 
     reducers : {
-        setImpacts (state , action) {
-   state.impacts = action.payload;
+         setStats (state , action) {
+            const { docs , docsCount , page , pages } = action.payload;
+            state.docs = docs;
+            state.docsCount = docsCount;
+            state.page = page;
+            state.pages = pages;
         } ,
         setLoading (state , action) {
             state.loading = action.payload;
@@ -38,7 +46,7 @@ const impactSlice = createSlice({
 });
 
 export const { 
-    setImpacts ,setLoading,setError,setDeleteLoading,
+    setStats ,setLoading,setError,setDeleteLoading,
     setPatchLoading,
     setCreateLoading
 } = impactSlice.actions;

@@ -143,7 +143,7 @@ const CategoriesTable = (
           </table>
         </div>
       ) : (
-              <ItemNotFound message="No Community found." />
+              <ItemNotFound message="No Category found." />
             )}
             
        <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center w-full px-3  flex-wrap-none">

@@ -1,14 +1,16 @@
 import { useRef, useState } from "react";
-import useClickOutside from "../../../utils/clickOutside";
-import AngleArrowSvg from "../../../assets/svgs/AngleArrowSvg";
-import devLog from "../../../utils/logsHelper";
-import Axios from "../../../config/api";
+import useClickOutside from "../../../../utils/clickOutside";
+// import AngleArrowSvg from "../../../../assets/svgs/AngleArrowSvg";
+import AngleArrowSvg  from '../../../../assets/svgs/AngleArrowSvg'
+import Axios from "../../../../config/api";
+
 import { useDispatch, useSelector } from "react-redux";
 import { useQuery } from "react-query";
-import { setStats } from "../../../redux/slices/programPillarSlice";
+import { setStats,setCompanyInfo } from '../../../../redux/slices/companySlice';
+
 import { ClipLoader } from "react-spinners";
 
-const PillerSelectInput = ({
+const OrganizationInput = ({
   label,
   selected,
   onSelect,
@@ -22,14 +24,13 @@ const PillerSelectInput = ({
 
   const [searchTerm, setSearchTerm] = useState("");
   const dispatch = useDispatch();
-  const { docs = [] } = useSelector((state) => state.programPillar);
+    const { docs } = useSelector(state => state.company);
 
-  devLog(" this is a pillar docs", docs);
 
    const { isLoading, isError } = useQuery(
-    ["fetch-all-pillarProgram", searchTerm],
+    ["fetch-all-company", searchTerm],
     async () => {
-      let url = `/piller/with-programs-list?sortBy=createdAt_descending`;
+      let url = `/company?sortBy=createdAt_descending`;
 
       if (searchTerm) {
         url += `&keyword=${encodeURIComponent(searchTerm)}`;
@@ -55,12 +56,16 @@ const PillerSelectInput = ({
 
   const handleSelect = (item) => {
     onSelect(item);
+    dispatch(setCompanyInfo(item))
     setLocalSelected(item?.title);
+
     setShowMenu(false);
   };
 
   const handleClear = (e) => {
-  e.stopPropagation(); // prevent dropdown toggle
+  e.stopPropagation(); 
+dispatch(setCompanyInfo(null))
+
   setLocalSelected("");
   setSearchTerm("");
   onSelect(null);
@@ -120,11 +125,11 @@ const PillerSelectInput = ({
 
        <input
        
-          value={localSelected || ""}
+          value={selected?.title || ""}
           readOnly
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          placeholder="Select Piller"
+          placeholder="Select Company"
           className={`w-full h-full  rounded-[10px] outline-none text-black text-sm
             ${readOnly && "text-gray-500 bg-transparent select-none"}
           `}
@@ -137,7 +142,7 @@ const PillerSelectInput = ({
         <div className="p-3">
             <input
               type="text"
-              placeholder="Search pillar..."
+              placeholder="Search Company..."
               value={searchTerm}
               onChange={handleSearchChange}
               className="w-full rounded-lg border px-3 py-2 text-sm"
@@ -152,13 +157,13 @@ const PillerSelectInput = ({
 
             {isError && (
               <p className="text-center text-xs text-red-500 py-3">
-                Failed to load Piller
+                Failed to load Company
               </p>
             )}
 
             {!isLoading && !isError && docs.length === 0 && (
               <p className="text-center text-xs text-gray-400 py-3">
-                No Piller found
+                No Company found
               </p>
             )}
 
@@ -170,7 +175,7 @@ const PillerSelectInput = ({
                   onClick={() => handleSelect(item)}
                   className="px-4 py-2 text-sm cursor-pointer hover:bg-gray-100 transition-colors"
                 >
-                  {item.title}
+                  {item?.title}
                 </li>
               ))}
           </ul>
@@ -187,4 +192,4 @@ const PillerSelectInput = ({
   );
 };
 
-export default PillerSelectInput;
+export default OrganizationInput;

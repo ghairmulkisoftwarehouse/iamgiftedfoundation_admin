@@ -35,10 +35,13 @@ const DateInput = ({ label, value, onDateChange, onTimeChange, error }) => {
     setFocused(true);
   };
 
-  const combinedValue =
-    value.date
-      ? `${value.date.toISOString().split("T")[0]}${value.time ? ` ${value.time}` : ""}`
-      : value.time || "";
+ const combinedValue =
+  value.date
+    ? `${value.date.toLocaleDateString("en-CA")}${
+        value.time ? ` ${value.time}` : ""
+      }`
+    : value.time || "";
+
 
   const isActive = focused || value.date || value.time;
 
@@ -62,7 +65,7 @@ const DateInput = ({ label, value, onDateChange, onTimeChange, error }) => {
         </button>
 
         {showDatePicker && (
-          <div className="absolute z-20 top-[51px] rounded-md overflow-auto">
+          <div className="absolute z-2 top-[51px] rounded-md overflow-auto">
             <DatePicker
               selected={value.date}
               onChange={handleDateChangeInternal}
@@ -77,7 +80,7 @@ const DateInput = ({ label, value, onDateChange, onTimeChange, error }) => {
         )}
 
         {showTime && (
-          <div className="absolute bg-white shadow-lg rounded-md top-[51px] z-20">
+          <div className="absolute bg-white shadow-lg rounded-md top-[51px] z-2">
             <TimePicker value={value.time} onChange={onTimeChange} />
           </div>
         )}

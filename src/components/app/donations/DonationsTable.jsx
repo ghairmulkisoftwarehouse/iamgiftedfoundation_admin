@@ -30,13 +30,11 @@ const DonationsTable = ({
   const { docs , pages ,docsCount } = useSelector(state => state.donation);   
 
 
-  const typeOptions = ["Donor", "Participation", "Volunteer"];
 
   return (
     <div className="w-full table-container bg-white flex flex-col gap-1 p-4">
       <div className="flex flex-row justify-between items-center w-full px-3 pt-2">
         <p className="text-black font-semibold">Donations</p>
-        <SelectOption title="Latest" options={typeOptions} />
 
       </div>
 
@@ -55,14 +53,14 @@ const DonationsTable = ({
         Donor
       </div>
     </th>
-      <th className="px-3 py-4">
+      {/* <th className="px-3 py-4">
       <div className="flex items-center gap-1">
         Phone
       </div>
-    </th>
+    </th> */}
       <th className="px-3 py-4">
       <div className="flex items-center gap-1">
-        Address
+        Email
       </div>
     </th>
     <th className="px-3 py-4 rounded-tl-[12px] rounded-bl-[12px]">
@@ -70,12 +68,7 @@ const DonationsTable = ({
               Date & Time
       </div>
     </th>   
-    <th className="px-3 py-4">
-      <div className="flex items-center gap-1">
-        Details
-    
-      </div>
-    </th>
+
 
    <th className="px-3 py-4">
       <div className="flex items-center gap-1">
@@ -109,37 +102,20 @@ const DonationsTable = ({
           return (
             <tr key={item?._id} className="border-t">
               <td className="px-3 py-4">
-                {item?.donorUser || "Anonymous"}
+                {item?.donorUser?.username || "Anonymous"}
               </td>
 
-              <td className="px-3 py-4">
+              {/* <td className="px-3 py-4">
                 {item?.phone || "N/A"}
+              </td> */}
+                <td className="px-3 py-4">
+                {item?.donorUser?.email || "N/A"}
               </td>
-
-              <td className="px-3 py-4">
-                {item?.address || "N/A"}
-              </td>
-
               <td className="px-3 py-4">
                 {formattedDate}
               </td>
 
-               <td className="px-3 py-4 whitespace-nowrap">
-  <div className="flex items-center gap-2">
-    <div className="flex flex-col gap-0.5">
-      <h2 className="font-medium">
-        {(item?.donorName?.first || item?.donorName?.last)
-          ? `${item?.donorName?.first || ""} ${item?.donorName?.last || ""}`.trim()
-          : "N/A"}
-      </h2>
-
-      <p className="font-medium text-xs text-black/70">
-        {item?.donorEmail }
-      </p>
-    </div>
-  </div>
-</td>
-
+    
               
 
               <td className="px-3 py-4">

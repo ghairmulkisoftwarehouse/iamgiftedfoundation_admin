@@ -10,6 +10,7 @@ const eventSlice = createSlice({
         pages : 1 , 
         docsCount : 0 , 
         createLoading:false,
+           deleteLoading:false,
        error: null, 
     } , 
     reducers : {
@@ -32,12 +33,14 @@ const eventSlice = createSlice({
           setError: (state, action) => {
       state.error = action.payload;
     },
-     
+            setDeleteLoading:(state, action) => {
+      state.deleteLoading = action.payload;
+    },
     }
 });
 
 export const { 
-    setStats ,setDocDetails,setLoading,setCreateLoading,setError
+    setStats ,setDocDetails,setLoading,setCreateLoading,setError,setDeleteLoading
 } = eventSlice.actions;
 
 export default eventSlice.reducer;

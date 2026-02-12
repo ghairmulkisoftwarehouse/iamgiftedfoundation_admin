@@ -9,16 +9,16 @@ import { useNavigate } from 'react-router-dom';
 import ItemNotFound   from '../../../components/global/ItemNotFound';
 import DisplayError from '../../global/DisplayError';
 import Loader   from '../../../components/global/Loader'
-import { useSelector } from 'react-redux';
-import devLog from '../../../utils/logsHelper';
 import { baseURL } from '../../../config/api';
 import moment from 'moment/moment';
-
-
-
-
-
-
+import TrashSvg   from '../../../assets/svgs/TrashSvg';
+import EyetSVG from "../../../assets/svgs/EyetSVG";
+// import devLog from '../../../utils/logsHelper';
+import confirmBox from '../../../utils/confirmBox';
+import {Add_Event} from '../../../redux/actions/eventActions';
+import {useDispatch ,useSelector } from "react-redux";
+import { useQueryClient } from 'react-query';
+import { toast } from 'react-toastify';
 
 const EventList = ({
     keyword,
@@ -30,7 +30,9 @@ const EventList = ({
     isLoading,
     isError,
     error,
-    detail
+    detail,
+        selectedIndex,
+  setSelectedIndex,
 
 }) => {
    const navigate=useNavigate()
@@ -38,12 +40,21 @@ const EventList = ({
 
    const { docs , pages ,docsCount, } = useSelector(state => state.event);
    
- devLog(' this is a docs',docs)
+//  devLog(' this is a docs',docs)
+    const dispatch=useDispatch();
+  const queryClient = useQueryClient();
 
-
-
-
-
+    const handleDeleteEvent = async (data) => {
+        const title = "Confirm Deletion";
+        const message = "Are you sure you want to delete this Event?";
+      
+        const onYesClick = async () => {
+          await dispatch(Add_Event(data?._id, toast));
+          queryClient.invalidateQueries(["fetch-all-event"]);
+        };
+      
+        confirmBox({ title, message, onYesClick });
+      };
  
   return (
     <div className="w-full flex flex-col gap-4">
@@ -67,10 +78,11 @@ const EventList = ({
   ) : docs && docs.length > 0 ? (
     docs.map((item, index) => {
   
-   const daysLeft =
-     item?.endDate && moment(item.endDate).isAfter(moment())
-       ? moment(item.endDate).diff(moment(), 'days')
-       : 0;
+  const daysLeft =
+    item?.eventDate && moment(item?.eventDate).isAfter(moment())
+      ? moment(item?.eventDate).diff(moment(), 'days')
+      : 0;
+
 
       const progress = Math.min(
         Math.round((item.appliedMembers?.length || 0 / (item.totalMembers || 1)) * 100),
@@ -79,8 +91,9 @@ const EventList = ({
 
       return (
         <div
-          key={item._id}
-          onClick={() => navigate(`/app/events/${item._id}`)}
+          key={item?._id}
+            onClick={() => setSelectedIndex(index)}
+
           className={`
             group py-3 px-3 rounded-2xl
             flex flex-col gap-2.5
@@ -88,13 +101,8 @@ const EventList = ({
             transition-all duration-500
             hover:shadow-lg hover:shadow-black/10
             cursor-pointer
-             ${
-          index === 0
-            ? detail
-              ? 'bg-white'
-              : 'bg-[#9BD6F6]/30'
-            : 'bg-white'
-        }
+                ${index === selectedIndex && !detail ? 'bg-[#9BD6F6]/30' : 'bg-white'}
+
     
           `}
         >
@@ -110,15 +118,10 @@ const EventList = ({
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <div className="block md:hidden">
-                <span className="flex  w-fit items-center gap-1 px-3 py-1.5 rounded-full bg-[#E5D5E5] text-sm">
-                  <DotSvg />
-                  Active
-                </span>
-              </div>
+         
                  {
                   item.city && item.state  &&(
-                    <div className="bg-black/10 w-fit text-xs px-3 py-1 rounded-md hidden md:block">
+                    <div className="bg-black/10 w-fit text-xs px-3 py-1 rounded-md ">
                 {item.city}, {item.state}
               </div>
                   )
@@ -129,10 +132,16 @@ const EventList = ({
                </div>
             
 
-              <div className="text-xs flex gap-1">
+             {
+              item.hostedBy?.title   && (
+                    <div className="text-xs flex gap-1">
                 <span className="text-[#94A7B5]">Organizer:</span>
                 <span>{item.hostedBy?.title || 'N/A'}</span>
               </div>
+              )
+             }
+
+             
             </div>
           </div>
 
@@ -153,15 +162,42 @@ const EventList = ({
                 <span className="text-xs text-black/60">/{item.totalMembers || 100}</span>
               </p>
 
-              <div className="block md:hidden flex items-center gap-1">
+              <div className="block xl:hidden flex items-center gap-1">
                 <FaRegClock />
-                <p className="text-sm md:text-sm">{daysLeft} <span className=' font-medium   text-black/80'> days left</span></p>   
+                <p className="text-xs">{daysLeft} <span className=' font-medium   text-black/80'> days left</span></p>   
               </div>
             </div>
           </div>
 
+
+<div className="flex flex-row md:flex-col gap-2 justify-end md:justify-center items-end">
+    {/* Eye button */}
+
+    <div
+      onClick={(e) => {
+        e.stopPropagation(); 
+        navigate(`/app/events/${item?._id}`);
+      }}
+      className="w-fit px-2.5 py-2.5 rounded-lg bg-[#E5D5E5] cursor-pointer"
+    >
+      <EyetSVG stroke="black" />
+    </div>
+                 <div
+   onClick={(e) => {
+    e.stopPropagation(); 
+    handleDeleteEvent(item?._id); 
+  }}
+  className="px-2.5 py-2.5 rounded-lg bg-darkred/90 cursor-pointer block xl:hidden"
+>
+  <TrashSvg />
+</div>
+
+
+    
+    
+  </div>
           {/* Right */}
-          <div className="hidden md:flex flex-col gap-2">
+          {/* <div className="hidden md:flex flex-col gap-2">
             <span className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#E5D5E5] text-sm">
               <DotSvg />
               Active
@@ -172,7 +208,7 @@ const EventList = ({
           <p className=" text-sm md:text-sm">{daysLeft}<span className=' font-medium   text-black/50'> days left</span></p>   
 
             </div>
-          </div>
+          </div> */}
         </div>
       );
     })

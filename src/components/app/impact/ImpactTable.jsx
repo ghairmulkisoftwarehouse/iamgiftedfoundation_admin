@@ -1,5 +1,3 @@
-
-
 import TrashSvg  from '../../../assets/svgs/TrashSvg';
 import EditSvg   from '../../../assets/svgs/EditSvg';
 import Titlebtn  from '../../global/Titlebtn';
@@ -8,6 +6,8 @@ import confirmBox from '../../../utils/confirmBox';
 import {useDispatch ,useSelector } from "react-redux";
 import ItemNotFound   from '../../../components/global/ItemNotFound';
 import DisplayError from '../../global/DisplayError';
+import TealPagination   from '../../global/TealPagination'
+import PageLimit   from '../../global/PageLimit'
 import Loader   from '../../../components/global/Loader'
 import moment from 'moment/moment';
 import {deleteImpact} from '../../../redux/actions/impactActions';
@@ -17,13 +17,17 @@ import DOMPurify from "dompurify";
 
 
 const ImpactTable = ({
+     currentPage,
+         setCurrentPage,
+            limit,
+               setLimit,
      isLoading,
                isError,
                 error,
 }) => {
   const navigate = useNavigate();
+         const { docs , pages ,docsCount, }= useSelector(state => state.impact);
 
-     const { impacts } = useSelector(state => state.impact);
 
   const dispatch=useDispatch();
   const queryClient = useQueryClient();
@@ -59,7 +63,7 @@ const handleDeleteImpact = async (id) => {
   <Loader />
 ) : isError ? (
   <DisplayError message={error?.message || "Something went wrong"} />
-) : impacts?.length > 0 ? (
+) : docs?.length > 0 ? (
   <div className="overflow-x-auto maintable">
     <table className="min-w-max  mt-5">
       <thead className="text-left text-[13px] sm:text-sm md:text-[15px]">
@@ -78,7 +82,7 @@ const handleDeleteImpact = async (id) => {
       </thead>
 
       <tbody>
-        {impacts.map((item) => {
+        {docs.map((item) => {
           const formattedDate = item?.createdAt
             ? moment.utc(item.createdAt).format("MMM DD, YYYY")
             : "N/A";
@@ -148,7 +152,29 @@ const handleDeleteImpact = async (id) => {
   <ItemNotFound message="No Impact found." />
 )}
 
+         <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center w-full px-3  flex-wrap-none">
+        <div className=" flex items-center gap-2 text-xs sm:text-sm text-[#313131]">
+        <div>Show</div>
+         <div className="w-fit h-[40px] ">
+        <PageLimit totalpages={docsCount || 10} limit={limit} setLimit={setLimit}/>
+        </div>
+         <div>of {docsCount} results</div>
+
+        </div>
+          
+               <TealPagination 
+             totalPages={pages}
+        currentPage={currentPage}
+       setCurrentPage={setCurrentPage}
+      />
+                                      {/* Limit Dropdown */}
       
+                          
+                                  
+                                    
+                          
+                                    
+                                    </div>
 
         {/* <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center w-full px-3  flex-wrap-none">
         <div className=" flex items-center gap-2 text-xs sm:text-sm text-[#313131]">

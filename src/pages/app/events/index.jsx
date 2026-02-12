@@ -1,6 +1,4 @@
-
-
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import Heading  from '../../../components/global/Heading';
 import EventList  from '../../../components/app/events/EventList';
 import EventDetail from '../../../components/app/events/EventDetail';
@@ -22,9 +20,9 @@ const Events = () => {
   const  [detail,setDetail]=useState('');
 
    const { docs, } = useSelector(state => state.event);
-   
- devLog(' this is a docs',docs)
- const eventDoc=docs[0];
+     const [selectedIndex, setSelectedIndex] = useState(0);
+const eventDoc = docs?.[selectedIndex];
+
 
 
 
@@ -57,7 +55,9 @@ const [limit, setLimit] = useState(10);
 
 
 
-
+  useEffect(() => {
+  setSelectedIndex(0);
+}, [currentPage, keyword, limit]);
 
 
   return (
@@ -66,8 +66,8 @@ const [limit, setLimit] = useState(10);
            
          <div className=' w-full  flex flex-col xl:flex-row gap-4'>
          <div           className={`
-            w-full
-            ${detail ? 'xl:w-full' : 'xl:w-[70%]'}
+            w-full  xl:w-[70%]
+        
             transition-all duration-300
           `}>
       
@@ -82,12 +82,14 @@ const [limit, setLimit] = useState(10);
                isError={isError}
                 error={error}
                 detail={detail}
+                    selectedIndex={selectedIndex}
+  setSelectedIndex={setSelectedIndex}
 
             />
 
          </div>
               {!detail && (
-        <div className="w-full xl:w-[30%]">
+        <div className="w-full  hidden  xl:block xl:w-[30%]">
             {isLoading  ? (
                 <Loader />
             ) : isError ? (

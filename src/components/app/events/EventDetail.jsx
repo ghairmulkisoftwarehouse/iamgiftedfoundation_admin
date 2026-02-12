@@ -6,33 +6,55 @@ import { baseURL } from '../../../config/api';
 import img from '../../../assets/images/img1.jpg';
 import DOMPurify from "dompurify";
 import moment from 'moment/moment';
+import {delete_Events} from '../../../redux/actions/eventActions';
+import confirmBox from '../../../utils/confirmBox';
+import {useDispatch ,useSelector } from "react-redux";
+import { useQueryClient } from 'react-query';
+import { toast } from 'react-toastify';
 
 
 
 const EventDetail = ({eventDetail,setDetail}) => {
-    devLog(' this is a eventDetail',eventDetail)
+    // devLog(' this is a eventDetail',eventDetail)
 
- const startDate = eventDetail?.startDate
-  ? moment.utc(eventDetail.startDate).format('MMM DD, YYYY')
+ const startDate = eventDetail?.eventDate
+  ? moment.utc(eventDetail.eventDate).format('MMM DD, YYYY')
   : 'N/A';
 
-const startTime =    eventDetail?.startDate ? moment.utc(eventDetail.startDate).format('hh:mm A')  : 'N/A';
+const startTime =    eventDetail?.eventDate ? moment.utc(eventDetail.eventDate).format('hh:mm A')  : 'N/A';
 
-  const endDate = eventDetail?.endDate
-    ? moment.utc(eventDetail.endDate).format('MMM DD, YYYY')
-    : 'N/A';
-
-  // Calculate days left if endDate exists
+  
   const daysLeft =
-    eventDetail?.endDate && moment(eventDetail.endDate).isAfter(moment())
-      ? moment(eventDetail.endDate).diff(moment(), 'days')
+    eventDetail?.eventDate && moment(eventDetail.eventDate).isAfter(moment())
+      ? moment(eventDetail.eventDate).diff(moment(), 'days')
       : 0;
+
+
+
+
+    const dispatch=useDispatch();
+  const queryClient = useQueryClient();
+
+
+
+      
+      const handleDeleteEvents = async (data) => {
+        const title = "Confirm Deletion";
+        const message = "Are you sure you want to delete this Event?";
+      
+        const onYesClick = async () => {
+          await dispatch(delete_Events(data?._id, toast));
+          queryClient.invalidateQueries(["fetch-all-event"]);
+        };
+      
+        confirmBox({ title, message, onYesClick });
+      };
 
 
   return (
       <div className="bg-white rounded-[15px] p-4 flex flex-col gap-4">
-      <div className=' flex justify-between items-center w-full'>
-        <div
+      <div className=' flex justify-end items-center w-full'>
+        {/* <div
             className="
               font-medium text-sm flex items-center gap-1
               px-3 py-1.5 rounded-full bg-[#E5D5E5]
@@ -44,9 +66,10 @@ const startTime =    eventDetail?.startDate ? moment.utc(eventDetail.startDate).
           >
             <DotSvg />
            Active
-          </div>
+          </div> */}
              <button   
-               onClick={()=>setDetail(true)}
+             onClick={()=>handleDeleteEvents(eventDetail)}
+
             className="text-gray-500 h-[30px] w-[30px] rounded-md hover:text-black hover:bg-primary/20 flex items-center justify-center  cursor-pointer"
           >
           <RxCross1/>
@@ -88,24 +111,27 @@ const startTime =    eventDetail?.startDate ? moment.utc(eventDetail.startDate).
       <div className=" grid grid-cols-1  gap-4">
         {/* Organizer card */}
        
-           <div className="flex flex-col gap-2.5 bg-[#F4F6F6] px-3 py-3 rounded-[15px]">
+
+          {
+            eventDetail?.hostedBy  &&(
+                <div className="flex flex-col gap-2.5 bg-[#F4F6F6] px-3 py-3 rounded-[15px]">
           <h2 className="font-medium text-sm md:text-base">Organizer:</h2>
 
           <div className="bg-white px-3 py-3 rounded-[15px] flex flex-row gap-2.5 items-center">
-            <div className="w-[35px] h-[35px] bg-[#F4F6F6] rounded-full flex justify-center items-center">
-              <BloodTestSvg />
-            </div>
+            
 
             <div className="flex flex-col gap-0.5">
               <h2 className="font-medium text-[13px] md:text-sm">
-              N/A
+              {eventDetail?.hostedBy?.title}
               </h2>
-              <p className="text-[10px] md:text-xs text-[#878787]">
-              N/A
-              </p>
+             
             </div>
           </div>
         </div>
+
+            )
+          }
+          
 
 
  

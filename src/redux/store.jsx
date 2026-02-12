@@ -12,6 +12,9 @@ import postSlice  from './slices/postSlice';
 import impactSlice  from './slices/impactSlice';
 import pillarSlice   from './slices/pillarSlice';
 import  donationSlice    from './slices/donationSlice';
+import  teamSlice   from './slices/teamSlice';
+
+
 const store = configureStore({
     reducer: {
            auth : authSlice ,
@@ -27,6 +30,7 @@ const store = configureStore({
           piller:pillarSlice,
           company:companySlice,
           donation:donationSlice,
+            team:teamSlice,
           
     }
 });

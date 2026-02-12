@@ -1,5 +1,5 @@
 import Axios from "../../config/api";
-import {  setCreateLoading,setError } from "../slices/eventSlice";
+import {  setCreateLoading,setError,setDeleteLoading } from "../slices/eventSlice";
 import { getUser } from '../../utils/authLocalStorage';
 
 export const Add_Event = (data, toast,navigate) => async (dispatch,) => {
@@ -32,3 +32,31 @@ export const Add_Event = (data, toast,navigate) => async (dispatch,) => {
     dispatch(setCreateLoading(false));
   }
 };
+
+
+
+export const delete_Events = (id , toast) => async ( dispatch ,) => {
+    try {
+        dispatch(setDeleteLoading(true));
+         const user = getUser();
+    const token = user?.token; 
+    if (!token) throw new Error("User token not found.");
+        const {
+      data: {
+        data: {  message },
+      },
+    } = await Axios.delete(`/event/${id}`,  {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  
+        dispatch(setDeleteLoading(false));
+        toast.success(message);
+    } catch (err) {
+        dispatch(setDeleteLoading(false));
+        console.log('Delete Category error' , err);
+        toast.error(err?.response?.data?.message || err?.message || 'Something went wrong.');
+    }
+}
+
