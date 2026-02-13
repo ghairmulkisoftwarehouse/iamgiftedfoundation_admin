@@ -37,6 +37,7 @@ import Impact   from '../pages/app/impact/index.jsx';
 import CreateImpact   from '../pages/app/impact/create-Impact';
 import UpdateImpact   from '../pages/app/impact/update-impact';
 import  Createteam  from  '../pages/app/teams/create-team';
+import Updateteam from "../pages/app/teams/update-team/index.jsx";
 import PanelUser   from '../pages/app/panel-user';
 import CreateNewUser   from '../pages/app/panel-user/create-new-user';
 import Company    from '../pages/app/company'
@@ -126,9 +127,15 @@ const Router = [
     
    
     {
-      path: 'create-team/:id',
+      path: 'create-team',
       element: <ProtectedRoute element={<Createteam />} />,
     },
+        {
+      path: 'update-team/:id',
+      element: <ProtectedRoute element={<Updateteam />} />,
+    },
+
+    
     {
       path: 'panel-user',
       element: <ProtectedRoute element={<PanelUser />} />,

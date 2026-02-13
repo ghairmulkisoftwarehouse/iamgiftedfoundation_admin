@@ -13,10 +13,6 @@ export const validateTeamForm = (data) => {
     errors.designation = "Designation is required.";
   }
 
-  // Gallery validation
-  if (!data.gallery || data.gallery.length === 0) {
-    errors.gallery = "At least one image is required.";
-  }
 
   return errors;
 };

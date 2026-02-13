@@ -7,11 +7,17 @@ import Titlebtn  from '../../global/Titlebtn';
 import TeamForm  from '../create-team/TeamForm'
 import TrashSvg  from '../../../assets/svgs/TrashSvg';
 import EditSvg   from '../../../assets/svgs/EditSvg';
-import {useSelector } from "react-redux";
+import {useDispatch,useSelector } from "react-redux";
+import {deleteTeams} from '../../../redux/actions/teamActions';
+import confirmBox from '../../../utils/confirmBox';
+import { useQueryClient } from 'react-query';
+import { useNavigate } from "react-router-dom";
 import ItemNotFound   from '../../../components/global/ItemNotFound';
 import DisplayError from '../../global/DisplayError';
 import Loader from "../../global/Loader";
 import { baseURL } from "../../../config/api";
+import DOMPurify from "dompurify";
+import { toast } from 'react-toastify';
 
 
 
@@ -25,86 +31,33 @@ const TeamsTable = ({
                isError,
                 error,
 }) => {
-// const dataTable = [
-//   {
-//     id: "#D-321330",
-//     name: "John Due",
-//     title: "Sarah Blue",
-//     designation: "Social Media Manager",
-//     description: "Lorem Ipsum is simply dummy text of the printing.",
-//   },
-//   {
-//     id: "#D-321331",
-//     name: "Michael Smith",
-//     title: "Emma Green",
-//     designation: "Marketing Executive",
-//     description: "Lorem Ipsum is simply dummy text of the industry.",
-//   },
-//   {
-//     id: "#D-321332",
-//     name: "David Johnson",
-//     title: "Olivia Brown",
-//     designation: "Project Manager",
-//     description: "Lorem Ipsum has been the industry's standard text.",
-//   },
-//   {
-//     id: "#D-321333",
-//     name: "Robert Wilson",
-//     title: "Sophia White",
-//     designation: "UI/UX Designer",
-//     description: "Dummy text ever since the 1500s.",
-//   },
-//   {
-//     id: "#D-321334",
-//     name: "James Anderson",
-//     title: "Isabella Gray",
-//     designation: "Software Engineer",
-//     description: "When an unknown printer took a galley.",
-//   },
-//   {
-//     id: "#D-321335",
-//     name: "William Thomas",
-//     title: "Mia Black",
-//     designation: "Business Analyst",
-//     description: "And scrambled it to make a type specimen.",
-//   },
-//   {
-//     id: "#D-321336",
-//     name: "Daniel Martin",
-//     title: "Charlotte Pink",
-//     designation: "Content Strategist",
-//     description: "It has survived not only five centuries.",
-//   },
-//   {
-//     id: "#D-321337",
-//     name: "Matthew Lee",
-//     title: "Amelia Purple",
-//     designation: "SEO Specialist",
-//     description: "But also the leap into electronic typesetting.",
-//   },
-//   {
-//     id: "#D-321338",
-//     name: "Joseph Walker",
-//     title: "Harper Yellow",
-//     designation: "Product Owner",
-//     description: "Remaining essentially unchanged.",
-//   },
-//   {
-//     id: "#D-321339",
-//     name: "Andrew Hall",
-//     title: "Evelyn Orange",
-//     designation: "Operations Manager",
-//     description: "It was popularised in the 1960s.",
-//   },
-// ];
+
 
     const { docs , pages ,docsCount, }= useSelector(state => state.team);
+
+  const dispatch=useDispatch();
+  const queryClient = useQueryClient();
+  const navigate =useNavigate();
+const handleDeleteTeam = async (id) => {
+  const title = "Confirm Deletion";
+  const message = "Are you sure you want to delete this Team Member?";
+
+  const onYesClick = async () => {
+    await dispatch(deleteTeams(id, toast));
+    queryClient.invalidateQueries(["fetch-all-team"]);
+  };
+
+  confirmBox({ title, message, onYesClick });
+};
+
+
+
 
   return (
     <div className="w-full table-container bg-white flex flex-col gap-1 p-4">
       <div className="flex flex-row justify-between items-center w-full px-3 pt-2">
         <p className="text-black font-semibold">Teams</p>
-      <Titlebtn label="Add New" url="/app/create-team/1" />
+      <Titlebtn label="Add New" url="/app/create-team" />
         
 
       </div>
@@ -155,7 +108,7 @@ const TeamsTable = ({
                   <td className="px-3 py-4  ">
                     <div className="flex items-center gap-2">
 
-                       <div className="w-[32px] h-[32px] overflow-hidden rounded-full">
+                       <div className="w-[50px] h-[50px] overflow-hidden rounded-full">
                                             <img
                                                 src={
                                                             row?.image?.relativeAddress
@@ -178,24 +131,29 @@ const TeamsTable = ({
                   {row?.designation}
 
                   </td>
-                  <td className="px-3 py-4 break-words  whitespace-normal  max-w-[280px]">
-                  <span className="text-black/65">
-                                      {row?.description}
+                    <td className="px-3 py-4  break-words whitespace-normal  max-w-[250px]">
 
-                  </span>
-                    
-                  </td>
+               <div
+      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(row?.description) }}
+     
+    />
+              </td>
 
                     <td className="px-3 py-4">
                                   <div className="flex gap-1.5 items-center">
                                     <div
-                                     
+                                       onClick={() =>
+                      navigate(`/app/update-team/${row?._id}`)
+                    }
+                                  
                                       className="px-2.5 py-2.5 rounded-lg bg-cyan-Blue cursor-pointer"
                                     >
                                       <EditSvg />
                                     </div>
                   
                                     <div
+                           onClick={() => handleDeleteTeam(row?._id)}
+
                                       className="px-2.5 py-2.5 rounded-lg bg-darkred cursor-pointer"
                                     >
                                       <TrashSvg />

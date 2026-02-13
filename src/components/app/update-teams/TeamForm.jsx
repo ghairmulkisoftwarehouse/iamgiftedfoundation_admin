@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import InputName  from '../../global/form/InputName';
 import Editor   from '../../global/form/Editor';
 import ErrorBoundary  from '../../global/ErrorBoundary';
@@ -6,23 +6,32 @@ import MultipleImage   from '../../global/form/MultipleImage';
 import {validateTeamForm} from '../../../validations/teamValidation'
 import InputOption   from '../../../components/global/form/InputOption';
 import ImageUpload   from '../../global/form/ImageUpload';
-import {Add_Teams} from '../../../redux/actions/teamActions';
+import {update_Impact} from '../../../redux/actions/teamActions';
 import {useQueryClient } from 'react-query';
 import { useDispatch,useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom'; 
 
 import { toast } from 'react-toastify';
 import SubmitLoading from "../../global/SubmitLoading";
-
-
-const TeamForm = () => {
+import { useParams } from 'react-router-dom';
+import { convertImageUrlToBase64} from '../../../utils/convertImageUrlToBase64';
+import { baseURL } from '../../../config/api';
+const UpdateTeamForm = () => {
 
 
      const dispatch = useDispatch();
    const  navigate =useNavigate();
+  const  {id}=useParams();
+
+  const { docDetails } = useSelector(state => state.team);
+  const  teamdoc=docDetails?.doc
+
+  // console.log(' this is a teadoc',teadoc)
+
+
   const [errors, setErrors] = useState({});
      const queryClient = useQueryClient();
-   const { createLoading } = useSelector(state => state.team);
+   const { patchLoading } = useSelector(state => state.team);
 
      const [imagePreview, setImagePreview] = useState("");
 
@@ -36,6 +45,20 @@ const TeamForm = () => {
 
   });
 
+
+
+
+     useEffect(() => {
+    if (teamdoc) {
+      setFormData({
+        name: teamdoc?.title || '',
+        designation: teamdoc?.designation || '',
+       description: teamdoc?.description || '',
+
+      });
+    }
+  }, [teamdoc]);
+
   const handleChange = (field) => (e) => {
     setFormData((prev) => ({ ...prev, [field]: e.target.value }));
 
@@ -47,6 +70,26 @@ const TeamForm = () => {
       });
     }
   };
+
+
+
+  useEffect(() => {
+    const initializeImage = async () => {
+      const imageUrl = teamdoc?.image?.relativeAddress; // get existing image
+      if (!imageUrl) return;
+  
+      const fullImageUrl = imageUrl.startsWith("http")
+        ? imageUrl
+        : `${baseURL}/${imageUrl}`;
+  
+      const base64Image = await convertImageUrlToBase64(fullImageUrl);
+  
+      setImagePreview(base64Image); 
+      setFormData((prev) => ({ ...prev, coverImage: base64Image })); 
+    };
+  
+    if (docDetails) initializeImage();
+  }, [docDetails]);
 
   const resetForm = () => {
   setFormData({
@@ -63,27 +106,24 @@ const TeamForm = () => {
   setErrors({});     
 };
 
- const handleSubmit = async () => {
-    const validationErrors = validateTeamForm(formData);
-    setErrors(validationErrors);
-    if (Object.keys(validationErrors).length > 0) return;
-
-    const payload = {
-      title: formData.name,
-      designation: formData.designation,
-      ...(imagePreview && { imageDataURI: imagePreview }),
-      ...(formData.description && { description: formData.description }),
-    };
-
-    // console.log('Payload:', payload);
-
-    try {
-      await dispatch(Add_Teams(payload, toast, navigate));
-      queryClient.invalidateQueries('fetch-all-team');
-    } catch (error) {
-      console.error(error);
-    }
+const handleSubmit = async () => {
+  const payload = {
+    ...(formData.name && { title: formData.name }),
+    ...(formData.designation && { designation: formData.designation }),
+    ...(imagePreview && { imageDataURI: imagePreview }),
+    ...(formData.description && { description: formData.description }),
   };
+
+  try {
+    await dispatch(update_Impact(id,payload, toast, navigate));
+    queryClient.invalidateQueries('fetch-all-team');
+     queryClient.invalidateQueries('fetch-singleTeam');
+
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 
 
   return (
@@ -183,10 +223,10 @@ const TeamForm = () => {
         <button
           onClick={handleSubmit}
          className={`btn-primary w-[50%] sm:w-[210px] h-[50px] 
-      ${createLoading ? 'opacity-60 cursor-not-allowed' : ''}`}
+      ${patchLoading ? 'opacity-60 cursor-not-allowed' : ''}`}
           
         >
-          {createLoading ? <SubmitLoading size={12} /> : 'Create Team'}
+          {patchLoading ? <SubmitLoading size={12} /> : 'Update Team'}
 
         </button>
 
@@ -198,4 +238,4 @@ const TeamForm = () => {
   )
 }
 
-export default TeamForm
+export default UpdateTeamForm

@@ -18,7 +18,7 @@ const [currentPage, setCurrentPage] = useState(1);
 const [limit, setLimit] = useState(10);
 
 
-    const queryKey = ['fetch-all-team',];
+    const queryKey = ['fetch-all-team',limit,currentPage];
 
     const { isLoading, isError, error } = useQuery(
         queryKey,

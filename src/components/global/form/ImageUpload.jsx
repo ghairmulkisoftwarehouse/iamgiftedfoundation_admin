@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef,useEffect } from 'react';
 import SettingProfileSVG from '../../../assets/svgs/SettingProfileSVG';
 
 const MAX_FILE_SIZE_MB = 4;
@@ -8,6 +8,17 @@ const ImageUpload = ({ label, imagePreview, setImagePreview, error }) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [fileName, setFileName] = useState('');
 
+
+
+
+    useEffect(() => {
+    if (!imagePreview) {
+      setFileName('');
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  }, [imagePreview]);
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -39,7 +50,7 @@ if (!isValidType) {
 
   const resetImage = () => {
     setImagePreview(null);
-    setFileName('');
+    setFileName(null);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
