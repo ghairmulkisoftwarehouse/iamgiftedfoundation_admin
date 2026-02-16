@@ -3,6 +3,7 @@ import authSlice from "./slices/authSlice";
 import appUserSlice   from './slices/appUserSlice';
 import profileSlice   from './slices/profileSlice';
 import eventSlice   from './slices/eventSlice'
+import eventRegistrationSlice  from './slices/eventRegistrationSlice';
 import campaignSlice  from './slices/campaignSlice';
 import companySlice  from './slices/companySlice';
 import programSlice   from './slices/programSlice';
@@ -22,6 +23,7 @@ const store = configureStore({
           profile : profileSlice ,
           post:postSlice,
           event:eventSlice,
+        eventRegistration:eventRegistrationSlice,
           campaign:campaignSlice,
           program:programSlice,
           programPillar:programPillarSlice,

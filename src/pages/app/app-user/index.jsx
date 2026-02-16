@@ -13,9 +13,7 @@ const AppUser = () => {
 
   const { docs, } = useSelector(state => state.appUser);
     const [selectRole, setSelectRole] = useState("");
-    devLog(' this is a  selectRole',selectRole)
 
-  devLog(' this is a docs',docs)  
 
 const [currentPage, setCurrentPage] = useState(1);
 const [limit, setLimit] = useState(10);

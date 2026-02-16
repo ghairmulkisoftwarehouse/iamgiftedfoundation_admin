@@ -1,99 +1,122 @@
 import imgwish from '../../../../assets/images/wishes.png';
 import { FaHeart } from "react-icons/fa";
 import { LuReply } from "react-icons/lu";
+import TealPagination   from '../../../global/TealPagination'
+import PageLimit   from '../../../global/PageLimit'
+import ItemNotFound   from '../../../../components/global/ItemNotFound';
+import DisplayError from '../../../../components/global/DisplayError';
+import Loader   from '../../../../components/global/Loader'
+import { useSelector } from 'react-redux';
+import img from "../../../../assets/images/img1.jpg";
+import { baseURL } from '../../../../config/api';
+import moment from 'moment';
 
-const wishesData = [
-  {
-    name: "Junaid",
-    time: "1 minute ago",
-    message:
-      "With this scholarship, we believe in your abilities and dreams. May you find the strength and determination to achieve everything you set your heart on.",
-    likes: 15,
-  },
-  {
-    name: "Ayesha",
-    time: "5 minutes ago",
-    message:
-      "Keep pushing forward! Your dedication is inspiring and we are here to support your journey.",
-    likes: 8,
-  },
-  {
-    name: "Ali",
-    time: "10 minutes ago",
-    message:
-      "Wishing you success in every step of your education. Stay strong and motivated!",
-    likes: 12,
-  },
-  {
-    name: "Sara",
-    time: "20 minutes ago",
-    message:
-      "May this opportunity open doors to achieve your dreams and reach your full potential.",
-    likes: 20,
-  },
-  {
-    name: "Hassan",
-    time: "30 minutes ago",
-    message:
-      "Believe in yourself and your abilities. We are cheering for you every step of the way!",
-    likes: 10,
-  },
-];
 
-const AppUserWishesList = () => {
+
+const AppUserWishesList = (
+   {
+   currentPage,
+  setCurrentPage,
+  limit,
+  setLimit,
+  isLoading,
+  isError,
+  error,
+}
+) => {
+
+  const { docs , pages ,docsCount } = useSelector(state => state.post);  
+  
+
+
   return (
     <div className="flex flex-col gap-4">
-      {wishesData.map((wish, index) => (
+ 
+
+     {isLoading ? (
+                 <Loader />
+               ) : isError ? (
+                 <DisplayError message={error?.message || "Something went wrong"} />
+               ) : docs?.length > 0 ? (
+      docs.map((item, ) => (
         <div
-          key={index}
+          key={item?._id}
           className="bg-white rounded-[8px] py-4 flex flex-col gap-3 px-3.5"
         >
           {/* Header */}
           <div className="flex flex-row gap-1.5">
             <div className="w-[40px] h-[40px] rounded-full overflow-hidden flex-shrink-0">
-              <img
-                src={imgwish}
-                alt="img"
-                className="w-full h-full object-cover"
-              />
+             <img
+      src={
+        item?.attachments?.length > 0
+          ? `${baseURL}/${item.attachments[0].relativeAddress}`
+          : img // fallback image
+      }
+      alt="post image"
+      className="w-full h-full object-cover"
+    />
             </div>
             <div className="flex flex-col gap-0.5">
-              <h2 className="text-[15px] font-medium">{wish.name}</h2>
-              <p className="text-black/60 text-xs">{wish.time}</p>
-            </div>
+              <h2 className="text-[15px] font-medium">{item?.title}</h2>
+  <p className="text-black/60 text-xs">
+      {item?.createdAt ? moment(item.createdAt).fromNow() : 'N/A'}
+    </p>            </div>
           </div>
 
           {/* Message */}
           <div>
             <p className="text-black/80 text-xs break-words whitespace-normal">
-              {wish.message}
+               {item?.body}  
             </p>
           </div>
 
           {/* Likes info */}
-          <div className="text-xs border-b border-black/30 pb-3.5">
-            <span className="font-medium">{wish.likes} people</span>{" "}
-            <span className="text-black/70">loved this wish</span>
+          <div className="text-xs  pb-3.5">
+            <span className="font-medium">{item?.likesCount} people</span>{" "}
+            <span className="text-black/70">liked this Post</span>
           </div>
 
           {/* Actions */}
-          <div className="flex justify-between w-full">
+          {/* <div className="flex justify-between w-full">
             <div className="flex items-center gap-1">
               <span className="text-[#B22222]">
                 <FaHeart />
               </span>
-              <span className="text-xs">{wish.likes} Liked</span>
+              <span className="text-xs"> Liked</span>
             </div>
 
-            <div className="flex items-center gap-1">
-              <span>
-                <LuReply />
-              </span>
-              <span className="text-xs">Reply</span>
-            </div>
-          </div>
+         
+          </div> */}
         </div>
-      ))}
+     ))
+) : (
+  <ItemNotFound message="No Post found." />
+)}
+
+
+
+       <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center w-full px-3  flex-wrap-none">
+        <div className=" flex items-center gap-2 text-xs sm:text-sm text-[#313131]">
+        <div>Show</div>
+         <div className="w-fit h-[40px] ">
+        <PageLimit totalpages={docsCount || 10} limit={limit} setLimit={setLimit}/>
+        </div>
+         <div>of {docsCount} results</div>
+
+        </div>
+          
+               <TealPagination 
+             totalPages={pages}
+        currentPage={currentPage}
+       setCurrentPage={setCurrentPage}
+      />
+      
+                          
+                                  
+                                    
+                          
+                                    
+                                    </div>
     </div>
   );
 };

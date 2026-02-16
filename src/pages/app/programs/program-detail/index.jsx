@@ -1,8 +1,7 @@
+import { useState } from 'react';
 import Heading  from '../../../../components/global/Heading';
 import ProgramCard   from '../../../../components/app/programdetail/ProgramCard';
 import ProgramTable   from '../../../../components/app/programdetail/ProgramTable/ProgramTable';
-
-
 import { useParams } from 'react-router-dom';
 import Axios from '../../../../config/api';
 import { setDocDetails } from '../../../../redux/slices/programSlice';
@@ -13,7 +12,8 @@ import ItemNotFound from '../../../../components/global/ItemNotFound';
 import DisplayError from '../../../../components/global/DisplayError';
 import Loader from '../../../../components/global/Loader';
 import Titlebtn from '../../../../components/global/Titlebtn';
-
+  import { setStats as setEventRegistrationStats } 
+  from '../../../../redux/slices/eventRegistrationSlice';
 
 
 const ProgramDetail = () => {
@@ -23,13 +23,14 @@ const { id } = useParams();
 const dispatch = useDispatch();
 
 const { docDetails } = useSelector(state => state.program);
+    const { docs , pages ,docsCount } = useSelector(state => state.eventRegistration); 
+    // console.log('docs  this is a progrm ',docs)  
 
-  devLog(' this is a  docDetails',docDetails?.doc)
-
-  const programdoc=docDetails?.doc
-
+    const [currentPage, setCurrentPage] = useState(1);
+    const [limit, setLimit] = useState(10);
 
 
+ const programdoc=docDetails?.doc
 const queryKey = ['fetch-singleProgram', id];
 
 const { isLoading, isError, error } = useQuery(
@@ -50,6 +51,46 @@ const { isLoading, isError, error } = useQuery(
   }
 );
 
+
+
+
+const eventRegistrationQueryKey = [
+  'prgram-registrations-by-user',
+  id,
+  currentPage,
+  limit,
+];
+
+
+const {
+  isLoading: programLoading,
+  isError: programIsError,
+  error: programError,
+} = useQuery(
+  eventRegistrationQueryKey,
+  () =>
+    Axios.get(
+      `/event/registrations?program=${id}&pageSize=${limit}&page=${currentPage}`
+    ),
+  {
+    enabled: !!id,
+    refetchOnWindowFocus: false,
+    onSuccess: (response) => {
+      const { docs, pages, docsCount, page } =
+        response.data.data;
+
+      dispatch(
+        setEventRegistrationStats({
+          docs,
+          pages,
+          docsCount,
+          page,
+        })
+      );
+    },
+  }
+);
+  
 
 
   return (

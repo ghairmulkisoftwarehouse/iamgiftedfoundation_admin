@@ -32,12 +32,12 @@ const ProfileDetail = () => {
         <h2 className="font-semibold text-xl xs:text-2xl xl:text-[26px] text-[#1A1C1E]">
           {docDetails?.username}
         </h2>
-        <p className="text-[#1A1C1E]/90 font-medium text-sm xs:text-base xl:text-lg">
+        {/* <p className="text-[#1A1C1E]/90 font-medium text-sm xs:text-base xl:text-lg">
           Donor:
           <span className="text-[#1A1C1E]/50 font-medium">
             {" "}#
           </span>
-        </p>
+        </p> */}
       </div>
 
     </div>
@@ -69,7 +69,7 @@ const ProfileDetail = () => {
 
     </div>
 
-     <div className="flex gap-1.5 sm:gap-0 w-full">
+     {/* <div className="flex gap-1.5 sm:gap-0 w-full">
       
       <div className=" w-fit sm:w-1/2">
         <h2 className=" font-normal text-[#202224]  text-sm  xl:text-[15px]">City:</h2>
@@ -91,7 +91,7 @@ const ProfileDetail = () => {
         <p className=" font-normal  text-black text-sm  xl:text-[15px]"></p>
       </div>
 
-    </div>
+    </div> */}
 
 
      

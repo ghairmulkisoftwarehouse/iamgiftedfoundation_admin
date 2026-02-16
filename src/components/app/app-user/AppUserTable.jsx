@@ -29,7 +29,7 @@ const AppUserTable = ({
 
 
   const { docs,pages ,docsCount} = useSelector(state => state.appUser);   
- devLog(' this is a docs',docs)
+//  devLog(' this is a docs',docs)
 
 const naviagate=useNavigate();
 
@@ -100,7 +100,9 @@ const typeOptions = [ 'All', "Donor", "Participant", "Volunteer"];
 
             <tbody>
               {docs.map((row, index) => (
-                <tr key={row?._id}>
+                <tr key={row?._id}
+                  onClick={()=>naviagate(`/app/app-user-profile/${row?._id}`)}
+                >
                   <td className="px-3 py-4">
                     {index+1}
                   </td>
@@ -144,12 +146,7 @@ const typeOptions = [ 'All', "Donor", "Participant", "Volunteer"];
                     >
                       <EyetSVG />
                     </div>   
-                      <div
-                       
-                        className="w-fit px-2.5 py-2.5 rounded-lg bg-darkred cursor-pointer"
-                      >
-                        <TrashSvg />
-                      </div>
+                     
                  
                   </div>
                   </td>

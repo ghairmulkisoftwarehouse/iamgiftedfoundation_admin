@@ -50,13 +50,11 @@ const ProgramTable = () => {
       status: "Pending",
     },
   ];
-  const typeOptions = ["Donor", "Participation", "Volunteer"];
 
   return (
     <div className="w-full table-container bg-white flex flex-col gap-1 p-4 ">
       <div className="flex flex-row justify-between items-center w-full px-3 pt-2">
         <p className="text-black font-semibold">Join to Program</p>
-        <SelectOption title="Latest" options={typeOptions} />
 
       </div>
 
@@ -72,19 +70,16 @@ const ProgramTable = () => {
                 <th className="px-3 py-4 rounded-tl-[12px] rounded-bl-[12px]">
                <div className="flex items-center gap-0.5">  
              ID
-               <ArrowTopSvg/>
                 </div>
                </th>
                 <th className="px-3 py-4">
                     <div className="flex items-center gap-0.5">  
             Date & Time
-               <ArrowTopSvg/>
                 </div>
                 </th>
                   <th className="px-3 py-4 rounded-tr-[12px] rounded-br-[12px]">
                     <div className="flex items-center gap-0.5">  
              User
-               <ArrowTopSvg/>
                 </div>
               </th>
              
@@ -92,7 +87,6 @@ const ProgramTable = () => {
                 <th className="px-3 py-4 rounded-tr-[12px] rounded-br-[12px]">
                     <div className="flex items-center gap-0.5">  
           Status
-               <ArrowTopSvg/>
                 </div>
               </th>
                 
