@@ -95,7 +95,7 @@ const handleSubmit = async () => {
   const payload = {
     title: formData.title,
    ...( formData.description && {description: formData.description}),
-    piller: formData.piller,
+    piller: formData.piller?._id,
     ...( formData.program && {program: formData.program}),
    ...( formData.supportCount && {supportCount: formData.supportCount}),
       ...( formData.amount && {amount: formData.amount}),
@@ -147,7 +147,7 @@ const handleSubmit = async () => {
 
        <PillerSelectedInput
   readOnly={!formData.piller} 
-    selected={formData.piller} 
+    selected={formData.piller?._id} 
   label="Program"
   value={formData.program}
   onSelect={handleSelectChange("program")}

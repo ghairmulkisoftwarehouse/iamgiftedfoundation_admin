@@ -159,10 +159,7 @@ useEffect(() => {
 
 
 const handleSubmit = async () => {
-  const validationErrors = validateProgramForm(formData);
-  setErrors(validationErrors);
-  if (Object.keys(validationErrors).length > 0) return;
-
+  
 
   try {
     const newImages = formData.gallery
@@ -196,7 +193,7 @@ const handleSubmit = async () => {
       }),
     };
 
-    devLog('this is payload', payload);
+    // devLog('this is payload', payload);
 
     await dispatch(update_Programs(id,payload, toast,navigate));
     queryClient.invalidateQueries('fetch-all-program');

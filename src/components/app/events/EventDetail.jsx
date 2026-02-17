@@ -98,7 +98,7 @@ const startTime =    eventDetail?.eventDate ? moment.utc(eventDetail.eventDate).
             <p className="text-xs xs:text-[13px] sm:text-sm text-black/60">Date and Time</p>
           </div>
 
-          <div className="bg-white py-3 rounded-[12px] flex flex-col items-center gap-0.5 cursor-pointer transition-all duration-700 ease-in-out hover:shadow-md hover:-translate-y-0.5">
+          <div className="bg-white py-3 rounded-[12px] flex flex-col items-center justify-center gap-0.5 cursor-pointer transition-all duration-700 ease-in-out hover:shadow-md hover:-translate-y-0.5">
             <h2 className="text-xs xs:text-[13px] font-semibold">{daysLeft}</h2>
             <p className="text-xs xs:text-[13px] sm:text-sm text-black/60">Days Left</p>
           </div>

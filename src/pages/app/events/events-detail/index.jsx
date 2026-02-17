@@ -13,6 +13,7 @@ import { useSelector,useDispatch } from 'react-redux';
 import ItemNotFound from '../../../../components/global/ItemNotFound';
 import DisplayError from '../../../../components/global/DisplayError';
 import Loader from '../../../../components/global/Loader';
+import Titlebtn from '../../../../components/global/Titlebtn';
 
 const EventsDetail = () => {
 const { id } = useParams();
@@ -99,7 +100,10 @@ const {
   return (
     <div className='flex  flex-col  gap-6 w-full'>
               <Heading/>
+ <div className=' flex justify-end'>
+       <Titlebtn   width="w-[180px]"  label={'Update Event'} url={`/app/update-events/${id}`}/>
 
+       </div>
               <div className='  w-full  flex flex-col gap-5'>
         
          

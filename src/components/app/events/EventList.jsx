@@ -89,6 +89,19 @@ const EventList = ({
         100
       );
 
+
+
+const capacity =item?.capacity;       
+const registeredCount = item?.registeredCount; 
+
+const isInfinite = capacity === null;
+
+// Progress calculation
+const progressPercent =
+  !isInfinite && capacity > 0
+    ? Math.min((registeredCount / capacity) * 100, 100)
+    : 100;
+  
       return (
         <div
           key={item?._id}
@@ -152,14 +165,14 @@ const EventList = ({
             <div className="w-full md:w-[214px] bg-[#B2BCC599] rounded-full h-2">
               <div
                 className="bg-[#9BD6F6] h-2 rounded-full"
-                style={{ width: `${progress}%` }}
+                style={{ width: `${progressPercent}%` }}
               />
             </div>
 
             <div className="flex justify-between items-center">
               <p className="text-sm">
-                <span className="font-medium">{item.appliedMembers?.length || 0}</span>
-                <span className="text-xs text-black/60">/{item.totalMembers || 100}</span>
+                <span className="font-medium">{registeredCount}</span>
+                <span className="text-xs text-black/60"> /{isInfinite ? '∞' : capacity}</span>
               </p>
 
               <div className="block xl:hidden flex items-center gap-1">

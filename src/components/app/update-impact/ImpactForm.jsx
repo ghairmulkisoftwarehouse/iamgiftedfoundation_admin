@@ -92,16 +92,16 @@ const resetForm = () => {
 
 const handleSubmit = async () => {
   // Validate form
-  const validationErrors = validateUpadateImpactForm(formData);
-  setErrors(validationErrors);
+  // const validationErrors = validateUpadateImpactForm(formData);
+  // setErrors(validationErrors);
 
-  if (Object.keys(validationErrors).length > 0) return;
+  // if (Object.keys(validationErrors).length > 0) return;
 
   // Prepare payload
   const payload = {
     ...(formData.title && { title: formData.title }),
    ...( formData.description && {description: formData.description}),
-     ...(formData.piller && { piller: formData.piller }),
+     ...(formData.piller && { piller: formData.piller?._id }),
 
     ...( formData.program && {program: formData.program}),
    ...( formData.supportCount && {supportCount: formData.supportCount}),
@@ -117,7 +117,7 @@ const handleSubmit = async () => {
  await dispatch(update_Impact(id, payload, toast, navigate));
 
     queryClient.invalidateQueries(["fetch-all-impact"]);
-    resetForm();   
+    // resetForm();   
   } catch (error) {
     console.error("Error submitting impact:", error);
   }
@@ -155,7 +155,7 @@ const handleSubmit = async () => {
 
        <PillerSelectedInput
   readOnly={!formData.piller} 
-    selected={formData.piller} 
+    selected={formData.piller._id} 
   label="Program"
   value={formData.program}
   onSelect={handleSelectChange("program")}

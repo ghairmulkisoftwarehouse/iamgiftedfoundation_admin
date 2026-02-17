@@ -12,6 +12,8 @@ const eventSlice = createSlice({
         createLoading:false,
            deleteLoading:false,
        error: null, 
+           patchLoading: false,
+
     } , 
     reducers : {
         setStats (state , action) {
@@ -36,11 +38,14 @@ const eventSlice = createSlice({
             setDeleteLoading:(state, action) => {
       state.deleteLoading = action.payload;
     },
+     setPatchLoading(state, action) {
+      state.patchLoading = action.payload;
+    },
     }
 });
 
 export const { 
-    setStats ,setDocDetails,setLoading,setCreateLoading,setError,setDeleteLoading
+    setStats ,setDocDetails,setLoading,setCreateLoading,setError,setDeleteLoading,setPatchLoading
 } = eventSlice.actions;
 
 export default eventSlice.reducer;

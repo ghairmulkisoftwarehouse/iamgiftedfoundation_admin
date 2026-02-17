@@ -1,5 +1,5 @@
 import Axios from "../../config/api";
-import {  setCreateLoading,setError,setDeleteLoading } from "../slices/eventSlice";
+import {  setCreateLoading,setError,setDeleteLoading,setPatchLoading } from "../slices/eventSlice";
 import { getUser } from '../../utils/authLocalStorage';
 
 export const Add_Event = (data, toast,navigate) => async (dispatch,) => {
@@ -60,3 +60,34 @@ export const delete_Events = (id , toast) => async ( dispatch ,) => {
     }
 }
 
+
+
+
+export const update_Events = (id,data, toast,navigate) => async (dispatch) => {
+  try {
+    dispatch(setPatchLoading(true));
+
+    const user = getUser();
+    const token = user?.token;
+    if (!token) throw new Error("User token not found.");
+    const {
+      data: {
+        data: {  message },
+      },
+    } = await Axios.patch(`/event/${id}`,data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    dispatch(setPatchLoading(false));
+    toast.success(message);
+    navigate(`/app/events`);
+
+  } catch (err) {
+    dispatch(setPatchLoading(false));
+    dispatch(setError(err?.response?.data?.message || err.message));
+    toast.error(err?.response?.data?.data?.message || err.message || "Something went wrong.");
+
+  }
+};

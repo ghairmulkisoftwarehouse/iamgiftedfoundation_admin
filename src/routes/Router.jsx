@@ -17,6 +17,7 @@ import AppUser  from '../pages/app/app-user'
 import AppUserProfile   from '../pages/app/app-user/app-user-profile';
 import  Events  from '../pages/app/events';
 import  CreateEvents    from '../pages/app/events/create-events'
+import UpdateEvents    from '../pages/app/events/update-events'
 import EventsDetail   from '../pages/app/events/events-detail'
 import Donations  from '../pages/app/donations'
 import Categories  from '../pages/app/categories';
@@ -76,7 +77,12 @@ const Router = [
     { path: 'app-user-profile/:id', element: <ProtectedRoute element={<AppUserProfile />} /> },
     { path: 'events', element: <ProtectedRoute element={<Events />} /> },
     { path: 'events/:id', element: <ProtectedRoute element={<EventsDetail />} /> },
+
     { path: 'create-events', element: <ProtectedRoute element={<CreateEvents />} /> },
+        { path: 'update-events/:id', element: <ProtectedRoute element={<UpdateEvents />} /> },
+
+
+    
     { path: 'donations', element: <ProtectedRoute element={<Donations />} /> },
      { path: 'categories', element: <ProtectedRoute element={<Categories />} /> },
       { path: 'company', element: <ProtectedRoute element={<Company />} /> },

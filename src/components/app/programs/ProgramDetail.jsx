@@ -14,7 +14,7 @@ import { toast } from 'react-toastify';
 
 
 const ProgramDetail = ({programDetail,setDetail}) => {
-    devLog(' this is a eventDetail',programDetail)
+    // devLog(' this is a eventDetail',programDetail)
 
 
     const dispatch=useDispatch();

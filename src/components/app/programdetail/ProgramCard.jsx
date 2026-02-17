@@ -8,7 +8,7 @@ import { baseURL } from '../../../config/api';
 import DOMPurify from "dompurify";
 
 const ProgramCard = () => {
-const [activeIndex, setActiveIndex] = useState(0);
+const [activeIndex, setActiveIndex] = useState(-1);
 const { docDetails } = useSelector(state => state.program);
 
 
@@ -19,20 +19,20 @@ const { docDetails } = useSelector(state => state.program);
   //   ? moment.utc(prgramdoc.startDate).format('MMM DD, YYYY')
   //   : 'N/A';
   
-  const startTime =    prgramdoc?.createdAt ? moment.utc(prgramdoc?.createdAt).format(' MMM DD, YYYY hh:mm A')  : 'N/A';
+  const startTime =    prgramdoc?.createdAt ? moment(prgramdoc?.createdAt).format(' MMM DD, YYYY hh:mm A')  : 'N/A';
 
-  
+  const mainImage = 
+  activeIndex === -1
+    ? prgramdoc?.featuredImage?.relativeAddress
+    : prgramdoc?.images?.[activeIndex]?.relativeAddress;
+
 
   return (
     <div  className=" bg-white w-full flex flex flex-col gap-2  p-4   rounded-[15px]">
        <div className="   rounded-[15px] w-full h-[250px]  sm:h-[200px] xl:h-[300px] overflow-hidden">
             <img
-              src={
-      prgramdoc?.images?.[activeIndex]?.relativeAddress
-        ? `${baseURL}/${prgramdoc.images[activeIndex].relativeAddress}`
-        : img
-    }
-                alt={prgramdoc.title}
+            src={mainImage ? `${baseURL}/${mainImage}` : img} 
+        alt={prgramdoc?.title}
             className="
                 w-full h-full object-cover
                 transition-transform duration-700 ease-in-out
@@ -41,24 +41,39 @@ const { docDetails } = useSelector(state => state.program);
             />
         </div>
 
-  <div className="grid grid-cols-2 sm:flex sm:flex-row sm:flex-wrap gap-3 pt-3.5">
-  {prgramdoc?.images && prgramdoc.images.length > 0 && (
-    prgramdoc?.images.map((img, index) => (
-      <div
-        key={img?._id}
+ <div className="grid grid-cols-2 sm:flex sm:flex-row sm:flex-wrap gap-3 pt-3.5">
+      {/* Featured Image Thumbnail */}
+      {prgramdoc?.featuredImage?.relativeAddress && (
+        <div
+          onClick={() => setActiveIndex(-1)}
+          className="sm:w-[140px] h-[90px] rounded-[10px] overflow-hidden relative group cursor-pointer"
+        >
+          <img
+            src={`${baseURL}/${prgramdoc.featuredImage.relativeAddress}`}
+            alt="featured"
+            className="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
+          />
+          <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[10px]" />
+        </div>
+      )}
+
+      {/* Other Images Thumbnails */}
+      {prgramdoc?.images?.length > 0 &&
+        prgramdoc.images.map((img, index) => (
+          <div
+            key={img._id}
             onClick={() => setActiveIndex(index)}
-        className="sm:w-[140px] h-[90px] rounded-[10px] overflow-hidden relative group cursor-pointer"
-      >
-        <img
-          src={`${baseURL}/${img?.relativeAddress}`} 
-          alt={`img-${index + 1}`}
-          className="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
-        />
-        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[10px]" />
-      </div>
-    ))
-  )}
-</div>
+            className="sm:w-[140px] h-[90px] rounded-[10px] overflow-hidden relative group cursor-pointer"
+          >
+            <img
+              src={`${baseURL}/${img.relativeAddress}`}
+              alt={`img-${index + 1}`}
+              className="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
+            />
+            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[10px]" />
+          </div>
+        ))}
+    </div>
 
 
 
@@ -93,6 +108,19 @@ const { docDetails } = useSelector(state => state.program);
     )
    }
 
+
+      {
+  prgramdoc?.piller?.title  &&
+  (
+
+    <div className='flex flex-col gap-0.5'>
+                 <h2 className=' capitalize     text-xs  xs:text-sm    md:text-[15px]  font-semibold'>  Piller</h2>  
+              <p className="text-black text-[10px] xs:text-xs md:text-sm">
+    {prgramdoc?.piller?.title}
+</p>
+                  </div>
+  )
+}   
 
 
                   

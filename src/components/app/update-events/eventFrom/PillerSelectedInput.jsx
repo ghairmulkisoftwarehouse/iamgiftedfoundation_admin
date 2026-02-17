@@ -9,7 +9,7 @@ import { ClipLoader } from "react-spinners";
 
 const PillerSelectedInput = ({
   label,
-  selected, 
+  selected,
   value,    
   onSelect,
   error,
@@ -55,16 +55,16 @@ const PillerSelectedInput = ({
   const isActive = focused || !!value || !!localSelected;
 
   // get programs of the selected pillar
-  const programs = docs.find((pillar) => pillar._id === selected)?.programs || [];
+  const programs = docs.find((pillar) => pillar._id === selected?._id)?.programs || [];
 
   return (
     <div ref={containerRef} className={`flex flex-col gap-1 relative ${readOnly ? "cursor-not-allowed" : ""}`}>
       {/* Input Wrapper */}
       <div
         onClick={() => !readOnly && setShowMenu((prev) => !prev)}
-        className={`relative h-[50px] rounded-[10px] px-4 flex items-center cursor-pointer
-          ${readOnly ? "bg-gray-200 cursor-not-allowed" : ""}
-          ${error ? "border-red-500" : isActive ? "border border-black" : "border border-lightGray"}
+        className={`relative h-[50px] rounded-[10px] px-4  border flex items-center cursor-pointer
+          ${readOnly ? "bg-gray-100 cursor-not-allowed  border-black/20" : ""}
+          ${error ? "border-red-500" : isActive ? " border-black" : "border border-lightGray"}
         `}
       >
         {/* Floating Label */}
@@ -77,7 +77,7 @@ const PillerSelectedInput = ({
         </label>
 
         <input
-          value={localSelected || ""}
+          value={localSelected|| ""}
           readOnly
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
