@@ -24,7 +24,7 @@ const PillerSelectInput = ({
   const dispatch = useDispatch();
   const { docs = [] } = useSelector((state) => state.programPillar);
 
-  devLog(" this is a pillar docs", docs);
+  // devLog(" this is a pillar docs", docs);
 
    const { isLoading, isError } = useQuery(
     ["fetch-all-pillarProgram", searchTerm],
@@ -72,6 +72,11 @@ const PillerSelectInput = ({
 
 
   const isActive = focused || !!selected;
+
+
+
+
+  
 
   return (
     <div ref={containerRef} className={`flex flex-col gap-1 relative   ${readOnly ? "cursor-not-allowed" : ""}`}>

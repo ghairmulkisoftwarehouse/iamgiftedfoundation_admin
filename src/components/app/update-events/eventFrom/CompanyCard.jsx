@@ -6,7 +6,7 @@ import img from '../../../../assets/images/img1.jpg';
 
 
 const CompanyCard = ({doc,width='max-w-sm'}) => {
-  const formattedDate = moment.utc(doc?.createdAt).format("MMM DD, YYYY HH:mm");
+  const formattedDate = moment(doc?.createdAt).format("MMM DD, YYYY HH:mm");
 
   return (
     <div className={` ${width} border rounded-lg shadow-lg p-4 bg-white`}>

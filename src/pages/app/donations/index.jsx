@@ -14,7 +14,7 @@ const Donations = () => {
  const dispatch=useDispatch();
     const { docs, } = useSelector(state => state.donation);
 
-  devLog(' this is a docs',docs)  
+//   devLog(' this is a docs',docs)  
 
 const [currentPage, setCurrentPage] = useState(1);
 const [limit, setLimit] = useState(10);

@@ -15,7 +15,7 @@ const Categories = () => {
 
    const { docs } = useSelector(state => state.category);
    
- devLog(' this is a docs',docs)
+//  devLog(' this is a docs',docs)
 
 
 const [currentPage, setCurrentPage] = useState(1);

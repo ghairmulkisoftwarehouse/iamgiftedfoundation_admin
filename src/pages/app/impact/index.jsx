@@ -16,7 +16,7 @@ const Impact = () => {
     const dispatch=useDispatch();
      const { docs } = useSelector(state => state.impact);
    
- devLog(' this is a docs   this is a ',docs)
+//  devLog(' this is a docs   this is a ',docs)
 
 
 const [currentPage, setCurrentPage] = useState(1);

@@ -91,3 +91,30 @@ export const update_Events = (id,data, toast,navigate) => async (dispatch) => {
 
   }
 };
+
+
+
+export const delete_EventImages = (id , toast) => async ( dispatch ,) => {
+    try {
+        dispatch(setDeleteLoading(true));
+         const user = getUser();
+    const token = user?.token; 
+    if (!token) throw new Error("User token not found.");
+        const {
+      data: {
+        data: {  message },
+      },
+    } = await Axios.delete(`/event/delete-image/${id}`,  {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  
+        dispatch(setDeleteLoading(false));
+        toast.success(message);
+    } catch (err) {
+        dispatch(setDeleteLoading(false));
+        console.log('Delete Category error' , err);
+        toast.error(err?.response?.data?.message || err?.message || 'Something went wrong.');
+    }
+}

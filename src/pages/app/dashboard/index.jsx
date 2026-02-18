@@ -18,7 +18,7 @@ const Dashboard = () => {
 
  const dispatch=useDispatch();
     const { docs, } = useSelector(state => state.donation);
-   console.log('   this is  a conole  docs',docs)
+  //  console.log('   this is  a conole  docs',docs)
 //   devLog(' this is a docs',docs)  
 
 const [currentPage, setCurrentPage] = useState(1);

@@ -66,6 +66,7 @@ export const logout = (navigate, toast) => async (dispatch) => {
     );
 
     removeUser();
+        dispatch(setUser(null));
     dispatch(setLoading(false));
     dispatch(clearErrors());
     navigate("/");

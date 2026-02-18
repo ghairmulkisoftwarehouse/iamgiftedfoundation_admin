@@ -39,7 +39,7 @@ const CategoriesTable = (
    const dispatch=useDispatch();
   const queryClient = useQueryClient();
 
- devLog(' this is a  devLog  docs',docs)
+//  devLog(' this is a  devLog  docs',docs)
 
 
 

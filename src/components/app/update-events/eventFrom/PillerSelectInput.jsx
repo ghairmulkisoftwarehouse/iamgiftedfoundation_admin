@@ -1,16 +1,14 @@
-import { useRef, useState,useMemo,useEffect } from "react";
+import { useRef, useState } from "react";
 import useClickOutside from "../../../../utils/clickOutside";
-// import AngleArrowSvg from "../../../../assets/svgs/AngleArrowSvg";
-import AngleArrowSvg  from '../../../../assets/svgs/AngleArrowSvg'
+import AngleArrowSvg from "../../../../assets/svgs/AngleArrowSvg";
+import devLog from "../../../../utils/logsHelper";
 import Axios from "../../../../config/api";
-
 import { useDispatch, useSelector } from "react-redux";
 import { useQuery } from "react-query";
-import { setStats,setCompanyInfo } from '../../../../redux/slices/companySlice';
-
+import { setStats } from "../../../../redux/slices/programPillarSlice";
 import { ClipLoader } from "react-spinners";
 
-const OrganizationInput = ({
+const PillerSelectInput = ({
   label,
   selected,
   onSelect,
@@ -21,31 +19,17 @@ const OrganizationInput = ({
   const [localSelected,setLocalSelected]=useState('');
   const [focused, setFocused] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-     const { docDetails } = useSelector(state => state.event);
-
-     const organizationId = docDetails?.doc.hostedBy?._id;
-
-     
 
   const [searchTerm, setSearchTerm] = useState("");
   const dispatch = useDispatch();
-    const { docs } = useSelector(state => state.company);
+  const { docs = [] } = useSelector((state) => state.programPillar);
 
-      const matchedCompany = useMemo(() => {
-  if (!organizationId || !docs?.length) return null;
-
-  return docs.find((item) => item._id === organizationId) || null;
-}, [organizationId, docs]);
-
-
-
-
-
+  // devLog(" this is a pillar docs", docs);
 
    const { isLoading, isError } = useQuery(
-    ["fetch-all-company", searchTerm],
+    ["fetch-all-pillarProgram", searchTerm],
     async () => {
-      let url = `/company?sortBy=createdAt_descending`;
+      let url = `/piller/with-programs-list?sortBy=createdAt_descending`;
 
       if (searchTerm) {
         url += `&keyword=${encodeURIComponent(searchTerm)}`;
@@ -71,25 +55,12 @@ const OrganizationInput = ({
 
   const handleSelect = (item) => {
     onSelect(item);
-    dispatch(setCompanyInfo(item))
-      setLocalSelected(item)
+    setLocalSelected(item?.title);
     setShowMenu(false);
   };
 
-  
-useEffect(() => {
-  if (matchedCompany) {
-    onSelect(matchedCompany);
-    dispatch(setCompanyInfo(matchedCompany));
-    setLocalSelected(matchedCompany);
-  }
-}, [matchedCompany]);
-
-
   const handleClear = (e) => {
   e.stopPropagation(); 
-dispatch(setCompanyInfo(null))
-
   setLocalSelected("");
   setSearchTerm("");
   onSelect(null);
@@ -116,7 +87,7 @@ dispatch(setCompanyInfo(null))
 
         {/* Arrow */}
               <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
-  {localSelected && !readOnly ? (
+  {selected && !readOnly ? (
     <button
       onClick={handleClear}
       className="text-gray-400 hover:text-black text-sm"
@@ -149,11 +120,11 @@ dispatch(setCompanyInfo(null))
 
        <input
        
-          value={localSelected?.title || ""}
+          value={selected?.title || ""}
           readOnly
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          placeholder="Select Company"
+          placeholder="Select Piller"
           className={`w-full h-full  rounded-[10px] outline-none text-black text-sm
             ${readOnly && "text-gray-500 bg-transparent select-none"}
           `}
@@ -166,7 +137,7 @@ dispatch(setCompanyInfo(null))
         <div className="p-3">
             <input
               type="text"
-              placeholder="Search Company..."
+              placeholder="Search pillar..."
               value={searchTerm}
               onChange={handleSearchChange}
               className="w-full rounded-lg border px-3 py-2 text-sm"
@@ -181,13 +152,13 @@ dispatch(setCompanyInfo(null))
 
             {isError && (
               <p className="text-center text-xs text-red-500 py-3">
-                Failed to load Company
+                Failed to load Piller
               </p>
             )}
 
             {!isLoading && !isError && docs.length === 0 && (
               <p className="text-center text-xs text-gray-400 py-3">
-                No Company found
+                No Piller found
               </p>
             )}
 
@@ -199,7 +170,7 @@ dispatch(setCompanyInfo(null))
                   onClick={() => handleSelect(item)}
                   className="px-4 py-2 text-sm cursor-pointer hover:bg-gray-100 transition-colors"
                 >
-                  {item?.title}
+                  {item.title}
                 </li>
               ))}
           </ul>
@@ -216,4 +187,4 @@ dispatch(setCompanyInfo(null))
   );
 };
 
-export default OrganizationInput;
+export default PillerSelectInput;

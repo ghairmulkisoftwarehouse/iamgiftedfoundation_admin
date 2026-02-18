@@ -25,7 +25,7 @@ const AllPillerInput = ({
   const dispatch = useDispatch();
   const { docs = [] } = useSelector((state) => state.piller);
 
-  devLog(" this is a pillar docs", docs);
+  // devLog(" this is a pillar docs", docs);
 
    const { isLoading, isError } = useQuery(
     ["fetch-all-pillar"],

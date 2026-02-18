@@ -96,7 +96,7 @@ hostedBy:'',
   });
 
 const isPillerEditable = formData.category?.title === "Program";
-  console.log('piller',formData?.piller)
+  // console.log('piller',formData?.piller)
 
 
   const handleChange = (field) => (e) => {
@@ -236,7 +236,7 @@ const handleSubmit = async () => {
       
     };
 
-    devLog('this is payload', payload);
+    // devLog('this is payload', payload);
 
        await dispatch(Add_Event(payload, toast, navigate));
     queryClient.invalidateQueries('fetch-all-event');

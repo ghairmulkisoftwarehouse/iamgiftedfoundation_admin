@@ -28,7 +28,7 @@ const Header = () => {
 
    const  dispatch=useDispatch();
     const { doc } = useSelector((state) => state.profile);
-   devLog(' this is a profile  doc',doc)
+  //  devLog(' this is a profile  doc',doc)
 
        const pathSegments = location.pathname.split('/'); // ['', 'app', 'dashboard']
   let heading = '';

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState,} from "react";
 import useClickOutside from "../../../../utils/clickOutside";
 import AngleArrowSvg from "../../../../assets/svgs/AngleArrowSvg";
 import Axios from "../../../../config/api";
@@ -20,8 +20,13 @@ const PillerSelectedInput = ({
   const [focused, setFocused] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
 
+//  console.log(' this is a value',value)
+
   const dispatch = useDispatch();
   const { docs = [] } = useSelector((state) => state.programPillar);
+
+
+//  console.log(' this is a  selected',selected)
 
   // Fetch pillars with programs
   const { isLoading, isError } = useQuery(
@@ -52,10 +57,29 @@ const PillerSelectedInput = ({
     onSelect(null);
   };
 
-  const isActive = focused || !!value || !!localSelected;
+  const isActive = focused || !!value || !!selected;
 
   // get programs of the selected pillar
   const programs = docs.find((pillar) => pillar._id === selected?._id)?.programs || [];
+
+
+  useEffect(() => {
+  if (selected && value?._id) {
+    // Find the program inside the selected pillar
+    const initialProgram = programs.find(
+      (program) => program._id === value._id
+    );
+
+    if (initialProgram) {
+      setLocalSelected(initialProgram);
+    } else {
+      setLocalSelected("");
+    }
+  } else {
+    setLocalSelected("");
+  }
+}, [selected, value, docs]);
+
 
   return (
     <div ref={containerRef} className={`flex flex-col gap-1 relative ${readOnly ? "cursor-not-allowed" : ""}`}>
@@ -77,7 +101,7 @@ const PillerSelectedInput = ({
         </label>
 
         <input
-          value={localSelected|| ""}
+          value={localSelected?.title|| ""}
           readOnly
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}

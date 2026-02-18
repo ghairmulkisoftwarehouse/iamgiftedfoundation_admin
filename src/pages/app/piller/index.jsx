@@ -14,7 +14,7 @@ const Piller = () => {
 
   const { docs } = useSelector(state => state.piller);
    
- devLog(' this is a docs',docs)
+//  devLog(' this is a docs',docs)
 
 
 

@@ -22,21 +22,9 @@ const InputTags = ({
   const [searchTerm, setSearchTerm] = useState("");
   const dispatch = useDispatch();
   const { docs } = useSelector((state) => state.company);
-  const { docDetails } = useSelector(state => state.event);
 
 
 
-  useEffect(() => {
-  if (
-    docDetails?.doc?.sponsoredBy?.length > 0 &&
-    value.length === 0
-  ) {
-    const initialSponsors = docDetails.doc.sponsoredBy;
-
-    onChange(initialSponsors);
-    dispatch(setMultipleCompanyDetails(initialSponsors));
-  }
-}, [docDetails]);
 
 
   useClickOutside(containerRef, () => setShowMenu(false));
@@ -73,6 +61,11 @@ const handleSelect = (item) => {
     dispatch(setMultipleCompanyDetails(updated)); 
   }
 };
+useEffect(() => {
+  if (value?.length > 0) {
+    dispatch(setMultipleCompanyDetails(value));
+  }
+}, [value, dispatch]);
  const handleRemove = (id) => {
   const newValue = value.filter((tag) => tag._id !== id);
   onChange(newValue); 

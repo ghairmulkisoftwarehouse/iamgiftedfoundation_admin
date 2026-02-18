@@ -15,7 +15,7 @@ const UpdateCategories = () => {
   const {id}=useParams();
 
 
-  console.log(' this is a docDetails',docDetails)
+  // console.log(' this is a docDetails',docDetails)
 
   const { isLoading, isError, error } = useQuery(
   ['fetch-single-category', id],

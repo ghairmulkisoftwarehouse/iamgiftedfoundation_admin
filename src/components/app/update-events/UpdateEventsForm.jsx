@@ -9,20 +9,21 @@ import InputNumber from '../../global/form/InputNumber';
 // import InputTags   from '../../global/form/InputTags';
 import Editor   from '../../global/form/Editor';
 import ErrorBoundary  from '../../global/ErrorBoundary';
-import MultipleImage   from '../../global/form/MultipleImage';
-import {validateEventForm} from '../../../validations/eventValidation'
-import  {update_Events} from '../../../redux/actions/eventActions';
+import MultipleImage   from './eventFrom/MultipleImage';
+import {validateUpdateEventForm} from '../../../validations/updateEventValidation'
+import  {update_Events,delete_EventImages} from '../../../redux/actions/eventActions';
+
 import { useDispatch,useSelector } from 'react-redux';
 import SubmitLoading   from '../../global/SubmitLoading';
 import { useQueryClient } from "react-query";
 import { toast } from 'react-toastify';
-import devLog from '../../../utils/logsHelper';
+// import devLog from '../../../utils/logsHelper';
 import { useNavigate } from 'react-router-dom';
 import DateInput  from '../../global/form/DateInput';
 import moment from 'moment';
 import { combineDateTime } from '../../../utils/combineDateTime';
 import ProgramSelectInput   from './eventFrom/ProgramSelectInput';
-import PillerSelectInput    from '../../global/form/PillerSelectInput';
+import PillerSelectInput    from './eventFrom/PillerSelectInput';
 import PillerSelectedInput   from './eventFrom/PillerSelectedInput';
 import OrganizationInput   from './eventFrom/OrganizationInput';
 import CompanyCard   from './eventFrom/CompanyCard'
@@ -30,6 +31,12 @@ import { setStats,setCompanyInfo,resetMultipleCompanyDetails } from '../../../re
 import { useLocation } from "react-router-dom";
 import InputTags   from './eventFrom/InputTags';
 import { useParams } from 'react-router-dom';
+import Axios from '../../../config/api';
+import { useQuery } from "react-query";
+import { convertImageUrlToBase64} from '../../../utils/convertImageUrlToBase64';
+import { baseURL } from '../../../config/api';
+
+
 
 
 const UpdateEventsForm = () => {
@@ -38,26 +45,46 @@ const UpdateEventsForm = () => {
   const  navigate =useNavigate();
     const location = useLocation();
  const {id}=useParams();
-   const { docDetails } = useSelector(state => state.event);
-        
-    
-      // devLog(' this is a  docDetails',docDetails?.doc)
+   const { docDetails,patchLoading } = useSelector(state => state.event);
+      const { companyInfo ,multipleCompanyDetails} = useSelector((state) => state.company);
     
  
-  const { patchLoading } = useSelector((state) => state.event);
-   const { companyInfo ,multipleCompanyDetails} = useSelector((state) => state.company);
 
 
 
+ 
 
   const [imagePreview, setImagePreview] = useState('');
   const [errors, setErrors] = useState({});
 
-  
-
      const eventdoc=docDetails?.doc
+  //  console.log(' this is a eventdoc',eventdoc);
 
- 
+
+   const { docs } = useSelector((state) => state.company);
+
+
+  const { isLoading, isError } = useQuery(
+    ["fetch-all-company",],
+    async () => {
+      let url = `/company?sortBy=createdAt_descending`;
+      return Axios.get(url);
+    },
+    {
+      refetchOnWindowFocus: false,
+      onSuccess: (res) => {
+        const {
+          data: {
+            data: { docs, pages, docsCount, page },
+          },
+        } = res;
+        dispatch(setStats({ docs, pages, docsCount, page }));
+      },
+    }
+  );
+
+
+
 
 
 
@@ -69,16 +96,6 @@ const UpdateEventsForm = () => {
   const [startTime, setStartTime] = useState('');
     const [endDate, setEndDate] = useState(null);
   const [endTime, setEndTime] = useState('');
-
-
-
- 
-
-
-
-
- 
-
   const [formData, setFormData] = useState({
     title: '',
     piller:"",
@@ -97,22 +114,90 @@ hostedBy:'',
 
   });
 
-      useEffect(() => {
-    if (eventdoc) {
-      setFormData({
-        title: eventdoc?.title || '',
-          description: eventdoc.body || '',
-         address: eventdoc.address || '',
-         city: eventdoc.city || '',
-         state: eventdoc.state || '',
-         waitlistEnabled: eventdoc.waitlistEnabled || '' ,
-          sponsoredBy: eventdoc.sponsoredBy || [], 
-         
-     
-      
-      });
+
+
+useEffect(() => {
+  const initializeForm = async () => {
+    if (!eventdoc) return;
+
+    // Companies
+    const matchedCompanies = docs.filter(company =>
+      eventdoc.sponsoredBy?.some(s => s._id === company._id)
+    );
+
+    // Cover image
+    let coverBase64 = '';
+    if (eventdoc.featuredImage?.relativeAddress) {
+      const fullUrl = eventdoc.featuredImage.relativeAddress.startsWith("https")
+        ? eventdoc.featuredImage.relativeAddress
+        : `${baseURL}/${eventdoc.featuredImage.relativeAddress}`;
+      coverBase64 = await convertImageUrlToBase64(fullUrl);
+      setImagePreview(coverBase64);
     }
-  }, [eventdoc]);
+
+    // Gallery
+    let galleryBase64 = [];
+    if (eventdoc.images?.length) {
+      galleryBase64 = await Promise.all(
+        eventdoc.images.map(async (img) => {
+          const fullUrl = img.relativeAddress.startsWith("https")
+            ? img.relativeAddress
+            : `${baseURL}/${img.relativeAddress}`;
+          const base64 = await convertImageUrlToBase64(fullUrl);
+          return base64 ? { url: base64, _id: img._id, isExisting: true } : null;
+        })
+      );
+      galleryBase64 = galleryBase64.filter(Boolean);
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      title: eventdoc?.title || '',
+      description: eventdoc?.body || '',
+      address: eventdoc?.address || '',
+      city: eventdoc?.city || '',
+      state: eventdoc?.state || '',
+      waitlistEnabled: eventdoc?.waitlistEnabled || false,
+      sponsoredBy: matchedCompanies,
+      capacity:eventdoc?.capacity || '',
+       piller:eventdoc?.piller || '',
+       program:eventdoc?.program || '',
+      category:eventdoc?.category || '',
+      coverImage: coverBase64 || prev.coverImage,
+      gallery: galleryBase64.length ? galleryBase64 : prev.gallery,
+    }));
+  };
+
+
+  
+  if (eventdoc?.eventDate) {
+    const mDate = moment(eventdoc?.eventDate);
+    setEventDate(mDate.toDate());
+    setEventTime(mDate.format('HH:mm'));
+  }
+
+    if (eventdoc?.registrationStartDate) {
+    const regDate = moment(eventdoc?.registrationStartDate);
+    setStartDate(regDate.toDate());
+    setStartTime(regDate.format('HH:mm'));
+  }
+
+
+   if (eventdoc?.registrationEndDate) {
+    const regDate = moment(eventdoc?.registrationEndDate);
+    setEndDate(regDate.toDate());
+    setEndTime(regDate.format('HH:mm'));
+  }
+  initializeForm();
+}, [eventdoc, docs]);
+
+
+
+
+
+
+
+
 
 const isPillerEditable = formData.category?.title === "Program";
   // console.log('piller',formData?.piller)
@@ -188,7 +273,7 @@ const resetForm = () => {
     // console.log('sponsoredBy',formData?.sponsoredBy)
 
 const handleSubmit = async () => {
-  const validationErrors = validateEventForm(formData,eventDate, eventTime,startDate, startTime, endDate, endTime);
+  const validationErrors = validateUpdateEventForm(formData,eventDate, eventTime,startDate, startTime, endDate, endTime);
   setErrors(validationErrors);
     if (Object.keys(validationErrors).length > 0) {
     toast.error("Please fix the highlighted errors");
@@ -197,7 +282,6 @@ const handleSubmit = async () => {
 
 
     const eventDateTime = combineDateTime(eventDate, eventTime);
-    
   const startDateTime = combineDateTime(startDate, startTime);
   const endDateTime = combineDateTime(endDate, endTime);
 
@@ -209,13 +293,25 @@ const handleSubmit = async () => {
       ? formData.sponsoredBy.map(item => item?._id)
       : [];
     const payload = {
-      title: formData.title,
-      category:formData.category?._id,
-       eventDate: eventDateTime,
-       registrationStartDate: startDateTime,
-      registrationEndDate: endDateTime,
 
-  waitlistEnabled: formData.waitlistEnabled, 
+        ...(formData.title && {
+         title: formData.title,
+      }),
+   
+      ...(formData.category?._id && {
+        category:formData.category?._id,
+      }),
+
+       
+      ...(eventDateTime && { eventDate: eventDateTime }),
+  ...(startDateTime && { registrationStartDate: startDateTime }),
+  ...(endDateTime && { registrationEndDate: endDateTime }),
+
+  
+
+  ...(formData.waitlistEnabled && {
+       waitlistEnabled: formData.waitlistEnabled,
+      }),
 
         ...(formData.hostedBy && {
         hostedBy: formData.hostedBy?._id,
@@ -255,10 +351,14 @@ const handleSubmit = async () => {
       
     };
 
-    // devLog('this is payload', payload);
+    // console.log('this is  payload',payload)
 
+
+    
        await dispatch(update_Events(id,payload, toast, navigate));
     queryClient.invalidateQueries('fetch-all-event');
+        queryClient.invalidateQueries('fetch-singleEvent');
+    
   } catch (error) {
     console.error(error);
     toast.error('Failed to add Event');
@@ -393,10 +493,18 @@ const handleSubmit = async () => {
 
        
             <MultipleImage
-            value={formData.gallery}
-            onChange={(images) =>
-              setFormData((prev) => ({ ...prev, gallery: images }))
-            }
+           value={formData.gallery}
+            onChange={(images, removedImage) => {
+          
+              if (removedImage?.isExisting && removedImage?._id) {
+                dispatch(delete_EventImages(removedImage._id, toast));
+              }
+          
+              setFormData((prev) => ({
+                ...prev,
+                gallery: images,
+              }));
+            }}
             error={errors.gallery}
           />
     

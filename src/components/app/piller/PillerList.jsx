@@ -16,7 +16,7 @@ const PillerList = ({
 }) => {
   const  navigate= useNavigate();
          const { docs , pages ,docsCount, }= useSelector(state => state.piller);
-         console.log(' this is a  docs',docs)
+        //  console.log(' this is a  docs',docs)
 
   return (
     <div 

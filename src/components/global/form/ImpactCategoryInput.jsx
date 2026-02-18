@@ -24,7 +24,7 @@ const ImpactCategoryInput = ({
   const dispatch = useDispatch();
   const { docs = [] } = useSelector((state) => state.category);
 
-  devLog("category docs", docs);
+  // devLog("category docs", docs);
 
  const { isLoading, isError } = useQuery(
   ["fetch-all-category", searchTerm],

@@ -24,7 +24,7 @@ const ImpactForm = () => {
   const {id}=useParams();
 
 
-  console.log('  this is a  id',id)
+  // console.log('  this is a  id',id)
 
     const dispatch = useDispatch();
   const queryClient = useQueryClient();  

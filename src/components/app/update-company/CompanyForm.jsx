@@ -86,7 +86,7 @@ const handleSubmit = async () => {
       ...(formData.coverImage && { logoDataURI: formData.coverImage }),
     };
 
-    devLog('this is payload', payload);
+    // devLog('this is payload', payload);
 
     await dispatch(update_Company(id,payload, toast, navigate));
     queryClient.invalidateQueries('fetch-all-company');
