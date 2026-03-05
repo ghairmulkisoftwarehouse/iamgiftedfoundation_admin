@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import Search from '../../../components/global/Search';
 import Titlebtn from '../../../components/global/Titlebtn';
-import img from '../../../assets/images/programimg.png';
+import img from '../../../assets/images/img1.jpg';
 import DotSvg from '../../../assets/svgs/DotSvg';
 import { FaRegClock } from 'react-icons/fa';
 import TealPagination   from '../../global/TealPagination'

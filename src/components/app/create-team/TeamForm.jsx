@@ -115,7 +115,7 @@ const TeamForm = () => {
           </div>
 
      </div>
-       <InputName
+       <InputName 
             label="Name"
             value={formData.name}
             onChange={handleChange("name")}
