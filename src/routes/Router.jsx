@@ -44,6 +44,9 @@ import CreateNewUser   from '../pages/app/panel-user/create-new-user';
 import Company    from '../pages/app/company'
 import CreateCompany  from '../components/app/create-company/CompanyForm.jsx';
 import  UpdateCompany   from '../pages/app/company/update-company';
+import Post   from '../pages/app/post'
+import CreatePost from '../pages/app/post/create-post'
+import UpdatePost  from '../pages/app/post/update-post';
 
 
 
@@ -82,7 +85,12 @@ const Router = [
         { path: 'update-events/:id', element: <ProtectedRoute element={<UpdateEvents />} /> },
 
 
-    
+        { path: 'post', element: <ProtectedRoute element={<Post />} /> },
+            { path: 'create-posts', element: <ProtectedRoute element={<CreatePost/>} /> },
+                        { path: 'update-posts/:id', element: <ProtectedRoute element={<UpdatePost/>} /> },
+
+
+
     { path: 'donations', element: <ProtectedRoute element={<Donations />} /> },
      { path: 'categories', element: <ProtectedRoute element={<Categories />} /> },
       { path: 'company', element: <ProtectedRoute element={<Company />} /> },

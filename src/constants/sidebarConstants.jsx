@@ -12,6 +12,7 @@ import PeertoPeerSvg from '../assets/svgs/sidebar/PeertoPeerSvg';
 import CompanySvg  from '../assets/svgs/sidebar/CompanySvg'
 import UserSvg from '../assets/svgs/sidebar/UserSvg';
 import PillarSvg from '../assets/svgs/sidebar/PillarSvg';
+import PostingSvg from '../assets/svgs/sidebar/PostingSvg';
 
 
 export const menuItems = [
@@ -20,6 +21,7 @@ export const menuItems = [
   { name: "Events", icon: EventSvg ,path : '/app/events' },
   { name: "Programs", icon: ProgramsSvg,path : '/app/Programs' },
     { name: "Pillers", icon: PillarSvg,path : '/app/piller' },
+    { name: "Post", icon: PostingSvg,path : '/app/post' },
 
   
   { name: "Donations", icon: DonationSvg,path:'/app/donations' },

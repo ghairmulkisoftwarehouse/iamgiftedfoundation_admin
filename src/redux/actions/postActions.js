@@ -1,8 +1,10 @@
 import Axios from "../../config/api";
-import {  setCreateLoading,setError,setDeleteLoading,setPatchLoading } from "../slices/eventSlice";
+import { setDeleteLoading,setError,setCreateLoading,setPatchLoading } from "../slices/postSlice";
 import { getUser } from '../../utils/authLocalStorage';
 
-export const Add_Event = (data, toast,navigate) => async (dispatch,) => {
+
+
+export const Add_Post = (data, toast,navigate) => async (dispatch,) => {
   try {
     dispatch(setCreateLoading(true));
     dispatch(setError(null));
@@ -15,14 +17,14 @@ export const Add_Event = (data, toast,navigate) => async (dispatch,) => {
       data: {
         data: { message },
       },
-    } = await Axios.post(`/event/`, data, {
+    } = await Axios.post(`/post`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
     toast.success(message);
-        navigate(`/app/events`);
+        navigate(`/app/post`);
 
   } catch (err) {
     const errorMsg = err?.response?.data?.data?.message || err?.message || "Something went wrong.";
@@ -34,8 +36,7 @@ export const Add_Event = (data, toast,navigate) => async (dispatch,) => {
 };
 
 
-
-export const delete_Events = (id , toast) => async ( dispatch ,) => {
+export const delete_Post = (id , toast) => async ( dispatch ,) => {
     try {
         dispatch(setDeleteLoading(true));
          const user = getUser();
@@ -45,7 +46,7 @@ export const delete_Events = (id , toast) => async ( dispatch ,) => {
       data: {
         data: {  message },
       },
-    } = await Axios.delete(`/event/${id}`,  {
+    } = await Axios.delete(`/post/${id}`,  {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -61,9 +62,7 @@ export const delete_Events = (id , toast) => async ( dispatch ,) => {
 }
 
 
-
-
-export const  update_Events = (id,data, toast,navigate) => async (dispatch) => {
+export const  update_Post = (id,data, toast,navigate) => async (dispatch) => {
   try {
     dispatch(setPatchLoading(true));
 
@@ -74,7 +73,7 @@ export const  update_Events = (id,data, toast,navigate) => async (dispatch) => {
       data: {
         data: {  message },
       },
-    } = await Axios.patch(`/event/${id}`,data, {
+    } = await Axios.patch(`/post/${id}`,data, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -82,7 +81,7 @@ export const  update_Events = (id,data, toast,navigate) => async (dispatch) => {
 
     dispatch(setPatchLoading(false));
     toast.success(message);
-    navigate(`/app/events`);
+    navigate(`/app/post`);
 
   } catch (err) {
     dispatch(setPatchLoading(false));
@@ -94,7 +93,7 @@ export const  update_Events = (id,data, toast,navigate) => async (dispatch) => {
 
 
 
-export const delete_EventImages = (id , toast) => async ( dispatch ,) => {
+export const    delete_PostImages = (id , toast) => async ( dispatch ,) => {
     try {
         dispatch(setDeleteLoading(true));
          const user = getUser();
@@ -104,7 +103,7 @@ export const delete_EventImages = (id , toast) => async ( dispatch ,) => {
       data: {
         data: {  message },
       },
-    } = await Axios.delete(`/event/delete-image/${id}`,  {
+    } = await Axios.delete(`/post/delete-attachment/${id}`,  {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -118,3 +117,5 @@ export const delete_EventImages = (id , toast) => async ( dispatch ,) => {
         toast.error(err?.response?.data?.message || err?.message || 'Something went wrong.');
     }
 }
+
+

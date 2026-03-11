@@ -20,7 +20,7 @@ const { docDetails } = useSelector(state => state.team);
 
 
 
-const queryKey = ['fetch-singleTeam', id];
+  const queryKey = ['fetch-singleTeam', id];
 
 const { isLoading, isError, error } = useQuery(
   queryKey,

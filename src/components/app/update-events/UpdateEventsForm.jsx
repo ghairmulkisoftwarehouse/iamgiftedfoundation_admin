@@ -116,80 +116,80 @@ hostedBy:'',
 
 
 
-useEffect(() => {
-  const initializeForm = async () => {
-    if (!eventdoc) return;
+    useEffect(() => {
+      const initializeForm = async () => {
+        if (!eventdoc) return;
 
-    // Companies
-    const matchedCompanies = docs.filter(company =>
-      eventdoc.sponsoredBy?.some(s => s._id === company._id)
-    );
+        // Companies
+        const matchedCompanies = docs.filter(company =>
+          eventdoc.sponsoredBy?.some(s => s._id === company._id)
+        );
 
-    // Cover image
-    let coverBase64 = '';
-    if (eventdoc.featuredImage?.relativeAddress) {
-      const fullUrl = eventdoc.featuredImage.relativeAddress.startsWith("https")
-        ? eventdoc.featuredImage.relativeAddress
-        : `${baseURL}/${eventdoc.featuredImage.relativeAddress}`;
-      coverBase64 = await convertImageUrlToBase64(fullUrl);
-      setImagePreview(coverBase64);
-    }
+        // Cover image
+        let coverBase64 = '';
+        if (eventdoc.featuredImage?.relativeAddress) {
+          const fullUrl = eventdoc.featuredImage.relativeAddress.startsWith("https")
+            ? eventdoc.featuredImage.relativeAddress
+            : `${baseURL}/${eventdoc.featuredImage.relativeAddress}`;
+          coverBase64 = await convertImageUrlToBase64(fullUrl);
+          setImagePreview(coverBase64);
+        }
 
-    // Gallery
-    let galleryBase64 = [];
-    if (eventdoc.images?.length) {
-      galleryBase64 = await Promise.all(
-        eventdoc.images.map(async (img) => {
-          const fullUrl = img.relativeAddress.startsWith("https")
-            ? img.relativeAddress
-            : `${baseURL}/${img.relativeAddress}`;
-          const base64 = await convertImageUrlToBase64(fullUrl);
-          return base64 ? { url: base64, _id: img._id, isExisting: true } : null;
-        })
-      );
-      galleryBase64 = galleryBase64.filter(Boolean);
-    }
+        // Gallery
+        let galleryBase64 = [];
+        if (eventdoc.images?.length) {
+          galleryBase64 = await Promise.all(
+            eventdoc.images.map(async (img) => {
+              const fullUrl = img.relativeAddress.startsWith("https")
+                ? img.relativeAddress
+                : `${baseURL}/${img.relativeAddress}`;
+              const base64 = await convertImageUrlToBase64(fullUrl);
+              return base64 ? { url: base64, _id: img._id, isExisting: true } : null;
+            })
+          );
+          galleryBase64 = galleryBase64.filter(Boolean);
+        }
 
-    setFormData((prev) => ({
-      ...prev,
-      title: eventdoc?.title || '',
-      description: eventdoc?.body || '',
-      address: eventdoc?.address || '',
-      city: eventdoc?.city || '',
-      state: eventdoc?.state || '',
-      waitlistEnabled: eventdoc?.waitlistEnabled || false,
-      sponsoredBy: matchedCompanies,
-      capacity:eventdoc?.capacity || '',
-       piller:eventdoc?.piller || '',
-       program:eventdoc?.program || '',
-      category:eventdoc?.category || '',
-      coverImage: coverBase64 || prev.coverImage,
-      gallery: galleryBase64.length ? galleryBase64 : prev.gallery,
-    }));
-  };
-
-
-  
-  if (eventdoc?.eventDate) {
-    const mDate = moment(eventdoc?.eventDate);
-    setEventDate(mDate.toDate());
-    setEventTime(mDate.format('HH:mm'));
-  }
-
-    if (eventdoc?.registrationStartDate) {
-    const regDate = moment(eventdoc?.registrationStartDate);
-    setStartDate(regDate.toDate());
-    setStartTime(regDate.format('HH:mm'));
-  }
+        setFormData((prev) => ({
+          ...prev,
+          title: eventdoc?.title || '',
+          description: eventdoc?.body || '',
+          address: eventdoc?.address || '',
+          city: eventdoc?.city || '',
+          state: eventdoc?.state || '',
+          waitlistEnabled: eventdoc?.waitlistEnabled || false,
+          sponsoredBy: matchedCompanies,
+          capacity:eventdoc?.capacity || '',
+          piller:eventdoc?.piller || '',
+          program:eventdoc?.program || '',
+          category:eventdoc?.category || '',
+          coverImage: coverBase64 || prev.coverImage,
+          gallery: galleryBase64.length ? galleryBase64 : prev.gallery,
+        }));
+      };
 
 
-   if (eventdoc?.registrationEndDate) {
-    const regDate = moment(eventdoc?.registrationEndDate);
-    setEndDate(regDate.toDate());
-    setEndTime(regDate.format('HH:mm'));
-  }
-  initializeForm();
-}, [eventdoc, docs]);
+      
+      if (eventdoc?.eventDate) {
+        const mDate = moment(eventdoc?.eventDate);
+        setEventDate(mDate.toDate());
+        setEventTime(mDate.format('HH:mm'));
+      }
+
+        if (eventdoc?.registrationStartDate) {
+        const regDate = moment(eventdoc?.registrationStartDate);
+        setStartDate(regDate.toDate());
+        setStartTime(regDate.format('HH:mm'));
+      }
+
+
+      if (eventdoc?.registrationEndDate) {
+        const regDate = moment(eventdoc?.registrationEndDate);
+        setEndDate(regDate.toDate());
+        setEndTime(regDate.format('HH:mm'));
+      }
+      initializeForm();
+    }, [eventdoc, docs]);
 
 
 

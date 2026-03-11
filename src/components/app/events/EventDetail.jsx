@@ -71,7 +71,7 @@ const startTime =    eventDetail?.eventDate ? moment.utc(eventDetail.eventDate).
              onClick={()=>handleDeleteEvents(eventDetail)}
 
             className="text-gray-500 h-[30px] w-[30px] rounded-md hover:text-black hover:bg-primary/20 flex items-center justify-center  cursor-pointer"
-          >
+          >    
           <RxCross1/>
           </button>
           
