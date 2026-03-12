@@ -10,7 +10,7 @@ const impactSlice = createSlice({
         docsCount : 0 , 
         loading : false ,  
        error: null, 
-       deleteLoading:false,
+        deleteLoading:false,
        createLoading:false,
        patchLoading:false,
 

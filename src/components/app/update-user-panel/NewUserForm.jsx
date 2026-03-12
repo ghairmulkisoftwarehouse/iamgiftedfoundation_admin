@@ -3,33 +3,32 @@ import InputName from '../../global/form/InputName';
 import InputEmail from '../../global/form/InputEmail';
 import PasswordInput from '../../global/form/InputPassword';
 
-import { validatePanelUserForm } from '../../../validations/panelUserValidation';
 
-import { Add_PanelUser } from '../../../redux/actions/panelUserActions';
+import { update_PanelUser } from '../../../redux/actions/panelUserActions';
 import { toast } from "react-toastify";
 import { useQueryClient } from "react-query";
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import SubmitLoading from '../../../components/global/SubmitLoading';
+import { useParams } from 'react-router-dom';
 
 const initialForm = {
   fullName: "",
   name: "",
   email: "",
-  password: "",
-  confirmPassword: ""
+
 };
 
 const NewUserForm = () => {
 
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState(initialForm);
-
+  const {id}=useParams();
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const { createLoading } = useSelector((state) => state.panelUser);
+  const { patchLoading } = useSelector((state) => state.panelUser);
 
   const handleChange = (field) => (e) => {
     setFormData((prev) => ({
@@ -53,29 +52,21 @@ const NewUserForm = () => {
 
   const handleSubmit = async () => {
 
-    const validationErrors = validatePanelUserForm(formData);
-    setErrors(validationErrors);
+const payload = {
+  ...(formData.fullName && { fullName: formData.fullName }),
+  ...(formData.name && { username: formData.name }),
+  ...(formData.email && { email: formData.email }),
+};
+  console.log("Payload:", payload);
 
-    if (Object.keys(validationErrors).length > 0) return;
-
-    const payload = {
-      ...(formData.fullName && { fullName: formData.fullName }),
-      username: formData.name,
-      email: formData.email,
-      password: formData.password,
-      confirmPassword: formData.confirmPassword
-    };
-
-    console.log("Payload:", payload);
-
-    try {
-      await dispatch(Add_PanelUser(payload, toast, navigate));
-      queryClient.invalidateQueries({ queryKey: ["fetch-all-Panel-user"] });
-      resetForm();
-    } catch (error) {
-      console.error("Error creating user:", error);
-    }
-  };
+  try {
+    await dispatch(update_PanelUser(id,payload, toast, navigate));
+    queryClient.invalidateQueries({ queryKey: ["fetch-all-Panel-user"] });
+    resetForm();
+  } catch (error) {
+    console.error("Error creating user:", error);
+  }
+};
 
   return (
     <div className="bg-white rounded-[15px] pt-5 pb-11 flex flex-col gap-7 w-full">
@@ -114,19 +105,6 @@ const NewUserForm = () => {
             error={errors.email}
           />
 
-          <PasswordInput
-            label="Password"
-            value={formData.password}
-            onChange={handleChange("password")}
-            error={errors.password}
-          />
-
-          <PasswordInput
-            label="Confirm Password"
-            value={formData.confirmPassword}
-            onChange={handleChange("confirmPassword")}
-            error={errors.confirmPassword}
-          />
 
         </div>
 
@@ -145,12 +123,12 @@ const NewUserForm = () => {
         <button
           type="button"
           onClick={handleSubmit}
-          disabled={createLoading}
+          disabled={patchLoading}
           className={`btn-primary w-[50%] sm:w-[210px] h-[50px] ${
-            createLoading ? 'opacity-50 cursor-not-allowed' : ''
+            patchLoading ? 'opacity-50 cursor-not-allowed' : ''
           }`}
         >
-          {createLoading ? <SubmitLoading size={12} /> : 'Create User'}
+          {patchLoading ? <SubmitLoading size={12} /> : 'Update User'}
         </button>
 
       </div>

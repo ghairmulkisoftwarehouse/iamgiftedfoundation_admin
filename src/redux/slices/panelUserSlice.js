@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const appUserSlice = createSlice({
-    name : 'app user' ,
+const panelUserSlice = createSlice({
+    name : 'panel user' ,
     initialState : {
         docs : [] ,
         docDetails : null ,
@@ -9,9 +9,12 @@ const appUserSlice = createSlice({
         page : 1 ,
         pages : 1 , 
         docsCount : 0 , 
-                createLoading:false,
-
        error: null, 
+    createLoading:false,
+   deleteLoading:false,
+          patchLoading:false,
+
+
     } , 
     reducers : {
         setStats (state , action) {
@@ -27,19 +30,25 @@ const appUserSlice = createSlice({
         setLoading (state , action) {
             state.loading = action.payload;
         } ,
-         setCreateLoading (state , action) {
+          
+           setCreateLoading (state , action) {
             state.createLoading = action.payload;
         } ,
-          
+          setDeleteLoading:(state, action) => {
+      state.deleteLoading = action.payload;
+    },
           setError: (state, action) => {
       state.error = action.payload;
     },
      
+      setPatchLoading:(state, action) => {
+      state.patchLoading = action.payload;
+    },
     }
 });
 
 export const { 
-    setStats ,setDocDetails,setLoading,setError,setCreateLoading
-} = appUserSlice.actions;
+    setStats ,setDocDetails,setLoading,setError,setCreateLoading,setDeleteLoading,setPatchLoading
+} = panelUserSlice.actions;
 
-export default appUserSlice.reducer;
+export default panelUserSlice.reducer;

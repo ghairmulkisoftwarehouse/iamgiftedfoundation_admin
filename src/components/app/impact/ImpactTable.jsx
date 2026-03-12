@@ -16,37 +16,37 @@ import { toast } from 'react-toastify';
 import DOMPurify from "dompurify";
 
 
-const ImpactTable = ({
-     currentPage,
-         setCurrentPage,
-            limit,
-               setLimit,
-     isLoading,
-               isError,
-                error,
-}) => {
+  const ImpactTable = ({
+      currentPage,
+          setCurrentPage,
+              limit,
+                setLimit,
+      isLoading,
+                isError,
+                  error,
+  }) => {
   const navigate = useNavigate();
          const { docs , pages ,docsCount, }= useSelector(state => state.impact);
 
 
-          const dispatch=useDispatch();
-          const queryClient = useQueryClient();
+              const dispatch=useDispatch();
+              const queryClient = useQueryClient();
 
 
 
 
 
-        const handleDeleteImpact = async (id) => {
-          const title = "Confirm Deletion";
-          const message = "Are you sure you want to delete this impact?";
+            const handleDeleteImpact = async (id) => {
+              const title = "Confirm Deletion";
+              const message = "Are you sure you want to delete this impact?";
 
-          const onYesClick = async () => {
-            await dispatch(deleteImpact(id, toast));
-            queryClient.invalidateQueries(["fetch-all-impact"]);
-          };
+              const onYesClick = async () => {
+                await dispatch(deleteImpact(id, toast));
+                queryClient.invalidateQueries(["fetch-all-impact"]);
+              };
 
-          confirmBox({ title, message, onYesClick });
-        };
+              confirmBox({ title, message, onYesClick });
+            };
 
 
 

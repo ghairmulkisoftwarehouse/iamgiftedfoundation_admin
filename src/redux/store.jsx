@@ -14,7 +14,7 @@ import impactSlice  from './slices/impactSlice';
 import pillarSlice   from './slices/pillarSlice';
 import  donationSlice    from './slices/donationSlice';
 import  teamSlice   from './slices/teamSlice';
-
+import panelUserSlice   from './slices/panelUserSlice';
 
 const store = configureStore({
     reducer: {
@@ -33,6 +33,7 @@ const store = configureStore({
           company:companySlice,
           donation:donationSlice,
             team:teamSlice,
+               panelUser:panelUserSlice,
           
     }
 });

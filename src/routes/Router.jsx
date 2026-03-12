@@ -47,6 +47,7 @@ import  UpdateCompany   from '../pages/app/company/update-company';
 import Post   from '../pages/app/post'
 import CreatePost from '../pages/app/post/create-post'
 import UpdatePost  from '../pages/app/post/update-post';
+import UpdateNewUser   from '../pages/app/panel-user/update-new-user'
 
 
 
@@ -157,6 +158,10 @@ const Router = [
     {
       path: 'create-new-user',
       element: <ProtectedRoute element={<CreateNewUser />} />,
+    },
+     {
+      path: 'update-new-user/:id',
+      element: <ProtectedRoute element={<UpdateNewUser />} />,
     },
     { path: '*', element: <Navigate to="/page-not-found" /> },
   ],

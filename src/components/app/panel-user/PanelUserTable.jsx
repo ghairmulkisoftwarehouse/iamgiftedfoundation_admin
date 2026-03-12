@@ -8,55 +8,46 @@ import TrashSvg  from '../../../assets/svgs/TrashSvg';
 import EyetSVG from "../../../assets/svgs/EyetSVG";
 import EditSvg   from '../../../assets/svgs/EditSvg';
 import Titlebtn  from '../../global/Titlebtn';
+import { useQueryClient } from 'react-query';
+import { toast } from 'react-toastify';
+import ItemNotFound   from '../../../components/global/ItemNotFound';
+import DisplayError from '../../global/DisplayError';
+import Loader   from '../../../components/global/Loader'
+import {delete_PanelUser} from '../../../redux/actions/panelUserActions';
+import confirmBox from '../../../utils/confirmBox';
 
-const PanelUserTable = () => {
-const tableData = [
-  {
-    idCode: "#D-321330",
-    user: "John Due",
-    phoneNumber: "+92 039827131",
-    email: "john@gmail.com",
-    createDate: "31-12-2025",
-    typeAccess: "Super Admin",
-    status: "Active",
-  },
-  {
-    idCode: "#D-321331",
-    user: "Jane Smith",
-    phoneNumber: "+92 301234567",
-    email: "jane@gmail.com",
-    createDate: "30-12-2025",
-    typeAccess: "Admin",
-    status: "Block",
-  },
-  {
-    idCode: "#D-321332",
-    user: "Michael Lee",
-    phoneNumber: "+92 312987654",
-    email: "michael@gmail.com",
-    createDate: "29-12-2025",
-    typeAccess: "Admin",
-    status: "Active",
-  },
-  {
-    idCode: "#D-321333",
-    user: "Sarah Khan",
-    phoneNumber: "+92 334567890",
-    email: "sarah@gmail.com",
-    createDate: "28-12-2025",
-    typeAccess: "Admin",
-    status: "Active",
-  },
-  {
-    idCode: "#D-321334",
-    user: "Ali Raza",
-    phoneNumber: "+92 345678901",
-    email: "ali@gmail.com",
-    createDate: "27-12-2025",
-    typeAccess: "Admin",
-    status: "Block",
-  },
-];
+import {useDispatch ,useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
+const PanelUserTable = ({
+      currentPage,
+          setCurrentPage,
+              limit,
+                setLimit,
+      isLoading,
+                isError,
+                  error,
+  }) => {
+     const { docs,pages ,docsCount, } = useSelector(state => state.panelUser);
+   const dispatch =useDispatch();
+  const naviagte=useNavigate();
+                 const queryClient = useQueryClient();
+   
+   
+   
+   
+   
+               const handleDeletePanel = async (id) => {
+                 const title = "Confirm Deletion";
+                 const message = "Are you sure you want to delete this User Panel?";
+   
+                 const onYesClick = async () => {
+                   await dispatch(delete_PanelUser(id, toast));
+                   queryClient.invalidateQueries(["fetch-all-Panel-user"]);
+                 };
+   
+                 confirmBox({ title, message, onYesClick });
+               };
 
 
 
@@ -69,60 +60,41 @@ const tableData = [
 
       </div>
 
-      {tableData.length === 0 ? (
-        <p className="text-center py-6 text-gray-400">
-          No Recent App User found.
-        </p>
-      ) : (
+       {isLoading ? (
+       <Loader />
+     ) : isError ? (
+       <DisplayError message={error?.message || "Something went wrong"} />
+     ) : docs?.length > 0 ? ( 
         <div className="overflow-x-auto maintable">
         
           <table className="w-full mt-5 min-w-max md:min-w-full">
             <thead className="text-left text-[13px] sm:text-sm md:text-[15px]">
               <tr>
-                <th className="px-3 py-4 flex items-center gap-0.5 rounded-tl-[12px] rounded-bl-[12px]">
-                  <div className="flex items-center gap-0.5">
-                    <span>ID</span>
-                    <ArrowTopSvg />
-                  </div>
-                </th>
+               
 
                 <th className="px-3 py-4">
                   <div className="flex items-center gap-0.5">
                     <span>User Name</span>
-                    <ArrowTopSvg />
                   </div>
                 </th>
 
                 <th className="px-3 py-4">
                   <div className="flex items-center gap-0.5">
                     <span>Email</span>
-                    <ArrowTopSvg />
                   </div>
                 </th>
 
-                <th className="px-3 py-4">
-                  <div className="flex items-center gap-0.5">
-                    <span>Phone Number</span>
-                    <ArrowTopSvg />
-                  </div>
-                </th>
+              
 
-                <th className="px-3 py-4">
-                  <div className="flex items-center gap-0.5">
-                    <span>Create Date</span>
-                    <ArrowTopSvg />
-                  </div>
-                </th>
+             
                   <th className="px-3 py-4">
                   <div className="flex items-center gap-0.5">
                     <span>Type Access</span>
-                    <ArrowTopSvg />
                   </div>
                 </th>
                   <th className="px-3 py-4">
                   <div className="flex items-center gap-0.5">
                     <span>Status</span>
-                    <ArrowTopSvg />
                   </div>
                 </th>
 
@@ -136,40 +108,27 @@ const tableData = [
             </thead>
 
             <tbody>
-              {tableData.map((row, index) => (
-                <tr key={index}>
-                  <td className="px-3 py-4">{row.idCode}</td>
+              {docs.map((row) => (
+                <tr key={row?._id}>
 
                 <td className="px-3 py-4 whitespace-nowrap ">
                     <div className="flex items-center gap-2">
-                      <div className="w-[32px] h-[32px] overflow-hidden rounded-full">
-                        <img
-                          src={img}
-                          alt="user avatar"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      {row.user}
+                      
+                      {row?.username}
                     </div>
                   </td>
 
 
                          <td className="px-3 py-4 whitespace-nowrap">
-                       {row.email}
+                       {row?.email}
                   </td>
-                  <td className="px-3 py-4  whitespace-nowrap ">
-                                             {row.phoneNumber}
-
-                  </td>
+                 
 
                
 
-                  <td className="px-3 py-4">
-                      {row.createDate}
-                  </td>
                       <td className="px-3 py-4  ">
-                      <div className=" bg-[#EDF1F3] px-2 py-2 flex justify-center  rounded-[4px]">
-                         {row.typeAccess}
+                      <div className=" bg-[#EDF1F3] px-2 py-2 flex justify-center   w-fit  rounded-[4px]">
+                         {row?.roles[0]}
 
                       </div>
                         
@@ -186,7 +145,7 @@ const tableData = [
 
                  
                       <div
-                    
+                       onClick={()=>naviagte(`/app/update-new-user/${row?._id}`)}
                       className="w-fit px-2.5 py-2.5 rounded-lg bg-cyan-Blue cursor-pointer"
                     >
                       <EditSvg/>
@@ -195,7 +154,7 @@ const tableData = [
 
                    
                       <div
-                       
+                        onClick={()=>handleDeletePanel(row?._id)}
                         className="w-fit px-2.5 py-2.5 rounded-lg bg-darkred cursor-pointer"
                       >
                         <TrashSvg />
@@ -208,22 +167,25 @@ const tableData = [
             </tbody>
           </table>
         </div>
-      )}
+     ) : (
+       <ItemNotFound message="No Panel User found." />
+     )}
+     
 
-        <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center w-full px-3  flex-wrap-none">
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center w-full px-3  flex-wrap-none">
         <div className=" flex items-center gap-2 text-xs sm:text-sm text-[#313131]">
         <div>Show</div>
          <div className="w-fit h-[40px] ">
-        <PageLimit totalpages={ 10} limit={10} setLimit={4}/>
+        <PageLimit totalpages={docsCount || 10} limit={limit} setLimit={setLimit}/>
         </div>
-         <div>of 2560 results</div>
+         <div>of {docsCount} results</div>
 
         </div>
           
                <TealPagination 
-           totalPages={2}
-              currentPage={1}
-             setCurrentPage={1}
+             totalPages={pages}
+        currentPage={currentPage}
+       setCurrentPage={setCurrentPage}
       />
                                       {/* Limit Dropdown */}
       
