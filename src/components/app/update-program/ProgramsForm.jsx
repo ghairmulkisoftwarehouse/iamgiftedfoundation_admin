@@ -27,7 +27,6 @@ const ProgramsForm = ({ programdoc }) => {
   const { patchLoading } = useSelector((state) => state.program);
 
   const [imagePreview, setImagePreview] = useState("");
-
   const [errors, setErrors] = useState({});
 
   const [formData, setFormData] = useState({
@@ -49,6 +48,9 @@ const ProgramsForm = ({ programdoc }) => {
       }));
     }
   }, [programdoc]);
+
+
+ 
 
   // Load Featured Image
   useEffect(() => {
@@ -258,6 +260,8 @@ const ProgramsForm = ({ programdoc }) => {
             onSelect={handleSelectChange("piller")}
             error={errors.piller}
           />
+
+          
 
         </div>
       </div>

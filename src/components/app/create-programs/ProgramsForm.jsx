@@ -1,6 +1,6 @@
 
 
-import { useState } from 'react';
+import { useState,useRef } from 'react';
 import ImageUpload   from '../../global/form/ImageUpload';
 import InputName  from '../../global/form/InputName';
 import InputEmail   from '../../global/form/InputEmail';
@@ -19,6 +19,7 @@ import devLog from '../../../utils/logsHelper';
 import {Add_Programs} from '../../../redux/actions/programsAction';
 import ProgramSelectInput from '../../global/form/ProgramSelectInput';
 import AllPillerInput   from './AllPillerInput';
+import  VideoUploadField   from '../../../components/global/form/VideoUploadField';
 // import DateInput  from '../../../components/global/form/DateInput';
 // import { combineDateTime } from '../../../utils/combineDateTime';
 // import moment from 'moment';
@@ -31,7 +32,7 @@ const ProgramsForm = () => {
      const queryClient = useQueryClient();
    const { createLoading } = useSelector(state => state.program);
    const [imagePreview, setImagePreview] = useState("");
-
+const [videoPreview, setVideoPreview] = useState("");
   const [errors, setErrors] = useState({});
       const [formData, setFormData] = useState({
         title: "",
@@ -39,6 +40,8 @@ const ProgramsForm = () => {
     description: "",
     gallery: [],
     coverImage: null,
+      video: null, 
+
 
       });
 
@@ -56,8 +59,36 @@ const ProgramsForm = () => {
       });
     }
   };
+const handleVideoUpload = (e) => {
+  const file = e.target.files[0];
 
+  if (file) {
+    const videoURL = URL.createObjectURL(file);
 
+    setVideoPreview(videoURL);
+
+    setFormData((prev) => ({
+      ...prev,
+      video: file,
+    }));
+  }
+};
+
+const inputRef = useRef(null); // add this at the top of ProgramsForm
+const videoInputRef = useRef(null);
+
+const removeVideo = () => {
+  setVideoPreview("");
+
+  setFormData((prev) => ({
+    ...prev,
+    video: null,
+  }));
+
+  if (inputRef.current) {
+    inputRef.current.value = "";
+  }
+};
 
 
 
@@ -203,6 +234,8 @@ const handleSubmit = async () => {
             error={errors.description}
             />
           </ErrorBoundary>
+                        <div className="sm:col-span-2  ">
+
             <MultipleImage
             value={formData.gallery}
             onChange={(images) =>
@@ -210,8 +243,17 @@ const handleSubmit = async () => {
             }
             error={errors.gallery}
           />
-    
+          </div>
+
+<VideoUploadField
+  ref={videoInputRef}
+  videoPreview={videoPreview}
+  handleVideoUpload={handleVideoUpload}
+  removeVideo={removeVideo}
+/>    
      </div>
+
+  
 
     </div>
 

@@ -1,5 +1,5 @@
 import Axios from "../../config/api";
-import {  setCreateLoading,setError,setDeleteLoading,setPatchLoading } from "../slices/panelUserSlice";
+import {  setCreateLoading,setError,setDeleteLoading,setPatchLoading, } from "../slices/panelUserSlice";
 import { getUser } from '../../utils/authLocalStorage';
 
 export const Add_PanelUser = (data, toast,navigate) => async (dispatch,) => {
