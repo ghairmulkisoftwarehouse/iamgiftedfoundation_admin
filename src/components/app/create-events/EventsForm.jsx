@@ -29,6 +29,9 @@ import CompanyCard   from './eventFrom/CompanyCard'
 import { setStats,setCompanyInfo,resetMultipleCompanyDetails } from '../../../redux/slices/companySlice';
 import { useLocation } from "react-router-dom";
 import InputTags   from './eventFrom/InputTags';
+import InputOption    from './eventFrom/InputOption';
+import TeamsInput    from './eventFrom/TeamsInput';
+import  TeamCard  from './eventFrom/TeamCard';
 
 
 const EventsForm = () => {
@@ -39,6 +42,10 @@ const EventsForm = () => {
 
   const { createLoading } = useSelector((state) => state.event);
    const { companyInfo ,multipleCompanyDetails} = useSelector((state) => state.company);
+      const {  multipleTeamDetails} = useSelector((state) => state.team);
+
+      // console.log(' this is a multipleTeamDetails',multipleTeamDetails)
+
 
 
   const [imagePreview, setImagePreview] = useState('');
@@ -48,6 +55,10 @@ const EventsForm = () => {
     const [eventDate, setEventDate] = useState(null);
   const [eventTime, setEventTime] = useState('');
 
+
+   const [eventEndDate, setEventEndDate] = useState(null);
+  const [eventEndTime, setEventEndTime] = useState('');
+
   
     const [startDate, setStartDate] = useState(null);
   const [startTime, setStartTime] = useState('');
@@ -55,6 +66,22 @@ const EventsForm = () => {
   const [endTime, setEndTime] = useState('');
 
 
+
+  const eventTypeOptions = [
+  { id: 1, title: "Program", value: "program" },
+  { id: 2, title: "Community", value: "community" },
+  { id: 3, title: "Fundraiser", value: "fundraiser" },
+];
+
+
+
+const eventSubTypeOptions = [
+  { id: 1, title: "Camp", value: "camp" },
+  { id: 2, title: "Yes Session", value: "yes_session" },
+  { id: 3, title: "Workshop", value: "workshop" },
+  { id: 4, title: "Wellness Event", value: "wellness_event" },
+  { id: 5, title: "Other", value: "other" },
+];
 
  
  useEffect(() => {
@@ -79,9 +106,15 @@ const EventsForm = () => {
 
   const [formData, setFormData] = useState({
     title: '',
+    slug:"",
+    shortDescription:'',
+    eventType:'',
+    eventSubtype:'',
     piller:"",
     category:'',
     program:'',
+            ctaLabel:'',
+locationName:'',
         address:"",
     city:"",
     state:"", 
@@ -89,9 +122,31 @@ const EventsForm = () => {
     description: '',
       gallery: [],
           sponsoredBy: [],
+          team:[],
+
+  ticketDetails: [
+    {
+      title: '',
+      description: '',
+      price: '',
+      currency: 'USD', // default
+      quantity: '',
+      saleStartDate: null,
+      saleStartTime:"",
+       saleEndDate: null,
+      saleEndTime:"",
+      
+      isActive: true,
+    },
+  ],
+
 capacity:'',
 hostedBy:'',
-   waitlistEnabled: false 
+   waitlistEnabled: false ,
+   isVirtual: false ,
+   autoArchive:false,
+      status:false,
+
 
   });
 
@@ -135,10 +190,29 @@ const isPillerEditable = formData.category?.title === "Program";
 };
 
 
+const handleTicketDateChange = (index, field) => (value) => {
+  const newTickets = [...formData.ticketDetails];
+  newTickets[index][field] = value;
+  setFormData({ ...formData, ticketDetails: newTickets });
+
+  // Remove error if exists
+  if (errors?.ticketDetails?.[index]?.[field]) {
+    const updated = { ...errors };
+    delete updated.ticketDetails[index][field];
+    setErrors(updated);
+  }
+};
+
+
 const resetForm = () => {
   setFormData({
     title: '',
+    slug:'',
+        shortDescription:'',
     piller: '',
+        eventType:'',
+    eventSubtype:'',
+
     category: '',
     program: '',
     address: '',
@@ -151,11 +225,15 @@ const resetForm = () => {
     capacity: '',
     hostedBy: '',
     waitlistEnabled: false, 
+       isVirtual: false 
+
   });
      dispatch(setCompanyInfo(null)); 
     dispatch(resetMultipleCompanyDetails());
   setEventDate(null);
   setEventTime('');
+    setEventEndDate(null);
+  setEventEndTime('');
   setStartDate(null);
   setStartTime('');
   setEndDate(null);
@@ -169,7 +247,7 @@ const resetForm = () => {
     // console.log('sponsoredBy',formData?.sponsoredBy)
 
 const handleSubmit = async () => {
-  const validationErrors = validateEventForm(formData,eventDate, eventTime,startDate, startTime, endDate, endTime);
+  const validationErrors = validateEventForm(formData,eventDate, eventTime,eventEndDate,eventEndTime,   startDate, startTime, endDate, endTime);
   setErrors(validationErrors);
     if (Object.keys(validationErrors).length > 0) {
     toast.error("Please fix the highlighted errors");
@@ -195,6 +273,9 @@ const handleSubmit = async () => {
        eventDate: eventDateTime,
        registrationStartDate: startDateTime,
       registrationEndDate: endDateTime,
+      
+  eventType:formData.eventType, 
+  eventSubtype:formData.eventSubtype, 
 
   waitlistEnabled: formData.waitlistEnabled, 
 
@@ -236,10 +317,10 @@ const handleSubmit = async () => {
       
     };
 
-    // devLog('this is payload', payload);
+    devLog('this is payload', payload);
 
-       await dispatch(Add_Event(payload, toast, navigate));
-    queryClient.invalidateQueries('fetch-all-event');
+    //    await dispatch(Add_Event(payload, toast, navigate));
+    // queryClient.invalidateQueries('fetch-all-event');
   } catch (error) {
     console.error(error);
     toast.error('Failed to add Event');
@@ -282,6 +363,45 @@ const handleSubmit = async () => {
             error={errors.title}
           />
 
+            <InputName
+            label="Slug"
+            value={formData.slug}
+            onChange={handleChange("slug")}
+            error={errors.slug}
+          />
+          <div className='sm:col-span-2'>
+            <InputName
+            label="Short Description"
+            value={formData.shortDescription}
+            onChange={handleChange("shortDescription")}
+            error={errors.shortDescription}
+          />
+
+          </div>
+
+
+   <InputOption 
+  label="Event Type"  
+  name="eventType"
+  value={formData.eventType}
+  options={eventTypeOptions}
+  onChange={(val) =>
+    setFormData((prev) => ({ ...prev, eventType: val }))
+  }
+  error={errors.eventType}
+/>
+
+<InputOption 
+  label="Event Sub Type"  
+  name="eventSubtype"
+  value={formData.eventSubtype}
+  options={eventSubTypeOptions}
+  onChange={(val) =>
+    setFormData((prev) => ({ ...prev, eventSubtype: val }))
+  }
+  error={errors.eventSubtype}
+/>
+
           <ProgramSelectInput
              label="Category"
             selected={formData.category}
@@ -307,12 +427,26 @@ const handleSubmit = async () => {
 />
 
    <DateInput
-  label="Event Date"
+  label="Event Start Date"
   value={{ date: eventDate, time: eventTime }}
   onDateChange={handleDateChange('eventDate', setEventDate)}
   onTimeChange={handleDateChange('eventTime', setEventTime)}
   error={errors.eventDate  ||errors.eventTime}
 />  
+
+
+
+ 
+
+
+   <DateInput
+  label="Event End Date"
+  value={{ date: eventEndDate, time: eventEndTime }}
+  onDateChange={handleDateChange('eventEndDate', setEventEndDate)}
+  onTimeChange={handleDateChange('eventEndTime', setEventEndTime)}
+  error={errors.eventEndDate  ||errors.eventEndTime}
+/>  
+
 
 
 
@@ -396,6 +530,12 @@ const handleSubmit = async () => {
         
      </div>
      <div className=" w-full xl:w-[75%] grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-4 ">
+       <InputName
+      label="Location Name"
+      value={formData.locationName}
+      onChange={handleChange("locationName")}
+      error={errors.locationName}
+    />
          <InputName
       label="Address"
       value={formData.address}
@@ -481,7 +621,69 @@ const handleSubmit = async () => {
   
 )}
      
-      <div className='sm:col-span-2'>
+   
+
+     </div>
+
+    </div>
+
+
+
+
+
+          <div className=" flex flex-col xl:flex-row items-start gap-4 xl:gap-2.5  w-full pb-12 border-b px-5 border-black/40">
+     <div className="  w-full xl:w-[25%]   flex flex-col gap-0.5">
+<h2 className="font-medium text-base sm:text-lg xl:text-[20px]">Team Details</h2>
+<p className="text-xs sm:text-sm text-black/50 leading-[21px]">
+  Build trust by showing who's part of this team
+</p>
+        
+     </div>
+     <div className=" w-full xl:w-[75%] grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-4 ">
+     
+<div className='sm:col-span-2'>
+           <TeamsInput
+
+    label="Team"
+  value={formData.team}
+  onChange={(team) => {
+    setFormData((prev) => ({ ...prev, team }));
+
+    setErrors((prev) => {
+      const updated = { ...prev };
+      delete updated.team;
+      return updated;
+    });
+  }}
+  error={errors.team}
+/>
+</div>
+    
+
+
+     {multipleTeamDetails && multipleTeamDetails.length > 0 && (
+      <>
+
+  {multipleTeamDetails.map((item, index) => (
+      <TeamCard key={index} doc={item}  width={'w-full'} />
+    ))}
+      </>
+  
+  
+)}
+
+
+
+
+
+<InputName
+            label="Cta Label"
+            value={formData.ctaLabel}
+            onChange={handleChange("ctaLabel")}
+            error={errors.ctaLabel}
+          />
+
+   <div className='sm:col-span-2  space-y-3'>
       <div className="flex items-center gap-3">
     <input
   type="checkbox"
@@ -499,11 +701,224 @@ const handleSubmit = async () => {
       Enable Waitlist
     </label>
   </div>
+
+  <div className="flex items-center gap-3">
+    <input
+  type="checkbox"
+  id="isVirtual"
+  checked={formData.isVirtual}
+  onChange={(e) =>
+    setFormData((prev) => ({
+      ...prev,
+      isVirtual: e.target.checked,
+    }))
+  }
+  className="w-4 h-4 accent-black cursor-pointer"
+/>
+    <label htmlFor="isVirtual" className="font-medium  text-xs sm:text-sm text-black/80">
+Is Virtual   
+ </label>
   </div>
+
+
+   <div className="flex items-center gap-3">
+    <input
+  type="checkbox"
+  id="autoArchive"
+  checked={formData.autoArchive}
+  onChange={(e) =>
+    setFormData((prev) => ({
+      ...prev,
+      autoArchive: e.target.checked,
+    }))
+  }
+  className="w-4 h-4 accent-black cursor-pointer"
+/>
+    <label htmlFor="autoArchive" className="font-medium  text-xs sm:text-sm text-black/80">
+Auto Archive
+ </label>
+  </div>
+
+
+
+    <div className="flex items-center gap-3">
+    <input
+  type="checkbox"
+  id="status"
+  checked={formData.status}
+  onChange={(e) =>
+    setFormData((prev) => ({
+      ...prev,
+      status: e.target.checked,
+    }))
+  }
+  className="w-4 h-4 accent-black cursor-pointer"
+/>
+    <label htmlFor="status" className="font-medium  text-xs sm:text-sm text-black/80">
+Status </label>
+  </div>
+
+  </div>
+
+
+
+    
+   
 
      </div>
 
     </div>
+
+
+
+    <div className="flex flex-col xl:flex-row items-start gap-4 xl:gap-2.5 w-full pb-12 border-b px-5 border-black/40">
+  <div className="w-full xl:w-[25%] flex flex-col gap-0.5">
+    <h2 className="font-medium text-base sm:text-lg xl:text-[20px]">Ticket Details</h2>
+    <p className="text-xs sm:text-sm text-black/50 leading-[21px]">
+      Provide clear information about ticket types, pricing, and availability so attendees know exactly what to expect.
+    </p>
+  </div>
+<div className="w-full xl:w-[75%] grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-4">
+  {formData.ticketDetails.map((ticket, index) => (
+    <div key={index} className="contents">
+      
+      <InputName
+        label="Ticket Title"
+        value={ticket.title}
+        onChange={(e) => {
+          const newTickets = [...formData.ticketDetails];
+          newTickets[index].title = e.target.value;
+          setFormData({ ...formData, ticketDetails: newTickets });
+        }}
+        error={errors?.ticketDetails?.[index]?.title}
+      />
+
+      <InputName
+        label="Price"
+        value={ticket.price}
+        onChange={(e) => {
+          const newTickets = [...formData.ticketDetails];
+          newTickets[index].price = e.target.value;
+          setFormData({ ...formData, ticketDetails: newTickets });
+        }}
+        error={errors?.ticketDetails?.[index]?.price}
+      />
+
+
+             <InputName
+        label="Quantity"
+        value={ticket.quantity}
+        onChange={(e) => {
+          const newTickets = [...formData.ticketDetails];
+          newTickets[index].quantity = e.target.value;
+          setFormData({ ...formData, ticketDetails: newTickets });
+        }}
+        error={errors?.ticketDetails?.[index]?.quantity}
+      />
+
+
+   <InputName
+        label="Currency"
+        value={ticket.currency}
+        onChange={(e) => {
+          const newTickets = [...formData.ticketDetails];
+          newTickets[index].currency = e.target.value;
+          setFormData({ ...formData, ticketDetails: newTickets });
+        }}
+        error={errors?.ticketDetails?.[index]?.currency}
+      />
+
+
+<DateInput
+  label="Sale Start Date"
+  value={{ date: ticket.saleStartDate, time: ticket.saleStartTime }}
+  onDateChange={handleTicketDateChange(index, 'saleStartDate')}
+  onTimeChange={handleTicketDateChange(index, 'saleStartTime')}
+  error={
+    errors?.ticketDetails?.[index]?.saleStartDate || 
+    errors?.ticketDetails?.[index]?.saleStartTime
+  }
+/>
+
+<DateInput
+  label="Sale End Date"
+  value={{ date: ticket.saleEndDate, time: ticket.saleEndTime }}
+  onDateChange={handleTicketDateChange(index, 'saleEndDate')}
+  onTimeChange={handleTicketDateChange(index, 'saleEndTime')}
+  error={
+    errors?.ticketDetails?.[index]?.saleEndDate || 
+    errors?.ticketDetails?.[index]?.saleEndTime
+  }
+/>
+
+<div className='  sm:col-span-2'>
+<ErrorBoundary>
+  <Editor
+    content={ticket.description}
+    setContent={(value) => {
+      const newTickets = [...formData.ticketDetails];
+      newTickets[index].description = value;
+      setFormData({ ...formData, ticketDetails: newTickets });
+    }}
+    error={errors?.ticketDetails?.[index]?.description}
+  />
+</ErrorBoundary>
+</div>
+
+
+<div className="flex items-center gap-3 mt-2">
+  <input
+    type="checkbox"
+    id={`isActive-${index}`} // unique id for each ticket
+    checked={ticket.isActive} // per ticket
+    onChange={(e) => {
+      const newTickets = [...formData.ticketDetails];
+      newTickets[index].isActive = e.target.checked;
+      setFormData({ ...formData, ticketDetails: newTickets });
+    }}
+    className="w-4 h-4 accent-black cursor-pointer"
+  />
+  <label
+    htmlFor={`isActive-${index}`}
+    className="font-medium text-xs sm:text-sm text-black/80"
+  >
+    Active
+  </label>
+</div>
+
+
+    </div>
+  ))}
+
+  <div className="sm:col-span-2 mt-2">
+    <button
+      type="button"
+      onClick={() => {
+        setFormData({
+          ...formData,
+          ticketDetails: [
+            ...formData.ticketDetails,
+            {
+              title: '',
+              description: '',
+              price: '',
+              currency: 'USD',
+              quantity: '',
+              saleStartDate: null,
+              saleEndDate: null,
+              isActive: true,
+            },
+          ],
+        });
+      }}
+      className="btn-primary rounded-md px-2.5 h-[40px] text-sm"
+    >
+      + Add Ticket
+    </button>
+  </div>
+</div>
+</div>
+
 
           <div className="flex flex-row gap-2 items-center justify-end w-full  px-3.5 ">
      <button

@@ -5,6 +5,8 @@ const teamSlice = createSlice({
     initialState : {
         docs : [] ,
         docDetails : null ,
+            multipleTeamDetails: [], 
+
         loading : false , 
         page : 1 ,
         pages : 1 , 
@@ -23,7 +25,19 @@ const teamSlice = createSlice({
         } ,
         setDocDetails (state , action) {
             state.docDetails = action.payload
-        } , 
+        } ,
+        
+            setMultipleTeamDetails(state, action) {
+      state.multipleTeamDetails = action.payload;
+    },
+
+
+        removeTeamDetail(state, action) {
+      state.multipleTeamDetails = state.multipleTeamDetails.filter(
+        (item) => item._id !== action.payload
+      );
+    },
+
         setLoading (state , action) {
             state.loading = action.payload;
         } ,
@@ -44,7 +58,8 @@ const teamSlice = createSlice({
 });
 
 export const { 
-    setStats ,setDocDetails,setLoading,setCreateLoading,setError,setDeleteLoading,setPatchLoading
+    setStats ,setDocDetails,setLoading,setCreateLoading,setError,setDeleteLoading,setPatchLoading,
+    setMultipleTeamDetails,removeTeamDetail
 } = teamSlice.actions;
 
 export default teamSlice.reducer;

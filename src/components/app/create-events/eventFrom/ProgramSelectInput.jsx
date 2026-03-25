@@ -99,7 +99,7 @@ const ProgramSelectInput = ({
 
       {/* Dropdown */}
       {showMenu && (
-        <div className="absolute left-0  top-[55px] w-full bg-white rounded-md border border-black/20 shadow-lg z-[1000]">
+        <div className="absolute left-0  top-[55px] w-full bg-white rounded-md border border-black/20 shadow-lg z-[2]">
           <ul className="py-2 max-h-[220px] overflow-auto">
             {isLoading && (
               <div className="flex justify-center py-4">
