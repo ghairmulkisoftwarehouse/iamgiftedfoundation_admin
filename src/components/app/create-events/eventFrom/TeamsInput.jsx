@@ -151,7 +151,7 @@ const handleSelect = (item) => {
           <div className="p-3">
             <input
               type="text"
-              placeholder="Search company..."
+              placeholder="Search teams..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -169,14 +169,14 @@ const handleSelect = (item) => {
           {/* Error */}
           {isError && (
             <p className="text-center text-xs text-red-500 py-3">
-              Failed to load Companies
+              Failed to load Teams
             </p>
           )}
 
           {/* Empty */}
           {!isLoading && !isError && docs?.length === 0 && (
             <p className="text-center text-xs text-gray-400 py-3">
-              No Companies found
+              No Teams found
             </p>
           )}
 

@@ -38,6 +38,12 @@ const teamSlice = createSlice({
       );
     },
 
+
+    resetMultipleTeamDetails(state) {
+      state.multipleTeamDetails = [];
+    },
+
+
         setLoading (state , action) {
             state.loading = action.payload;
         } ,
@@ -59,7 +65,7 @@ const teamSlice = createSlice({
 
 export const { 
     setStats ,setDocDetails,setLoading,setCreateLoading,setError,setDeleteLoading,setPatchLoading,
-    setMultipleTeamDetails,removeTeamDetail
+    setMultipleTeamDetails,removeTeamDetail,resetMultipleTeamDetails
 } = teamSlice.actions;
 
 export default teamSlice.reducer;
