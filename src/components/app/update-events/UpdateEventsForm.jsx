@@ -10,6 +10,7 @@ import InputNumber from '../../global/form/InputNumber';
 import Editor   from '../../global/form/Editor';
 import ErrorBoundary  from '../../global/ErrorBoundary';
 import MultipleImage   from './eventFrom/MultipleImage';
+import  InputOption  from './eventFrom/InputOption';
 import {validateUpdateEventForm} from '../../../validations/updateEventValidation'
 import  {update_Events,delete_EventImages} from '../../../redux/actions/eventActions';
 
@@ -35,6 +36,8 @@ import Axios from '../../../config/api';
 import { useQuery } from "react-query";
 import { convertImageUrlToBase64} from '../../../utils/convertImageUrlToBase64';
 import { baseURL } from '../../../config/api';
+import TeamsInput    from './eventFrom/TeamsInput';
+import  TeamCard  from './eventFrom/TeamCard';
 
 
 
@@ -47,7 +50,7 @@ const UpdateEventsForm = () => {
  const {id}=useParams();
    const { docDetails,patchLoading } = useSelector(state => state.event);
       const { companyInfo ,multipleCompanyDetails} = useSelector((state) => state.company);
-    
+      const {  multipleTeamDetails} = useSelector((state) => state.team);
  
 
 
@@ -58,7 +61,7 @@ const UpdateEventsForm = () => {
   const [errors, setErrors] = useState({});
 
      const eventdoc=docDetails?.doc
-  //  console.log(' this is a eventdoc',eventdoc);
+   console.log(' this is a eventdoc',eventdoc);
 
 
    const { docs } = useSelector((state) => state.company);
@@ -87,9 +90,10 @@ const UpdateEventsForm = () => {
 
 
 
-
-    const [eventDate, setEventDate] = useState(null);
-  const [eventTime, setEventTime] = useState('');
+const [eventDate, setEventDate] = useState(null);
+const [eventTime, setEventTime] = useState('');
+const [eventEndDate, setEventEndDate] = useState(null);
+const [eventEndTime, setEventEndTime] = useState('');
 
   
     const [startDate, setStartDate] = useState(null);
@@ -98,9 +102,15 @@ const UpdateEventsForm = () => {
   const [endTime, setEndTime] = useState('');
   const [formData, setFormData] = useState({
     title: '',
+      slug:"",
+    shortDescription:'',
+      eventType:'',
+    eventSubtype:'',
     piller:"",
+    
     category:'',
     program:'',
+     locationName:'',
         address:"",
     city:"",
     state:"", 
@@ -108,9 +118,13 @@ const UpdateEventsForm = () => {
     description: '',
       gallery: [],
           sponsoredBy: [],
+           team:[],
 capacity:'',
 hostedBy:'',
-   waitlistEnabled: false 
+   waitlistEnabled: false ,
+   isVirtual: false ,
+autoArchive:false,
+status:false,
 
   });
 
@@ -124,6 +138,8 @@ hostedBy:'',
         const matchedCompanies = docs.filter(company =>
           eventdoc.sponsoredBy?.some(s => s._id === company._id)
         );
+
+
 
         // Cover image
         let coverBase64 = '';
@@ -155,14 +171,23 @@ hostedBy:'',
           title: eventdoc?.title || '',
           description: eventdoc?.body || '',
           address: eventdoc?.address || '',
+           slug:eventdoc?.slug || '',
+         eventType:eventdoc?.eventType || '',
+    eventSubtype:eventdoc?.eventSubtype || '',
+    shortDescription:eventdoc?.shortDescription || '',
+       locationName: eventdoc?.locationName || '',
           city: eventdoc?.city || '',
           state: eventdoc?.state || '',
           waitlistEnabled: eventdoc?.waitlistEnabled || false,
-          sponsoredBy: matchedCompanies,
+                isVirtual:eventdoc?.isVirtual || false ,
+autoArchive:eventdoc?.autoArchive || false ,
+  status: eventdoc?.status === "published", 
+    sponsoredBy: matchedCompanies,
           capacity:eventdoc?.capacity || '',
           piller:eventdoc?.piller || '',
-          program:eventdoc?.program || '',
+          program:eventdoc?.program?._id || '',
           category:eventdoc?.category || '',
+      
           coverImage: coverBase64 || prev.coverImage,
           gallery: galleryBase64.length ? galleryBase64 : prev.gallery,
         }));
@@ -170,10 +195,16 @@ hostedBy:'',
 
 
       
-      if (eventdoc?.eventDate) {
-        const mDate = moment(eventdoc?.eventDate);
+      if (eventdoc?.eventStartDate) {
+        const mDate = moment(eventdoc?.eventStartDate);
         setEventDate(mDate.toDate());
         setEventTime(mDate.format('HH:mm'));
+      }
+
+         if (eventdoc?.eventEndDate) {
+        const mDate = moment(eventdoc?.eventEndDate);
+        setEventEndDate(mDate.toDate());
+        setEventEndTime(mDate.format('HH:mm'));
       }
 
         if (eventdoc?.registrationStartDate) {
@@ -239,12 +270,36 @@ const isPillerEditable = formData.category?.title === "Program";
 };
 
 
+
+ const eventTypeOptions = [
+  { id: 1, title: "Program", value: "program" },
+  { id: 2, title: "Community", value: "community" },
+  { id: 3, title: "Fundraiser", value: "fundraiser" },
+];
+
+
+
+
+
+const eventSubTypeOptions = [
+  { id: 1, title: "Camp", value: "camp" },
+  { id: 2, title: "Yes Session", value: "yes_session" },
+  { id: 3, title: "Workshop", value: "workshop" },
+  { id: 4, title: "Wellness Event", value: "wellness_event" },
+  { id: 5, title: "Other", value: "other" },
+];
+
 const resetForm = () => {
   setFormData({
     title: '',
+       slug:"",
+    shortDescription:'',
+      eventType:'',
+    eventSubtype:'',
     piller: '',
     category: '',
     program: '',
+     locationName:'',
     address: '',
     city: '',
     state: '',
@@ -255,11 +310,16 @@ const resetForm = () => {
     capacity: '',
     hostedBy: '',
     waitlistEnabled: false, 
+    isVirtual: false ,
+autoArchive:false,
+status:false,
   });
      dispatch(setCompanyInfo(null)); 
     dispatch(resetMultipleCompanyDetails());
-  setEventDate(null);
+   setEventDate(null);
   setEventTime('');
+  setEventEndDate(null);
+  setEventEndTime('');
   setStartDate(null);
   setStartTime('');
   setEndDate(null);
@@ -273,7 +333,7 @@ const resetForm = () => {
     // console.log('sponsoredBy',formData?.sponsoredBy)
 
 const handleSubmit = async () => {
-  const validationErrors = validateUpdateEventForm(formData,eventDate, eventTime,startDate, startTime, endDate, endTime);
+  const validationErrors = validateUpdateEventForm(formData,eventDate, eventTime,eventEndDate,eventEndTime, startDate, startTime, endDate, endTime);
   setErrors(validationErrors);
     if (Object.keys(validationErrors).length > 0) {
     toast.error("Please fix the highlighted errors");
@@ -281,7 +341,8 @@ const handleSubmit = async () => {
   }
 
 
-    const eventDateTime = combineDateTime(eventDate, eventTime);
+      const eventDateTime = combineDateTime(eventDate, eventTime);
+        const eventEndDateTime = combineDateTime(eventEndDate, eventEndTime);
   const startDateTime = combineDateTime(startDate, startTime);
   const endDateTime = combineDateTime(endDate, endTime);
 
@@ -292,6 +353,9 @@ const handleSubmit = async () => {
        const sponsored = formData.sponsoredBy?.length
       ? formData.sponsoredBy.map(item => item?._id)
       : [];
+          const teams = formData.team?.length
+      ? formData.team.map(item => item?._id)
+      : [];
     const payload = {
 
         ...(formData.title && {
@@ -301,7 +365,28 @@ const handleSubmit = async () => {
       ...(formData.category?._id && {
         category:formData.category?._id,
       }),
+       
+           ...(eventDateTime && { eventStartDate: eventDateTime }),
+    ...(eventEndDateTime && { eventEndDate: eventEndDateTime }),
 
+           ...(formData.slug && {
+          slug:formData.slug, 
+      }),
+
+        ...(formData.shortDescription && {
+          shortDescription:formData.shortDescription, 
+      }),
+  
+  ...(formData.eventSubtype && {
+          eventSubtype:formData.eventSubtype, 
+      }),
+
+        ...(formData.eventType && {
+           eventType:formData.eventType,
+      }),
+  
+
+      
        
       ...(eventDateTime && { eventDate: eventDateTime }),
   ...(startDateTime && { registrationStartDate: startDateTime }),
@@ -331,6 +416,10 @@ const handleSubmit = async () => {
         ...(formData.description && {
         body: formData.description,
       }),
+
+        ...(formData.locationName && {
+        locationName: formData.locationName,
+      }),
        ...(formData.address && {
         address: formData.address,
       }),
@@ -348,10 +437,16 @@ const handleSubmit = async () => {
         ...(sponsored.length > 0 && {
         sponsoredBy: sponsored,
       }),
+       isVirtual:formData.isVirtual, 
+    autoArchive:formData.autoArchive, 
+  ...(formData.status && { status: "published" }),
+  ...(teams.length > 0 && {
+        team: teams,
+      }),
       
     };
 
-    // console.log('this is  payload',payload)
+    console.log('this is  payload',payload)
 
 
     
@@ -400,6 +495,101 @@ const handleSubmit = async () => {
             onChange={handleChange("title")}
             error={errors.title}
           />
+   <InputName
+            label="Slug"
+            value={formData.slug}
+            onChange={handleChange("slug")}
+            error={errors.slug}
+          />
+
+
+           
+          <div className='sm:col-span-2'>
+            <InputName
+            label="Short Description"
+            value={formData.shortDescription}
+            onChange={handleChange("shortDescription")}
+            error={errors.shortDescription}
+          />
+
+          </div>
+
+
+                 <InputOption 
+            label="Event Type"  
+            name="eventType"
+            value={formData.eventType}
+            options={eventTypeOptions}
+            onChange={(val) => {
+              setFormData((prev) => ({ ...prev, eventType: val }));
+          
+              if (errors.eventType) {
+                setErrors((prev) => {
+                  const updated = { ...prev };
+                  delete updated.eventType;
+                  return updated;
+                });
+              }
+            }}
+            error={errors.eventType}
+          />
+          
+          <InputOption 
+            label="Event Sub Type"  
+            name="eventSubtype"
+            value={formData.eventSubtype}
+            options={eventSubTypeOptions}
+            onChange={(val) => {
+              setFormData((prev) => ({ ...prev, eventSubtype: val }));
+          
+              if (errors.eventSubtype) {
+                setErrors((prev) => {
+                  const updated = { ...prev };
+                  delete updated.eventSubtype;
+                  return updated;
+                });
+              }
+            }}
+            error={errors.eventSubtype}
+          />
+
+           <DateInput
+                          label="Event Start Date"
+                          value={{ date: eventDate, time: eventTime }}
+                          onDateChange={handleDateChange('eventDate', setEventDate)}
+                          onTimeChange={handleDateChange('eventTime', setEventTime)}
+                          error={errors.eventDate  ||errors.eventTime}
+                        />  
+                          <DateInput
+                          label="Event End Date"
+                          value={{ date: eventEndDate, time: eventEndTime }}
+                          onDateChange={handleDateChange('eventEndDate', setEventEndDate)}
+                          onTimeChange={handleDateChange('eventEndTime', setEventEndTime)}
+                          error={errors.eventEndDate  ||errors.eventEndTime}
+                        />  
+
+
+                        
+
+
+
+          
+   <DateInput
+  label="Registration Start Date"
+  value={{ date: startDate, time: startTime }}
+  onDateChange={handleDateChange('startDate', setStartDate)}
+  onTimeChange={handleDateChange('startTime', setStartTime)}
+  error={errors.startDate  ||errors.startTime}
+/>  
+
+
+   <DateInput
+  label="Registration End Date"
+  value={{ date: endDate, time: endTime }}
+  onDateChange={handleDateChange('endDate', setEndDate)}
+  onTimeChange={handleDateChange('endTime', setEndTime)}
+  error={errors.endDate  ||errors.endTime}
+/>  
 
           <ProgramSelectInput
              label="Category"
@@ -425,14 +615,7 @@ const handleSubmit = async () => {
   error={errors.program}
 />
 
-   <DateInput
-  label="Event Date"
-  value={{ date: eventDate, time: eventTime }}
-  onDateChange={handleDateChange('eventDate', setEventDate)}
-  onTimeChange={handleDateChange('eventTime', setEventTime)}
-  error={errors.eventDate  ||errors.eventTime}
-/>  
-
+  
 
 
        <InputNumber
@@ -441,27 +624,6 @@ const handleSubmit = async () => {
             onChange={handleChange("capacity")}
             error={errors.capacity}
           />
-
-
-
-
-          
-   <DateInput
-  label="Registration Start Date"
-  value={{ date: startDate, time: startTime }}
-  onDateChange={handleDateChange('startDate', setStartDate)}
-  onTimeChange={handleDateChange('startTime', setStartTime)}
-  error={errors.startDate  ||errors.startTime}
-/>  
-
-
-   <DateInput
-  label="Registration End Date"
-  value={{ date: endDate, time: endTime }}
-  onDateChange={handleDateChange('endDate', setEndDate)}
-  onTimeChange={handleDateChange('endTime', setEndTime)}
-  error={errors.endDate  ||errors.endTime}
-/>  
 
 
         
@@ -523,6 +685,12 @@ const handleSubmit = async () => {
         
      </div>
      <div className=" w-full xl:w-[75%] grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-4 ">
+       <InputName
+           label="Location Name"
+           value={formData.locationName}
+           onChange={handleChange("locationName")}
+           error={errors.locationName}
+         />
          <InputName
       label="Address"
       value={formData.address}
@@ -608,29 +776,152 @@ const handleSubmit = async () => {
   
 )}
      
-      <div className='sm:col-span-2'>
-      <div className="flex items-center gap-3">
-    <input
-  type="checkbox"
-  id="waitlistEnabled"
-  checked={formData.waitlistEnabled}
-  onChange={(e) =>
-    setFormData((prev) => ({
-      ...prev,
-      waitlistEnabled: e.target.checked,
-    }))
-  }
-  className="w-4 h-4 accent-black cursor-pointer"
-/>
-    <label htmlFor="waitlistEnabled" className="font-medium  text-xs sm:text-sm text-black/80">
-      Enable Waitlist
-    </label>
-  </div>
-  </div>
+  
 
      </div>
 
     </div>
+
+     <div className=" flex flex-col xl:flex-row items-start gap-4 xl:gap-2.5  w-full pb-12 border-b px-5 border-black/40">
+     <div className="  w-full xl:w-[25%]   flex flex-col gap-0.5">
+        <h2 className="font-medium text-base sm:text-lg xl:text-[20px]">Team Details</h2>
+        <p className="text-xs sm:text-sm text-black/50 leading-[21px]">
+          Build trust by showing who's part of this team
+        </p>
+        
+     </div>
+     <div className=" w-full xl:w-[75%] grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-7 ">    
+        <div className='sm:col-span-2'>
+                  <TeamsInput
+
+            label="Team"
+          value={formData.team}
+          onChange={(team) => {
+            setFormData((prev) => ({ ...prev, team }));
+
+            setErrors((prev) => {
+              const updated = { ...prev };
+              delete updated.team;
+              return updated;
+            });
+          }}
+          error={errors.team}
+        />
+           <div className=' w-full grid grid-cols-1 sm:grid-cols-2  mt-5 gap-2.5'>
+            {multipleTeamDetails && multipleTeamDetails.length > 0 && (
+                <>
+
+            {multipleTeamDetails.map((item, index) => (
+                <TeamCard key={index} doc={item}  width={'w-full  '} />
+              ))}
+                </>
+            
+            
+          )}
+
+           </div>
+        
+        </div>
+
+
+        
+
+        <InputName
+                    label="Cta Label"
+                    value={formData.ctaLabel}
+                    onChange={handleChange("ctaLabel")}
+                    error={errors.ctaLabel}
+                  />
+
+                <div className='sm:col-span-2  space-y-3'>
+                    <div className="flex items-center gap-3">
+                  <input
+                type="checkbox"
+                id="waitlistEnabled"
+                checked={formData.waitlistEnabled}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    waitlistEnabled: e.target.checked,
+                  }))
+                }
+                className="w-4 h-4 accent-black cursor-pointer"
+              />
+                  <label htmlFor="waitlistEnabled" className="font-medium  text-xs sm:text-sm text-black/80">
+                    Enable Waitlist
+                  </label>
+                </div>
+  {
+
+   formData.eventType   ==='program'   && (
+      <div className="flex items-center gap-3">
+                  <input
+                type="checkbox"
+                id="isVirtual"
+                checked={formData.isVirtual}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    isVirtual: e.target.checked,
+                  }))
+                }
+                className="w-4 h-4 accent-black cursor-pointer"
+              />
+                  <label htmlFor="isVirtual" className="font-medium  text-xs sm:text-sm text-black/80">
+              Is Virtual   
+              </label>
+                </div>
+
+   )
+
+  }
+              
+
+  {
+
+   formData.eventType   ==='program'   && (
+                <div className="flex items-center gap-3">
+                  <input
+                type="checkbox"
+                id="autoArchive"
+                checked={formData.autoArchive}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    autoArchive: e.target.checked,
+                  }))
+                }
+                className="w-4 h-4 accent-black cursor-pointer"
+              />
+                  <label htmlFor="autoArchive" className="font-medium  text-xs sm:text-sm text-black/80">
+              Auto Archive
+              </label>
+                </div>
+   )}
+
+
+
+                  <div className="flex items-center gap-3">
+                  <input
+                type="checkbox"
+                id="status"
+                checked={formData.status}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    status: e.target.checked,
+                  }))
+                }
+                className="w-4 h-4 accent-black cursor-pointer"
+              />
+                  <label htmlFor="status" className="font-medium  text-xs sm:text-sm text-black/80">
+              Status </label>
+                </div>
+
+                </div>
+
+     </div>
+     </div>
 
           <div className="flex flex-row gap-2 items-center justify-end w-full  px-3.5 ">
      <button

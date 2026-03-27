@@ -1,8 +1,16 @@
-  import { useRef, useState } from "react";
-import useClickOutside from "../../../utils/clickOutside";
-import AngleArrowSvg from "../../../assets/svgs/AngleArrowSvg";
+import { useRef, useState } from "react";
+import useClickOutside from "../../../../utils/clickOutside";
+import AngleArrowSvg from "../../../../assets/svgs/AngleArrowSvg";
 
-const InputOption = ({ label, name, value = "", onChange, error, readOnly = false, options = [] }) => {
+const InputOption = ({
+  label,
+  name,
+  value = "",
+  onChange,
+  error,
+  readOnly = false,
+  options = [],
+}) => {
   const containerRef = useRef(null);
   const [focused, setFocused] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
@@ -11,8 +19,10 @@ const InputOption = ({ label, name, value = "", onChange, error, readOnly = fals
 
   const isActive = focused || value;
 
+  const displayValue = options.find((item) => item.value === value)?.title || "";
+
   const handleSelect = (item) => {
-    onChange(item.title); 
+    onChange(item.value); // store actual value
     setShowMenu(false);
   };
 
@@ -33,21 +43,21 @@ const InputOption = ({ label, name, value = "", onChange, error, readOnly = fals
           <AngleArrowSvg />
         </div>
 
-        {/* Input */}
+        {/* Input uses derived displayValue */}
         <input
           id={name}
           name={name}
-          value={value}
+          value={displayValue}
           readOnly
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           placeholder="Select an option"
-          className={`w-full h-full px-4 pr-10 rounded-[10px] outline-none text-black  text-[13px] sm:text-sm
+          className={`w-full h-full px-4 pr-10 rounded-[10px] outline-none text-black text-[13px] sm:text-sm
             ${readOnly && "text-gray-500 bg-transparent select-none"}
           `}
         />
 
-        {/* Floating Label */}
+        {/* Label */}
         <label
           htmlFor={name}
           className={`absolute left-4 px-1 bg-white text-[13px] sm:text-sm pointer-events-none transition-all duration-300
@@ -59,7 +69,7 @@ const InputOption = ({ label, name, value = "", onChange, error, readOnly = fals
 
         {/* Dropdown */}
         {showMenu && (
-          <div className="absolute left-0 top-[calc(100%+8px)] w-full bg-white rounded-md border border-black/20 shadow-lg z-[1000]">
+          <div className="absolute left-0 top-[calc(100%+8px)] w-full bg-white rounded-md border border-black/20 shadow-lg z-[2]">
             <ul className="py-2 max-h-[220px] overflow-auto">
               {options.map((item) => (
                 <li
@@ -68,8 +78,10 @@ const InputOption = ({ label, name, value = "", onChange, error, readOnly = fals
                     e.stopPropagation();
                     handleSelect(item);
                   }}
-                  className={`px-4 py-2  text-[13px] sm:text-sm cursor-pointer hover:bg-primary/5 ${
-                    item.title === value ? "bg-primary/10 font-medium" : ""
+                  className={`px-4 py-2 text-[13px] sm:text-sm cursor-pointer hover:bg-primary/5 ${
+                    item.value === value
+                      ? "bg-primary/10 font-medium"
+                      : ""
                   }`}
                 >
                   {item.title}

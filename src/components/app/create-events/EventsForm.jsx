@@ -142,13 +142,13 @@ status:false,
 
   });
 
-console.log("Ticket Details:", formData.ticketDetails);
-console.log("Sponsorship Tiles:", formData.sponsorshipTiles);
+// console.log("Ticket Details:", formData.ticketDetails);
+// console.log("Sponsorship Tiles:", formData.sponsorshipTiles);
   
 const isPillerEditable = formData.category?.title === "Program";
 
 
-console.log(' this is a   eventType',formData.eventType);
+// console.log(' this is a   eventType',formData.eventType);
 
 
   const handleChange = (field) => (e) => {
@@ -408,6 +408,15 @@ const handleSubmit = async () => {
       }),
   
 
+
+        ...(formData.slug && {
+          slug:formData.slug, 
+      }),
+
+        ...(formData.shortDescription && {
+          shortDescription:formData.shortDescription, 
+      }),
+
   waitlistEnabled: formData.waitlistEnabled, 
   isVirtual:formData.isVirtual, 
     autoArchive:formData.autoArchive, 
@@ -475,8 +484,8 @@ const handleSubmit = async () => {
 
     devLog('this is payload', payload);
 
-       await dispatch(Add_Event(payload, toast, navigate));
-    queryClient.invalidateQueries('fetch-all-event');
+    //    await dispatch(Add_Event(payload, toast, navigate));
+    // queryClient.invalidateQueries('fetch-all-event');
   } catch (error) {
     console.error(error);
     toast.error('Failed to add Event');
