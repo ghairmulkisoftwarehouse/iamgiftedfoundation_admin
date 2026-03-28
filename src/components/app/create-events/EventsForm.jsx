@@ -98,7 +98,7 @@ const eventSubTypeOptions = [
     piller:"",
     category:'',
     program:'',
-  ctaLabel:'',
+    ctaLabel:'',
    locationName:'',
     address:"",
     city:"",
@@ -484,8 +484,8 @@ const handleSubmit = async () => {
 
     devLog('this is payload', payload);
 
-    //    await dispatch(Add_Event(payload, toast, navigate));
-    // queryClient.invalidateQueries('fetch-all-event');
+       await dispatch(Add_Event(payload, toast, navigate));
+    queryClient.invalidateQueries('fetch-all-event');
   } catch (error) {
     console.error(error);
     toast.error('Failed to add Event');
@@ -921,286 +921,286 @@ const handleSubmit = async () => {
      </div>
      </div>
 
-{
-  formData.eventType === 'fundraiser' && (
-    <div className="w-full ">
-      <div className="flex gap-2 border-b border-black/20">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-2 text-sm font-medium cursor-pointer transition ${
-              activeTab === tab.id
-                ? "border-b-2 border-black text-black"
-                : "text-black/50"
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
+  {
+    formData.eventType === 'fundraiser' && (
+      <div className="w-full ">
+        <div className="flex gap-2 border-b border-black/20">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-4 py-2 text-sm font-medium cursor-pointer transition ${
+                activeTab === tab.id
+                  ? "border-b-2 border-black text-black"
+                  : "text-black/50"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
       </div>
+    )
+  }
+  {
+  formData.eventType === 'fundraiser' && activeTab === 'tickets'  && (
+
+      
+      <div className="flex flex-col xl:flex-row items-start gap-4 xl:gap-2.5 w-full pb-12 border-b px-5 border-black/40">
+    <div className="w-full xl:w-[25%] flex flex-col gap-0.5">
+      <h2 className="font-medium text-base sm:text-lg xl:text-[20px]">
+        Ticket Details
+      </h2>
+      <p className="text-xs sm:text-sm text-black/50 leading-[21px]">
+        Provide clear information about ticket types, pricing, and availability so attendees know exactly what to expect.
+      </p>
     </div>
-  )
-}
-{
- formData.eventType === 'fundraiser' && activeTab === 'tickets'  && (
 
-    
-    <div className="flex flex-col xl:flex-row items-start gap-4 xl:gap-2.5 w-full pb-12 border-b px-5 border-black/40">
-  <div className="w-full xl:w-[25%] flex flex-col gap-0.5">
-    <h2 className="font-medium text-base sm:text-lg xl:text-[20px]">
-      Ticket Details
-    </h2>
-    <p className="text-xs sm:text-sm text-black/50 leading-[21px]">
-      Provide clear information about ticket types, pricing, and availability so attendees know exactly what to expect.
-    </p>
-  </div>
-
-  <div className="w-full xl:w-[75%] grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-4">
-    {formData.ticketDetails.map((ticket, index) => (
-      <div key={index} className="sm:col-span-2 p-4 rounded-md relative">
-        {index !== 0 && (
-          <button
-            type="button"
-            onClick={() => {
-              const newTickets = formData.ticketDetails.filter(
-                (_, i) => i !== index
-              );
-              setFormData({ ...formData, ticketDetails: newTickets });
-            }}
-            className="absolute top-[-4px] right-4 text-red-500 hover:text-red-700 cursor-pointer"
-          >
-            <MdDelete />
-          </button>
-        )}
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-4 pt-3">
-          <InputName
-  label="Ticket Title"
-  value={ticket.title}
-  onChange={(e) => handleTicketChange(index, "title", e.target.value)}
-  error={errors?.ticketDetails?.[index]?.title}
-/>
-
-       <InputName
-  label="Price"
-  value={ticket.price}
-  onChange={(e) => handleTicketChange(index, "price", e.target.value)}
-  error={errors?.ticketDetails?.[index]?.price}
-/>
-
-
-        
-<InputName
-  label="Quantity"
-  value={ticket.quantity}
-  onChange={(e) => handleTicketChange(index, "quantity", e.target.value)}
-  error={errors?.ticketDetails?.[index]?.quantity}
-/>
-
-          {/* <InputName
-            label="Currency"
-            value={ticket.currency}
-            onChange={(e) => {
-              const newTickets = [...formData.ticketDetails];
-              newTickets[index].currency = e.target.value;
-              setFormData({ ...formData, ticketDetails: newTickets });
-            }}
-            error={errors?.ticketDetails?.[index]?.currency}
-          /> */}
-
-          <DateInput
-            label="Sale Start Date"
-            value={{ date: ticket.saleStartDate, time: ticket.saleStartTime }}
-            onDateChange={handleTicketDateChange(index, "saleStartDate")}
-            onTimeChange={handleTicketDateChange(index, "saleStartTime")}
-            error={
-              errors?.ticketDetails?.[index]?.saleStartDate ||
-              errors?.ticketDetails?.[index]?.saleStartTime
-            }
-          />
-
-          <DateInput
-            label="Sale End Date"
-            value={{ date: ticket.saleEndDate, time: ticket.saleEndTime }}
-            onDateChange={handleTicketDateChange(index, "saleEndDate")}
-            onTimeChange={handleTicketDateChange(index, "saleEndTime")}
-            error={
-              errors?.ticketDetails?.[index]?.saleEndDate ||
-              errors?.ticketDetails?.[index]?.saleEndTime
-            }
-          />
-
-          <div className="sm:col-span-2">
-            <ErrorBoundary>
-             <Editor
-  content={ticket.description}
-  setContent={(value) => handleTicketChange(index, "description", value)}
-  error={errors?.ticketDetails?.[index]?.description}
-/>
-            </ErrorBoundary>
-          </div>
-
-          <div className="sm:col-span-2 flex items-center gap-3 mt-2">
-            <input
-              type="checkbox"
-              id={`isActive-${index}`}
-              checked={ticket.isActive}
-              onChange={(e) => {
-                const newTickets = [...formData.ticketDetails];
-                newTickets[index].isActive = e.target.checked;
+    <div className="w-full xl:w-[75%] grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-4">
+      {formData.ticketDetails.map((ticket, index) => (
+        <div key={index} className="sm:col-span-2 p-4 rounded-md relative">
+          {index !== 0 && (
+            <button
+              type="button"
+              onClick={() => {
+                const newTickets = formData.ticketDetails.filter(
+                  (_, i) => i !== index
+                );
                 setFormData({ ...formData, ticketDetails: newTickets });
               }}
-              className="w-4 h-4 accent-black cursor-pointer"
+              className="absolute top-[-4px] right-4 text-red-500 hover:text-red-700 cursor-pointer"
+            >
+              <MdDelete />
+            </button>
+          )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-4 pt-3">
+            <InputName
+    label="Ticket Title"
+    value={ticket.title}
+    onChange={(e) => handleTicketChange(index, "title", e.target.value)}
+    error={errors?.ticketDetails?.[index]?.title}
+  />
+
+        <InputName
+    label="Price"
+    value={ticket.price}
+    onChange={(e) => handleTicketChange(index, "price", e.target.value)}
+    error={errors?.ticketDetails?.[index]?.price}
+  />
+
+
+          
+  <InputName
+    label="Quantity"
+    value={ticket.quantity}
+    onChange={(e) => handleTicketChange(index, "quantity", e.target.value)}
+    error={errors?.ticketDetails?.[index]?.quantity}
+  />
+
+            {/* <InputName
+              label="Currency"
+              value={ticket.currency}
+              onChange={(e) => {
+                const newTickets = [...formData.ticketDetails];
+                newTickets[index].currency = e.target.value;
+                setFormData({ ...formData, ticketDetails: newTickets });
+              }}
+              error={errors?.ticketDetails?.[index]?.currency}
+            /> */}
+
+            <DateInput
+              label="Sale Start Date"
+              value={{ date: ticket.saleStartDate, time: ticket.saleStartTime }}
+              onDateChange={handleTicketDateChange(index, "saleStartDate")}
+              onTimeChange={handleTicketDateChange(index, "saleStartTime")}
+              error={
+                errors?.ticketDetails?.[index]?.saleStartDate ||
+                errors?.ticketDetails?.[index]?.saleStartTime
+              }
             />
 
-            <label
-              htmlFor={`isActive-${index}`}
-              className="font-medium text-xs sm:text-sm text-black/80"
+            <DateInput
+              label="Sale End Date"
+              value={{ date: ticket.saleEndDate, time: ticket.saleEndTime }}
+              onDateChange={handleTicketDateChange(index, "saleEndDate")}
+              onTimeChange={handleTicketDateChange(index, "saleEndTime")}
+              error={
+                errors?.ticketDetails?.[index]?.saleEndDate ||
+                errors?.ticketDetails?.[index]?.saleEndTime
+              }
+            />
+
+            <div className="sm:col-span-2">
+              <ErrorBoundary>
+              <Editor
+    content={ticket.description}
+    setContent={(value) => handleTicketChange(index, "description", value)}
+    error={errors?.ticketDetails?.[index]?.description}
+  />
+              </ErrorBoundary>
+            </div>
+
+            <div className="sm:col-span-2 flex items-center gap-3 mt-2">
+              <input
+                type="checkbox"
+                id={`isActive-${index}`}
+                checked={ticket.isActive}
+                onChange={(e) => {
+                  const newTickets = [...formData.ticketDetails];
+                  newTickets[index].isActive = e.target.checked;
+                  setFormData({ ...formData, ticketDetails: newTickets });
+                }}
+                className="w-4 h-4 accent-black cursor-pointer"
+              />
+
+              <label
+                htmlFor={`isActive-${index}`}
+                className="font-medium text-xs sm:text-sm text-black/80"
+              >
+                Active
+              </label>
+            </div>
+          </div>
+        </div>
+      ))}
+
+      <div className="sm:col-span-2 mt-2">
+        <button
+          type="button"
+          onClick={() => {
+            setFormData({
+              ...formData,
+              ticketDetails: [
+                ...formData.ticketDetails,
+                {
+                  title: "",
+                  description: "",
+                  price: "",
+                  currency: "USD",
+                  quantity: "",
+                  saleStartDate: null,
+                  saleEndDate: null,
+                  isActive: true,
+                },
+              ],
+            });
+          }}
+          className="btn-primary rounded-md px-2.5 h-[40px] text-sm"
+        >
+          + Add Ticket
+        </button>
+      </div>
+    </div>
+  </div>
+
+    )
+  }
+
+
+
+
+  {/* Sponsorship  */}
+
+  {
+    formData.eventType === 'fundraiser' && activeTab === 'sponsorship' && (
+  <div className="flex flex-col xl:flex-row items-start gap-4 xl:gap-2.5 w-full pb-4 border-b px-5 border-black/40">
+    <div className="w-full xl:w-[25%] flex flex-col gap-0.5">
+      <h2 className="font-medium text-base sm:text-lg xl:text-[20px]">
+        Sponsorship Tiles
+      </h2>
+      <p className="text-xs sm:text-sm text-black/50 leading-[21px]">
+        Provide clear information about sponsorship levels, benefits, and pricing so potential sponsors know what they can gain from supporting your event.
+      </p>
+    </div>
+
+    <div className="w-full xl:w-[75%] grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-4">
+      {formData.sponsorshipTiles.map((sponsor, index) => (
+        <div key={index} className="sm:col-span-2 p-4 rounded-md relative ">
+          {index !== 0 && (
+            <button
+              type="button"
+              onClick={() => {
+                const newSponsors = formData.sponsorshipTiles.filter(
+                  (_, i) => i !== index
+                );
+                setFormData({ ...formData, sponsorshipTiles: newSponsors });
+              }}
+              className="absolute top-[-4px] right-4 text-red-500 hover:text-red-700 cursor-pointer"
             >
-              Active
-            </label>
+              <MdDelete />
+            </button>
+          )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-4 pt-2">
+        <InputName
+    label="Title"
+    value={sponsor.title}
+    onChange={(e) => handleSponsorChange(index, "title", e.target.value)}
+    error={errors?.sponsorshipTiles?.[index]?.title}
+  />
+
+
+
+
+
+
+
+  <InputName
+    label="Amount"
+    value={sponsor.amount}
+    onChange={(e) => handleSponsorChange(index, "amount", e.target.value)}
+    error={errors?.sponsorshipTiles?.[index]?.amount}
+  />
+
+  <InputName
+    label="CTA Label"
+    value={sponsor.ctaLabel}
+    onChange={(e) => handleSponsorChange(index, "ctaLabel", e.target.value)}
+    error={errors?.sponsorshipTiles?.[index]?.ctaLabel}
+  />
+
+
+  <div className="sm:col-span-2">
+              <ErrorBoundary>
+              <Editor
+    content={sponsor.description}
+    setContent={(value) => handleSponsorChange(index, "description", value)}
+    error={errors?.sponsorshipTiles?.[index]?.description}
+  />
+              </ErrorBoundary>
+            </div>
           </div>
         </div>
-      </div>
-    ))}
+      ))}
 
-    <div className="sm:col-span-2 mt-2">
-      <button
-        type="button"
-        onClick={() => {
-          setFormData({
-            ...formData,
-            ticketDetails: [
-              ...formData.ticketDetails,
-              {
-                title: "",
-                description: "",
-                price: "",
-                currency: "USD",
-                quantity: "",
-                saleStartDate: null,
-                saleEndDate: null,
-                isActive: true,
-              },
-            ],
-          });
-        }}
-        className="btn-primary rounded-md px-2.5 h-[40px] text-sm"
-      >
-        + Add Ticket
-      </button>
+      <div className="sm:col-span-2 mt-0 px-4">
+        <button
+          type="button"
+          onClick={() => {
+            setFormData({
+              ...formData,
+              sponsorshipTiles: [
+                ...formData.sponsorshipTiles,
+                {
+                  title: "",
+                  description: "",
+                  amount: 0,
+                  currency: "USD",
+                  ctaLabel: "",
+                  sortOrder: formData.sponsorshipTiles.length + 1,
+                },
+              ],
+            });
+          }}
+          className="btn-primary rounded-md px-2.5 h-[40px] text-sm"
+        >
+          + Add Sponsorship
+        </button>
+      </div>
     </div>
   </div>
-</div>
-
-  )
-}
-
-
-
-
-{/* Sponsorship  */}
-
-{
-  formData.eventType === 'fundraiser' && activeTab === 'sponsorship' && (
-<div className="flex flex-col xl:flex-row items-start gap-4 xl:gap-2.5 w-full pb-4 border-b px-5 border-black/40">
-  <div className="w-full xl:w-[25%] flex flex-col gap-0.5">
-    <h2 className="font-medium text-base sm:text-lg xl:text-[20px]">
-      Sponsorship Tiles
-    </h2>
-    <p className="text-xs sm:text-sm text-black/50 leading-[21px]">
-      Provide clear information about sponsorship levels, benefits, and pricing so potential sponsors know what they can gain from supporting your event.
-    </p>
-  </div>
-
-  <div className="w-full xl:w-[75%] grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-4">
-    {formData.sponsorshipTiles.map((sponsor, index) => (
-      <div key={index} className="sm:col-span-2 p-4 rounded-md relative ">
-        {index !== 0 && (
-          <button
-            type="button"
-            onClick={() => {
-              const newSponsors = formData.sponsorshipTiles.filter(
-                (_, i) => i !== index
-              );
-              setFormData({ ...formData, sponsorshipTiles: newSponsors });
-            }}
-            className="absolute top-[-4px] right-4 text-red-500 hover:text-red-700 cursor-pointer"
-          >
-            <MdDelete />
-          </button>
-        )}
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-4 pt-2">
-      <InputName
-  label="Title"
-  value={sponsor.title}
-  onChange={(e) => handleSponsorChange(index, "title", e.target.value)}
-  error={errors?.sponsorshipTiles?.[index]?.title}
-/>
-
-
-
-
-
-
-
-<InputName
-  label="Amount"
-  value={sponsor.amount}
-  onChange={(e) => handleSponsorChange(index, "amount", e.target.value)}
-  error={errors?.sponsorshipTiles?.[index]?.amount}
-/>
-
-<InputName
-  label="CTA Label"
-  value={sponsor.ctaLabel}
-  onChange={(e) => handleSponsorChange(index, "ctaLabel", e.target.value)}
-  error={errors?.sponsorshipTiles?.[index]?.ctaLabel}
-/>
-
-
-<div className="sm:col-span-2">
-            <ErrorBoundary>
-             <Editor
-  content={sponsor.description}
-  setContent={(value) => handleSponsorChange(index, "description", value)}
-  error={errors?.sponsorshipTiles?.[index]?.description}
-/>
-            </ErrorBoundary>
-          </div>
-        </div>
-      </div>
-    ))}
-
-    <div className="sm:col-span-2 mt-0 px-4">
-      <button
-        type="button"
-        onClick={() => {
-          setFormData({
-            ...formData,
-            sponsorshipTiles: [
-              ...formData.sponsorshipTiles,
-              {
-                title: "",
-                description: "",
-                amount: 0,
-                currency: "USD",
-                ctaLabel: "",
-                sortOrder: formData.sponsorshipTiles.length + 1,
-              },
-            ],
-          });
-        }}
-        className="btn-primary rounded-md px-2.5 h-[40px] text-sm"
-      >
-        + Add Sponsorship
-      </button>
-    </div>
-  </div>
-</div>
-  )}
+    )}
 
 
           <div className="flex flex-row gap-2 items-center justify-end w-full  px-3.5 ">

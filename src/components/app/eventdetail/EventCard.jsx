@@ -15,8 +15,8 @@ const { docDetails } = useSelector(state => state.event);
   const eventdoc=docDetails?.doc;
 
 
-   const eventDate = eventdoc?.eventDate
-    ? moment(eventdoc.eventDate).format('MMM DD, YYYY')
+   const eventDate = eventdoc?.eventStartDate
+    ? moment(eventdoc.eventStartDate).format('MMM DD, YYYY')
     : 'N/A';
 
     const registrationStartDate = eventdoc?.registrationStartDate
@@ -37,7 +37,7 @@ const registrationEndTime = eventdoc?.registrationEndDate
   : null;
 
   
-  const eventTime =     eventdoc?.eventDate ? moment( eventdoc?.eventDate).format('hh:mm A')  : 'N/A';
+  const eventTime =     eventdoc?.eventStartDate ? moment( eventdoc?.eventStartDate).format('hh:mm A')  : 'N/A';
 const capacity =eventdoc?.capacity;       
 const registeredCount = eventdoc?.registeredCount; 
 
@@ -310,6 +310,83 @@ Progress: {isInfinite ? 'Unlimited' : `${Math.round(progressPercent)}%`}
         </span>
       ))}
     </p>
+  </div>
+)}
+
+
+
+{/* Tickets Section */}
+{eventdoc?.ticketDetails?.length > 0 && (
+  <div className="flex flex-col gap-2 pt-4 w-full">
+    <h2 className="text-sm md:text-base font-semibold  ">Tickets</h2>
+
+    <div className="grid grid-cols-1 sm:grid-cols-3  md:grid-cols-4 w-full gap-3">
+      {eventdoc.ticketDetails.map((ticket) => (
+        <div
+          key={ticket._id}
+          className="p-3 rounded-[12px] bg-[#F4F9FD] flex flex-col gap-1   cursor-pointer
+          hover:shadow-md transition-all duration-300"
+        >
+          <h3 className="font-medium text-sm md:text-base">
+            {ticket.title}
+          </h3>
+
+          {ticket.description && (
+            <p className="text-xs text-black/70">
+              {ticket.description}
+            </p>
+          )}
+
+          <p className="text-sm font-semibold">
+            {ticket.price} {ticket.currency}
+          </p>
+
+          <p className="text-xs text-black/60">
+            Available: {ticket.quantity - ticket.soldCount}
+          </p>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
+{/* Sponsorship Section */}
+{eventdoc?.sponsorshipTiles?.length > 0 && (
+  <div className="flex flex-col gap-2 pt-4 w-full">
+    <h2 className="text-sm md:text-base font-semibold">Sponsorship</h2>
+
+    <div className="grid grid-cols-1 sm:grid-cols-3  md:grid-cols-4  w-full gap-3">
+      {eventdoc.sponsorshipTiles.map((sponsor) => (
+        <div
+          key={sponsor._id}
+          className="p-3 rounded-[12px] bg-[#F4F9FD] flex flex-col cursor-pointer gap-1
+          hover:shadow-md transition-all duration-300"
+        >
+          <h3 className="font-medium text-sm md:text-base">
+            {sponsor.title}
+          </h3>
+
+          {sponsor.subtitle && (
+            <p className="text-xs text-black/70">
+              {sponsor.subtitle}
+            </p>
+          )}
+
+          <div
+            className="text-xs text-black/70"
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(sponsor.description),
+            }}
+          />
+
+          <p className="text-sm font-semibold">
+            {sponsor.amount} {sponsor.currency}
+          </p>
+
+         
+        </div>
+      ))}
+    </div>
   </div>
 )}
 

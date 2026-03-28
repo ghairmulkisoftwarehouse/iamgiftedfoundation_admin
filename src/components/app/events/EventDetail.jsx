@@ -17,16 +17,16 @@ import { toast } from 'react-toastify';
 const EventDetail = ({eventDetail,setDetail}) => {
     // devLog(' this is a eventDetail',eventDetail)
 
- const startDate = eventDetail?.eventDate
-  ? moment.utc(eventDetail.eventDate).format('MMM DD, YYYY')
+ const startDate = eventDetail?.eventStartDate
+  ? moment.utc(eventDetail.eventStartDate).format('MMM DD, YYYY')
   : 'N/A';
 
-const startTime =    eventDetail?.eventDate ? moment.utc(eventDetail.eventDate).format('hh:mm A')  : 'N/A';
+const startTime =    eventDetail?.eventStartDate ? moment.utc(eventDetail.eventStartDate).format('hh:mm A')  : 'N/A';
 
   
   const daysLeft =
-    eventDetail?.eventDate && moment(eventDetail.eventDate).isAfter(moment())
-      ? moment(eventDetail.eventDate).diff(moment(), 'days')
+    eventDetail?.eventStartDate && moment(eventDetail.eventStartDate).isAfter(moment())
+      ? moment(eventDetail.eventStartDate).diff(moment(), 'days')
       : 0;
 
 
@@ -134,8 +134,10 @@ const startTime =    eventDetail?.eventDate ? moment.utc(eventDetail.eventDate).
           
 
 
- 
-       <div className=' flex flex-col gap-1'>
+
+{
+  eventDetail?.body  && (
+     <div className=' flex flex-col gap-1'>
         <h2 className=' text-[13px] sm:text-sm  font-medium'>Story</h2>
 
       <div
@@ -146,6 +148,10 @@ const startTime =    eventDetail?.eventDate ? moment.utc(eventDetail.eventDate).
        
 
        </div>
+
+  )
+} 
+      
         
       
 

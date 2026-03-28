@@ -16,19 +16,19 @@ const PillerSelectedInput = ({
   readOnly = false,
 }) => {
   const containerRef = useRef(null);
-  const [localSelected, setLocalSelected] = useState("");
+  const [localSelected, setLocalSelected] = useState(value?.title || '');
   const [focused, setFocused] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  // console.log(' this is a localSelected',localSelected)
 
-//  console.log(' this is a value',value)
+console.log('value',value)
 
   const dispatch = useDispatch();
   const { docs = [] } = useSelector((state) => state.programPillar);
 
 
-//  console.log(' this is a  selected',selected)
+//  console.log(' this is a  selected',selected);
 
-  // Fetch pillars with programs
   const { isLoading, isError } = useQuery(
     ["fetch-all-pillarProgram"],
     async () => Axios.get(`/piller/with-programs-list?sortBy=createdAt_descending`),
@@ -43,9 +43,8 @@ const PillerSelectedInput = ({
 
   useClickOutside(containerRef, () => setShowMenu(false));
 
-  // select a program
   const handleSelect = (item) => {
-    onSelect(item?._id); // update formData.program
+    onSelect(item?._id);
     setLocalSelected(item?.title); // update local display
     setShowMenu(false);
   };
@@ -59,26 +58,24 @@ const PillerSelectedInput = ({
 
   const isActive = focused || !!value || !!selected;
 
-  // get programs of the selected pillar
   const programs = docs.find((pillar) => pillar._id === selected?._id)?.programs || [];
 
 
-  useEffect(() => {
-  if (selected && value?._id) {
-    // Find the program inside the selected pillar
-    const initialProgram = programs.find(
-      (program) => program._id === value._id
-    );
+  //   useEffect(() => {
+  //   if (selected && value?._id) {
+  //     const initialProgram = programs.find(
+  //       (program) => program._id === value._id
+  //     );
 
-    if (initialProgram) {
-      setLocalSelected(initialProgram);
-    } else {
-      setLocalSelected("");
-    }
-  } else {
-    setLocalSelected("");
-  }
-}, [selected, value, docs]);
+  //     if (initialProgram) {
+  //       setLocalSelected(initialProgram);
+  //     } else {
+  //       setLocalSelected("");
+  //     }
+  //   } else {
+  //     setLocalSelected("");
+  //   }
+  // }, [selected, value, docs]);
 
 
   return (
@@ -101,7 +98,7 @@ const PillerSelectedInput = ({
         </label>
 
         <input
-          value={localSelected?.title|| ""}
+          value={localSelected|| ""}
           readOnly
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}

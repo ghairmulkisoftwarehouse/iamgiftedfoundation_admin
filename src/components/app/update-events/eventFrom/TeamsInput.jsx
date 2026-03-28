@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState,useEffect } from "react";
 import useClickOutside from "../../../../utils/clickOutside";
 import AngleArrowSvg from "../../../../assets/svgs/AngleArrowSvg";
 import { RxCross2 } from "react-icons/rx";
@@ -22,6 +22,8 @@ const TeamsInput = ({
   const [searchTerm, setSearchTerm] = useState("");
   const dispatch = useDispatch();
   const { docs } = useSelector((state) => state.team);
+
+ console.log('value',value);
 
   useClickOutside(containerRef, () => setShowMenu(false));
 
@@ -62,6 +64,13 @@ const handleSelect = (item) => {
   onChange(newValue); 
   dispatch(removeTeamDetail(id)); 
 };
+
+
+  useEffect(() => {
+    if (value?.length > 0) {
+      dispatch(setMultipleTeamDetails(value));
+    }
+  }, [value, dispatch]);
 
   // Add custom tag on Enter
   const handleKeyDown = (e) => {

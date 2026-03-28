@@ -41,7 +41,6 @@ export const validateUpdateEventForm = (
   const endDateTime =
     endDate && endTime ? combineDateTime(endDate, endTime) : null;
 
-  // ✅ Event range validation
   if (eventStartDateTime && eventEndDateTime) {
     if (new Date(eventStartDateTime) > new Date(eventEndDateTime)) {
       errors.eventEndDate = "Event end must be after event start";
@@ -49,7 +48,6 @@ export const validateUpdateEventForm = (
     }
   }
 
-  // ✅ Registration range validation
   if (startDateTime && endDateTime) {
     if (new Date(startDateTime) > new Date(endDateTime)) {
       errors.startDate = "Registration start cannot be later than registration end";
@@ -57,7 +55,6 @@ export const validateUpdateEventForm = (
     }
   }
 
-  // ✅ Registration vs Event
   if (startDateTime && eventStartDateTime) {
     if (new Date(startDateTime) > new Date(eventStartDateTime)) {
       errors.startDate = "Registration start must be before the event date";
@@ -70,17 +67,122 @@ export const validateUpdateEventForm = (
     }
   }
 
-  // const isProgramCategory =
-  //   data.eventType === "program" && data.category?.title === "Program";
 
-  // if (isProgramCategory) {
-  //   if (!data.piller?.trim()) {
-  //     errors.piller = "Piller is required for Program category";
-  //   }
-  //   if (!data.program?.trim()) {
-  //     errors.program = "Program is required";
-  //   }
-  // }
+// ----------- TICKETS -----------
+if (data.ticketDetails?.length > 0) {
+  data.ticketDetails.forEach((ticket, index) => {
+    const ticketErrors = {};
+
+    // Title (only if filled)
+    // if (ticket.title && !ticket.title.trim()) {
+    //   ticketErrors.title = "Invalid title";
+    // }
+
+    // Price (only if filled)
+    if (
+      ticket.price !== "" &&
+      ticket.price !== null &&
+      ticket.price !== undefined &&
+      isNaN(Number(ticket.price))
+    ) {
+      ticketErrors.price = "Price must be a number";
+    }
+
+    // Quantity (only if filled)
+    if (
+      ticket.quantity !== "" &&
+      ticket.quantity !== null &&
+      ticket.quantity !== undefined &&
+      isNaN(Number(ticket.quantity))
+    ) {
+      ticketErrors.quantity = "Quantity must be a number";
+    }
+
+    // Date logic ONLY if all exist
+    if (
+      ticket.saleStartDate &&
+      ticket.saleStartTime &&
+      ticket.saleEndDate &&
+      ticket.saleEndTime
+    ) {
+      const saleStart = combineDateTime(
+        ticket.saleStartDate,
+        ticket.saleStartTime
+      );
+      const saleEnd = combineDateTime(
+        ticket.saleEndDate,
+        ticket.saleEndTime
+      );
+
+      if (new Date(saleStart) > new Date(saleEnd)) {
+        ticketErrors.saleEndDate = "End must be after start";
+      }
+    }
+
+    // Event compare ONLY if exists
+    if (
+      eventDate &&
+      eventTime &&
+      ticket.saleEndDate &&
+      ticket.saleEndTime
+    ) {
+      const saleEnd = combineDateTime(
+        ticket.saleEndDate,
+        ticket.saleEndTime
+      );
+      const eventStart = combineDateTime(eventDate, eventTime);
+
+      if (new Date(saleEnd) >= new Date(eventStart)) {
+        ticketErrors.saleEndDate =
+          "Sale must end before event starts";
+      }
+    }
+
+    if (Object.keys(ticketErrors).length > 0) {
+      if (!errors.ticketDetails) errors.ticketDetails = [];
+      errors.ticketDetails[index] = ticketErrors;
+    }
+  });
+}
+
+
+// ----------- SPONSORSHIP -----------
+if (data.sponsorshipTiles?.length > 0) {
+  data.sponsorshipTiles.forEach((sponsor, index) => {
+    const sponsorErrors = {};
+
+    // // Title
+    // if (sponsor.title && !sponsor.title.trim()) {
+    //   sponsorErrors.title = "Invalid title";
+    // }
+
+    // // Description
+    // if (sponsor.description && !sponsor.description.trim()) {
+    //   sponsorErrors.description = "Invalid description";
+    // }
+
+    // Amount (only if filled)
+    if (
+      sponsor.amount !== "" &&
+      sponsor.amount !== null &&
+      sponsor.amount !== undefined &&
+      isNaN(Number(sponsor.amount))
+    ) {
+      sponsorErrors.amount = "Amount must be a number";
+    }
+
+    // CTA
+    if (sponsor.ctaLabel && !sponsor.ctaLabel.trim()) {
+      sponsorErrors.ctaLabel = "Invalid CTA label";
+    }
+
+    if (Object.keys(sponsorErrors).length > 0) {
+      if (!errors.sponsorshipTiles) errors.sponsorshipTiles = [];
+      errors.sponsorshipTiles[index] = sponsorErrors;
+    }
+  });
+}
+
 
   return errors;
 };

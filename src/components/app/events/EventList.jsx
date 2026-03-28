@@ -79,8 +79,8 @@ const EventList = ({
     docs.map((item, index) => {
   
   const daysLeft =
-    item?.eventDate && moment(item?.eventDate).isAfter(moment())
-      ? moment(item?.eventDate).diff(moment(), 'days')
+    item?.eventStartDate && moment(item?.eventStartDate).isAfter(moment())
+      ? moment(item?.eventStartDate).diff(moment(), 'days')
       : 0;
 
 

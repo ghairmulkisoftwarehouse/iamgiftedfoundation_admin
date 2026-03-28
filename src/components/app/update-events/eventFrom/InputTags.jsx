@@ -61,11 +61,11 @@ const handleSelect = (item) => {
     dispatch(setMultipleCompanyDetails(updated)); 
   }
 };
-useEffect(() => {
-  if (value?.length > 0) {
-    dispatch(setMultipleCompanyDetails(value));
-  }
-}, [value, dispatch]);
+  useEffect(() => {
+    if (value?.length > 0) {
+      dispatch(setMultipleCompanyDetails(value));
+    }
+  }, [value, dispatch]);
  const handleRemove = (id) => {
   const newValue = value.filter((tag) => tag._id !== id);
   onChange(newValue); 

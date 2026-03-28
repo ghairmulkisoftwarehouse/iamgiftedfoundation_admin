@@ -28,7 +28,18 @@ import PillerSelectInput    from './eventFrom/PillerSelectInput';
 import PillerSelectedInput   from './eventFrom/PillerSelectedInput';
 import OrganizationInput   from './eventFrom/OrganizationInput';
 import CompanyCard   from './eventFrom/CompanyCard'
-import { setStats,setCompanyInfo,resetMultipleCompanyDetails } from '../../../redux/slices/companySlice';
+import { MdDelete } from "react-icons/md";
+
+import { 
+  setStats as setCompanyStats,
+  setCompanyInfo,
+  resetMultipleCompanyDetails 
+} from '../../../redux/slices/companySlice';
+
+import { 
+  setStats as setTeamStats 
+} from '../../../redux/slices/teamSlice';
+
 import { useLocation } from "react-router-dom";
 import InputTags   from './eventFrom/InputTags';
 import { useParams } from 'react-router-dom';
@@ -55,39 +66,64 @@ const UpdateEventsForm = () => {
 
 
 
- 
+   const [activeTab, setActiveTab] = useState("tickets");
+
 
   const [imagePreview, setImagePreview] = useState('');
   const [errors, setErrors] = useState({});
 
      const eventdoc=docDetails?.doc
-   console.log(' this is a eventdoc',eventdoc);
+
+const { docs: companyDocs } = useSelector((state) => state.company);
+const { docs: teamDocs } = useSelector((state) => state.team);
 
 
-   const { docs } = useSelector((state) => state.company);
 
+ const { isLoading: companyLoading } = useQuery(
+  ["fetch-all-company"],
+  async () => {
+    return Axios.get(`/company?sortBy=createdAt_descending`);
+  },
+  {
+    refetchOnWindowFocus: false,
+    onSuccess: (res) => {
+      const {
+        data: {
+          data: { docs, pages, docsCount, page },
+        },
+      } = res;
 
-  const { isLoading, isError } = useQuery(
-    ["fetch-all-company",],
-    async () => {
-      let url = `/company?sortBy=createdAt_descending`;
-      return Axios.get(url);
+      dispatch(setCompanyStats({ docs, pages, docsCount, page }));
     },
-    {
-      refetchOnWindowFocus: false,
-      onSuccess: (res) => {
-        const {
-          data: {
-            data: { docs, pages, docsCount, page },
-          },
-        } = res;
-        dispatch(setStats({ docs, pages, docsCount, page }));
-      },
-    }
-  );
+  }
+);
+
+   const { isLoading: teamLoading } = useQuery(
+  ["fetch-all-team"],
+  () => {
+    return Axios.get(`/team/?pageSize=100&sortBy=createdAt_descending`);
+  },
+  {
+    refetchOnWindowFocus: false,
+    onSuccess: (res) => {
+      const {
+        data: {
+          data: { docs, pages, docsCount, page },
+        },
+      } = res;
+
+      dispatch(setTeamStats({ docs, pages, docsCount, page }));
+    },
+  }
+);
 
 
 
+ const tabs = [
+ 
+    { id: "tickets", label: "Ticket Details" },
+    { id: "sponsorship", label: "Sponsorship" },
+  ];
 
 
 const [eventDate, setEventDate] = useState(null);
@@ -101,26 +137,54 @@ const [eventEndTime, setEventEndTime] = useState('');
     const [endDate, setEndDate] = useState(null);
   const [endTime, setEndTime] = useState('');
   const [formData, setFormData] = useState({
+        coverImage: null,  
     title: '',
-      slug:"",
+    slug:"",
     shortDescription:'',
-      eventType:'',
+    eventType:'',
     eventSubtype:'',
-    piller:"",
-    
-    category:'',
+      category:'',
+    piller:"", 
     program:'',
+    capacity:'',
+ ticketDetails: [
+    {
+      title: '',
+      description: '',
+      price: '',
+      currency: '', 
+      quantity: '',
+      saleStartDate: null,
+      saleStartTime:"",
+       saleEndDate: null,
+      saleEndTime:"",
+      // isActive: false,
+    },
+  ],
+    sponsorshipTiles: [
+   {
+      title: '',
+      description: '',
+      amount: '',
+      currency: '', 
+      sortOrder:"",  
+    },
+    ],
      locationName:'',
-        address:"",
+    address:"",
     city:"",
     state:"", 
-    coverImage: null,  
+
+
     description: '',
-      gallery: [],
-          sponsoredBy: [],
-           team:[],
-capacity:'',
-hostedBy:'',
+     gallery: [],
+
+    sponsoredBy: [],
+    hostedBy:'',
+
+
+     team:[],
+    ctaLabel:'',
    waitlistEnabled: false ,
    isVirtual: false ,
 autoArchive:false,
@@ -130,99 +194,164 @@ status:false,
 
 
 
-    useEffect(() => {
-      const initializeForm = async () => {
-        if (!eventdoc) return;
-
-        // Companies
-        const matchedCompanies = docs.filter(company =>
-          eventdoc.sponsoredBy?.some(s => s._id === company._id)
-        );
 
 
-
-        // Cover image
-        let coverBase64 = '';
-        if (eventdoc.featuredImage?.relativeAddress) {
-          const fullUrl = eventdoc.featuredImage.relativeAddress.startsWith("https")
-            ? eventdoc.featuredImage.relativeAddress
-            : `${baseURL}/${eventdoc.featuredImage.relativeAddress}`;
-          coverBase64 = await convertImageUrlToBase64(fullUrl);
-          setImagePreview(coverBase64);
-        }
-
-        // Gallery
-        let galleryBase64 = [];
-        if (eventdoc.images?.length) {
-          galleryBase64 = await Promise.all(
-            eventdoc.images.map(async (img) => {
-              const fullUrl = img.relativeAddress.startsWith("https")
-                ? img.relativeAddress
-                : `${baseURL}/${img.relativeAddress}`;
-              const base64 = await convertImageUrlToBase64(fullUrl);
-              return base64 ? { url: base64, _id: img._id, isExisting: true } : null;
-            })
-          );
-          galleryBase64 = galleryBase64.filter(Boolean);
-        }
-
-        setFormData((prev) => ({
-          ...prev,
-          title: eventdoc?.title || '',
-          description: eventdoc?.body || '',
-          address: eventdoc?.address || '',
-           slug:eventdoc?.slug || '',
-         eventType:eventdoc?.eventType || '',
-    eventSubtype:eventdoc?.eventSubtype || '',
-    shortDescription:eventdoc?.shortDescription || '',
-       locationName: eventdoc?.locationName || '',
-          city: eventdoc?.city || '',
-          state: eventdoc?.state || '',
-          waitlistEnabled: eventdoc?.waitlistEnabled || false,
-                isVirtual:eventdoc?.isVirtual || false ,
-autoArchive:eventdoc?.autoArchive || false ,
-  status: eventdoc?.status === "published", 
-    sponsoredBy: matchedCompanies,
-          capacity:eventdoc?.capacity || '',
-          piller:eventdoc?.piller || '',
-          program:eventdoc?.program?._id || '',
-          category:eventdoc?.category || '',
-      
-          coverImage: coverBase64 || prev.coverImage,
-          gallery: galleryBase64.length ? galleryBase64 : prev.gallery,
-        }));
-      };
+ 
+  
 
 
-      
-      if (eventdoc?.eventStartDate) {
-        const mDate = moment(eventdoc?.eventStartDate);
-        setEventDate(mDate.toDate());
-        setEventTime(mDate.format('HH:mm'));
-      }
+useEffect(() => {
+  const initializeForm = async () => {
+    if (!eventdoc) return;
 
-         if (eventdoc?.eventEndDate) {
-        const mDate = moment(eventdoc?.eventEndDate);
-        setEventEndDate(mDate.toDate());
-        setEventEndTime(mDate.format('HH:mm'));
-      }
+    // Companies
+    const matchedCompanies = companyDocs.filter(company =>
+      eventdoc.sponsoredBy?.some(s => s._id === company._id)
+    );
 
-        if (eventdoc?.registrationStartDate) {
-        const regDate = moment(eventdoc?.registrationStartDate);
-        setStartDate(regDate.toDate());
-        setStartTime(regDate.format('HH:mm'));
-      }
+    const matchedTeam = teamDocs.filter(member =>
+      eventdoc.team?.some(t => t._id === member._id)
+    );
+
+    const mappedTickets = eventdoc?.ticketDetails?.length
+      ? eventdoc.ticketDetails.map((ticket) => {
+          const start = ticket.saleStartDate ? moment(ticket.saleStartDate) : null;
+          const end = ticket.saleEndDate ? moment(ticket.saleEndDate) : null;
+
+          return {
+            title: ticket.title || "",
+            description: ticket.description || "",
+            price: ticket.price ?? "",
+            currency: ticket.currency || "USD",
+            quantity: ticket.quantity ?? "",
+            saleStartDate: start ? start.toDate() : null,
+            saleStartTime: start ? start.format("HH:mm") : "",
+            saleEndDate: end ? end.toDate() : null,
+            saleEndTime: end ? end.format("HH:mm") : "",
+            isActive: ticket.isActive ?? true,
+          };
+        })
+      : [
+          {
+            title: "",
+            description: "",
+            price: "",
+            currency: "USD",
+            quantity: "",
+            saleStartDate: null,
+            saleStartTime: "",
+            saleEndDate: null,
+            saleEndTime: "",
+            isActive: true,
+          },
+        ];
 
 
-      if (eventdoc?.registrationEndDate) {
-        const regDate = moment(eventdoc?.registrationEndDate);
-        setEndDate(regDate.toDate());
-        setEndTime(regDate.format('HH:mm'));
-      }
-      initializeForm();
-    }, [eventdoc, docs]);
+        const mappedSponsors = eventdoc?.sponsorshipTiles?.length
+  ? eventdoc.sponsorshipTiles.map((sponsor) => ({
+      title: sponsor.title || "",
+      description: sponsor.description || "",
+      amount: sponsor.amount ?? "",
+      currency: sponsor.currency || "USD",
+      ctaLabel: sponsor.ctaLabel || "",
+      sortOrder: sponsor.sortOrder ?? "",
+    }))
+  : [
+      {
+        title: "",
+        description: "",
+        amount: "",
+        currency: "USD",
+        ctaLabel: "",
+        sortOrder: "",
+      },
+    ];
 
+    // Cover image
+    let coverBase64 = '';
+    if (eventdoc.featuredImage?.relativeAddress) {
+      const fullUrl = eventdoc.featuredImage.relativeAddress.startsWith("https")
+        ? eventdoc.featuredImage.relativeAddress
+        : `${baseURL}/${eventdoc.featuredImage.relativeAddress}`;
+      coverBase64 = await convertImageUrlToBase64(fullUrl);
+      setImagePreview(coverBase64);
+    }
 
+    // Gallery
+    let galleryBase64 = [];
+    if (eventdoc.images?.length) {
+      galleryBase64 = await Promise.all(
+        eventdoc.images.map(async (img) => {
+          const fullUrl = img.relativeAddress.startsWith("https")
+            ? img.relativeAddress
+            : `${baseURL}/${img.relativeAddress}`;
+          const base64 = await convertImageUrlToBase64(fullUrl);
+          return base64 ? { url: base64, _id: img._id, isExisting: true } : null;
+        })
+      );
+      galleryBase64 = galleryBase64.filter(Boolean);
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      title: eventdoc?.title || '',
+      description: eventdoc?.body || '',
+      address: eventdoc?.address || '',
+      slug: eventdoc?.slug || '',
+      eventType: eventdoc?.eventType || '',
+      eventSubtype: eventdoc?.eventSubtype || '',
+      shortDescription: eventdoc?.shortDescription || '',
+      locationName: eventdoc?.locationName || '',
+      city: eventdoc?.city || '',
+      state: eventdoc?.state || '',
+      waitlistEnabled: eventdoc?.waitlistEnabled || false,
+      isVirtual: eventdoc?.isVirtual || false,
+      autoArchive: eventdoc?.autoArchive || false,
+      status: eventdoc?.status === "published",
+      sponsoredBy: matchedCompanies,
+      team: matchedTeam,
+      capacity: eventdoc?.capacity || '',
+      piller: eventdoc?.piller || '',
+      program: eventdoc?.program || '',
+      category: eventdoc?.category || '',
+      ctaLabel: eventdoc?.primaryCTA || '',
+      coverImage: coverBase64 || prev.coverImage,
+      gallery: galleryBase64.length ? galleryBase64 : prev.gallery,
+
+    ticketDetails: mappedTickets,
+  sponsorshipTiles: mappedSponsors,
+    }));
+  };
+
+  // Dates
+  if (eventdoc?.eventStartDate) {
+    const mDate = moment(eventdoc?.eventStartDate);
+    setEventDate(mDate.toDate());
+    setEventTime(mDate.format('HH:mm'));
+  }
+
+  if (eventdoc?.eventEndDate) {
+    const mDate = moment(eventdoc?.eventEndDate);
+    setEventEndDate(mDate.toDate());
+    setEventEndTime(mDate.format('HH:mm'));
+  }
+
+  if (eventdoc?.registrationStartDate) {
+    const regDate = moment(eventdoc?.registrationStartDate);
+    setStartDate(regDate.toDate());
+    setStartTime(regDate.format('HH:mm'));
+  }
+
+  if (eventdoc?.registrationEndDate) {
+    const regDate = moment(eventdoc?.registrationEndDate);
+    setEndDate(regDate.toDate());
+    setEndTime(regDate.format('HH:mm'));
+  }
+
+  initializeForm();
+}, [eventdoc, companyDocs, teamDocs]);
+
+// console.log(' this is a  program',formData.program.title)
 
 
 
@@ -270,6 +399,67 @@ const isPillerEditable = formData.category?.title === "Program";
 };
 
 
+const handleTicketDateChange = (index, field) => (value) => {
+  const newTickets = [...formData.ticketDetails];
+  newTickets[index][field] = value;
+  setFormData({ ...formData, ticketDetails: newTickets });
+
+  if (errors?.ticketDetails?.[index]?.[field]) {
+    const updated = { ...errors };
+    delete updated.ticketDetails[index][field];
+    setErrors(updated);
+  }
+};
+const handleSponsorChange = (index, field, value) => {
+  const newSponsors = [...formData.sponsorshipTiles];
+  newSponsors[index][field] = value;
+  setFormData({ ...formData, sponsorshipTiles: newSponsors });
+
+  if (errors?.sponsorshipTiles?.[index]?.[field]) {
+    setErrors((prev) => {
+      const updated = { ...prev };
+      updated.sponsorshipTiles = [...(updated.sponsorshipTiles || [])];
+
+      if (updated.sponsorshipTiles[index]) {
+        delete updated.sponsorshipTiles[index][field];
+
+        if (Object.keys(updated.sponsorshipTiles[index]).length === 0) {
+          updated.sponsorshipTiles.splice(index, 1);
+        }
+      }
+      return updated;
+    });
+  }
+};
+
+
+const handleTicketChange = (index, field, value) => {
+  const newTickets = [...formData.ticketDetails];
+
+  if (field === "description" && (value === "<p><br></p>" || value === "<p></p>")) {
+    value = "";
+  }
+
+  newTickets[index][field] = value;
+  setFormData({ ...formData, ticketDetails: newTickets });
+
+  // Remove error if exists
+  if (errors?.ticketDetails?.[index]?.[field]) {
+    setErrors((prev) => {
+      const updated = { ...prev };
+      updated.ticketDetails = [...(updated.ticketDetails || [])];
+      if (updated.ticketDetails[index]) {
+        delete updated.ticketDetails[index][field];
+        if (Object.keys(updated.ticketDetails[index]).length === 0) {
+          updated.ticketDetails.splice(index, 1);
+        }
+      }
+      return updated;
+    });
+  }
+};
+
+
 
  const eventTypeOptions = [
   { id: 1, title: "Program", value: "program" },
@@ -309,6 +499,30 @@ const resetForm = () => {
     sponsoredBy: [],    
     capacity: '',
     hostedBy: '',
+        ctaLabel:'',
+  ticketDetails: [
+      {
+        title: '',
+        description: '',
+        price: '',
+        currency: 'USD',
+        quantity: '',
+        saleStartDate: null,
+        saleStartTime: '',
+        saleEndDate: null,
+        saleEndTime: '',
+        isActive: true,
+      },
+    ],
+    sponsorshipTiles: [
+      {
+        title: '',
+        description: '',
+        amount: '',
+        currency: 'USD',
+        sortOrder: '',
+      },
+    ],
     waitlistEnabled: false, 
     isVirtual: false ,
 autoArchive:false,
@@ -345,6 +559,36 @@ const handleSubmit = async () => {
         const eventEndDateTime = combineDateTime(eventEndDate, eventEndTime);
   const startDateTime = combineDateTime(startDate, startTime);
   const endDateTime = combineDateTime(endDate, endTime);
+
+
+
+    const ticketDetails = formData.ticketDetails?.length
+        ? formData.ticketDetails.filter(td =>
+            Object.values(td).some(v => v !== "" && v !== null && v !== undefined)
+          ).map(td => ({
+            title: td.title,
+          ...(td.description ? { description: td.description } : {}),
+            price: Number(td.price),
+            currency: td.currency || "USD",
+            quantity: Number(td.quantity),
+            saleStartDate: combineDateTime(td.saleStartDate, td.saleStartTime),
+            saleEndDate: combineDateTime(td.saleEndDate, td.saleEndTime),
+            isActive: td.isActive ?? true,
+          }))
+        : [];
+  
+      const sponsorshipTiles = formData.sponsorshipTiles?.length
+        ? formData.sponsorshipTiles.filter(st =>
+            Object.values(st).some(v => v !== "" && v !== null && v !== undefined)
+          ).map(st => ({
+            title: st.title,
+            description: st.description,
+            amount: Number(st.amount),
+            currency: st.currency || "USD",
+            ctaLabel: st.ctaLabel,
+            sortOrder: Number(st.sortOrder),
+          }))
+        : [];
 
   try {
       const galleryUrls = formData.gallery?.length
@@ -386,7 +630,9 @@ const handleSubmit = async () => {
       }),
   
 
-      
+       ...(formData.ctaLabel && {
+        ctaLabel: formData.ctaLabel,
+      }),
        
       ...(eventDateTime && { eventDate: eventDateTime }),
   ...(startDateTime && { registrationStartDate: startDateTime }),
@@ -402,7 +648,7 @@ const handleSubmit = async () => {
         hostedBy: formData.hostedBy?._id,
       }),
       ...(formData.program && {
-        program: formData.program,
+        program: formData.program?._id,
       }),
        ...(formData.piller && {
         piller: formData.piller?._id,
@@ -444,9 +690,12 @@ const handleSubmit = async () => {
         team: teams,
       }),
       
+  ...(ticketDetails.length > 0 && { ticketDetails }),
+      ...(sponsorshipTiles.length > 0 && { sponsorshipTiles }),
+
     };
 
-    console.log('this is  payload',payload)
+    // console.log('this is  payload',payload)
 
 
     
@@ -590,7 +839,7 @@ const handleSubmit = async () => {
   onTimeChange={handleDateChange('endTime', setEndTime)}
   error={errors.endDate  ||errors.endTime}
 />  
-
+ {(formData.eventType === 'program' || formData.eventType === 'community') && (
           <ProgramSelectInput
              label="Category"
             selected={formData.category}
@@ -598,6 +847,9 @@ const handleSubmit = async () => {
             error={errors.category}
           />
 
+)}
+
+{formData.eventType === 'program' && (
        <PillerSelectInput
         label="Piller"
             selected={formData.piller}
@@ -606,6 +858,9 @@ const handleSubmit = async () => {
               readOnly={!isPillerEditable}
   />
 
+)}
+
+{formData.eventType === 'program' && (
      <PillerSelectedInput
   readOnly={!formData.piller} 
     selected={formData.piller} 
@@ -614,7 +869,7 @@ const handleSubmit = async () => {
   onSelect={handleSelectChange("program")}
   error={errors.program}
 />
-
+)}
   
 
 
@@ -922,6 +1177,289 @@ const handleSubmit = async () => {
 
      </div>
      </div>
+
+  {
+    formData.eventType === 'fundraiser' && (
+      <div className="w-full ">
+        <div className="flex gap-2 border-b border-black/20">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-4 py-2 text-sm font-medium cursor-pointer transition ${
+                activeTab === tab.id
+                  ? "border-b-2 border-black text-black"
+                  : "text-black/50"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    )
+  }
+  {
+  formData.eventType === 'fundraiser' && activeTab === 'tickets'  && (
+
+      
+      <div className="flex flex-col xl:flex-row items-start gap-4 xl:gap-2.5 w-full pb-12 border-b px-5 border-black/40">
+    <div className="w-full xl:w-[25%] flex flex-col gap-0.5">
+      <h2 className="font-medium text-base sm:text-lg xl:text-[20px]">
+        Ticket Details
+      </h2>
+      <p className="text-xs sm:text-sm text-black/50 leading-[21px]">
+        Provide clear information about ticket types, pricing, and availability so attendees know exactly what to expect.
+      </p>
+    </div>
+
+    <div className="w-full xl:w-[75%] grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-4">
+      {formData.ticketDetails.map((ticket, index) => (
+        <div key={index} className="sm:col-span-2 p-4 rounded-md relative">
+          {index !== 0 && (
+            <button
+              type="button"
+              onClick={() => {
+                const newTickets = formData.ticketDetails.filter(
+                  (_, i) => i !== index
+                );
+                setFormData({ ...formData, ticketDetails: newTickets });
+              }}
+              className="absolute top-[-4px] right-4 text-red-500 hover:text-red-700 cursor-pointer"
+            >
+              <MdDelete />
+            </button>
+          )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-4 pt-3">
+            <InputName
+    label="Ticket Title"
+    value={ticket.title}
+    onChange={(e) => handleTicketChange(index, "title", e.target.value)}
+    error={errors?.ticketDetails?.[index]?.title}
+  />
+
+        <InputName
+    label="Price"
+    value={ticket.price}
+    onChange={(e) => handleTicketChange(index, "price", e.target.value)}
+    error={errors?.ticketDetails?.[index]?.price}
+  />
+
+
+          
+  <InputName
+    label="Quantity"
+    value={ticket.quantity}
+    onChange={(e) => handleTicketChange(index, "quantity", e.target.value)}
+    error={errors?.ticketDetails?.[index]?.quantity}
+  />
+
+            {/* <InputName
+              label="Currency"
+              value={ticket.currency}
+              onChange={(e) => {
+                const newTickets = [...formData.ticketDetails];
+                newTickets[index].currency = e.target.value;
+                setFormData({ ...formData, ticketDetails: newTickets });
+              }}
+              error={errors?.ticketDetails?.[index]?.currency}
+            /> */}
+
+            <DateInput
+              label="Sale Start Date"
+              value={{ date: ticket.saleStartDate, time: ticket.saleStartTime }}
+              onDateChange={handleTicketDateChange(index, "saleStartDate")}
+              onTimeChange={handleTicketDateChange(index, "saleStartTime")}
+              error={
+                errors?.ticketDetails?.[index]?.saleStartDate ||
+                errors?.ticketDetails?.[index]?.saleStartTime
+              }
+            />
+
+            <DateInput
+              label="Sale End Date"
+              value={{ date: ticket.saleEndDate, time: ticket.saleEndTime }}
+              onDateChange={handleTicketDateChange(index, "saleEndDate")}
+              onTimeChange={handleTicketDateChange(index, "saleEndTime")}
+              error={
+                errors?.ticketDetails?.[index]?.saleEndDate ||
+                errors?.ticketDetails?.[index]?.saleEndTime
+              }
+            />
+
+            <div className="sm:col-span-2">
+              <ErrorBoundary>
+              <Editor
+    content={ticket.description}
+    setContent={(value) => handleTicketChange(index, "description", value)}
+    error={errors?.ticketDetails?.[index]?.description}
+  />
+              </ErrorBoundary>
+            </div>
+
+            <div className="sm:col-span-2 flex items-center gap-3 mt-2">
+              <input
+                type="checkbox"
+                id={`isActive-${index}`}
+                checked={ticket.isActive}
+                onChange={(e) => {
+                  const newTickets = [...formData.ticketDetails];
+                  newTickets[index].isActive = e.target.checked;
+                  setFormData({ ...formData, ticketDetails: newTickets });
+                }}
+                className="w-4 h-4 accent-black cursor-pointer"
+              />
+
+              <label
+                htmlFor={`isActive-${index}`}
+                className="font-medium text-xs sm:text-sm text-black/80"
+              >
+                Active
+              </label>
+            </div>
+          </div>
+        </div>
+      ))}
+
+      <div className="sm:col-span-2 mt-2">
+        <button
+          type="button"
+          onClick={() => {
+            setFormData({
+              ...formData,
+              ticketDetails: [
+                ...formData.ticketDetails,
+                {
+                  title: "",
+                  description: "",
+                  price: "",
+                  currency: "USD",
+                  quantity: "",
+                  saleStartDate: null,
+                  saleEndDate: null,
+                  isActive: true,
+                },
+              ],
+            });
+          }}
+          className="btn-primary rounded-md px-2.5 h-[40px] text-sm"
+        >
+          + Add Ticket
+        </button>
+      </div>
+    </div>
+  </div>
+
+    )
+  }
+
+
+
+
+  {/* Sponsorship  */}
+
+  {
+    formData.eventType === 'fundraiser' && activeTab === 'sponsorship' && (
+  <div className="flex flex-col xl:flex-row items-start gap-4 xl:gap-2.5 w-full pb-4 border-b px-5 border-black/40">
+    <div className="w-full xl:w-[25%] flex flex-col gap-0.5">
+      <h2 className="font-medium text-base sm:text-lg xl:text-[20px]">
+        Sponsorship Tiles
+      </h2>
+      <p className="text-xs sm:text-sm text-black/50 leading-[21px]">
+        Provide clear information about sponsorship levels, benefits, and pricing so potential sponsors know what they can gain from supporting your event.
+      </p>
+    </div>
+
+    <div className="w-full xl:w-[75%] grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-4">
+      {formData.sponsorshipTiles.map((sponsor, index) => (
+        <div key={index} className="sm:col-span-2 p-4 rounded-md relative ">
+          {index !== 0 && (
+            <button
+              type="button"
+              onClick={() => {
+                const newSponsors = formData.sponsorshipTiles.filter(
+                  (_, i) => i !== index
+                );
+                setFormData({ ...formData, sponsorshipTiles: newSponsors });
+              }}
+              className="absolute top-[-4px] right-4 text-red-500 hover:text-red-700 cursor-pointer"
+            >
+              <MdDelete />
+            </button>
+          )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-4 pt-2">
+        <InputName
+    label="Title"
+    value={sponsor.title}
+    onChange={(e) => handleSponsorChange(index, "title", e.target.value)}
+    error={errors?.sponsorshipTiles?.[index]?.title}
+  />
+
+
+
+
+
+
+
+  <InputName
+    label="Amount"
+    value={sponsor.amount}
+    onChange={(e) => handleSponsorChange(index, "amount", e.target.value)}
+    error={errors?.sponsorshipTiles?.[index]?.amount}
+  />
+
+  <InputName
+    label="CTA Label"
+    value={sponsor.ctaLabel}
+    onChange={(e) => handleSponsorChange(index, "ctaLabel", e.target.value)}
+    error={errors?.sponsorshipTiles?.[index]?.ctaLabel}
+  />
+
+
+  <div className="sm:col-span-2">
+              <ErrorBoundary>
+              <Editor
+    content={sponsor.description}
+    setContent={(value) => handleSponsorChange(index, "description", value)}
+    error={errors?.sponsorshipTiles?.[index]?.description}
+  />
+              </ErrorBoundary>
+            </div>
+          </div>
+        </div>
+      ))}
+
+      <div className="sm:col-span-2 mt-0 px-4">
+        <button
+          type="button"
+          onClick={() => {
+            setFormData({
+              ...formData,
+              sponsorshipTiles: [
+                ...formData.sponsorshipTiles,
+                {
+                  title: "",
+                  description: "",
+                  amount: 0,
+                  currency: "USD",
+                  ctaLabel: "",
+                  sortOrder: formData.sponsorshipTiles.length + 1,
+                },
+              ],
+            });
+          }}
+          className="btn-primary rounded-md px-2.5 h-[40px] text-sm"
+        >
+          + Add Sponsorship
+        </button>
+      </div>
+    </div>
+  </div>
+    )}
+
+
 
           <div className="flex flex-row gap-2 items-center justify-end w-full  px-3.5 ">
      <button
