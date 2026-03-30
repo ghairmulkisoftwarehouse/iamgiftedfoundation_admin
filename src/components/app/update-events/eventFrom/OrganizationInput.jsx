@@ -162,7 +162,7 @@ dispatch(setCompanyInfo(null))
 
       {/* Dropdown */}
       {showMenu && (
-        <div className="absolute left-0 top-[calc(100%+8px)] w-full bg-white rounded-md border border-black/20 shadow-lg z-[1000]">
+        <div className="absolute left-0 top-[calc(100%+8px)] w-full bg-white rounded-md border border-black/20 shadow-lg z-[2]">
         <div className="p-3">
             <input
               type="text"
