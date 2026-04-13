@@ -10,6 +10,8 @@ import { useSelector } from 'react-redux';
 import img from "../../../../assets/images/img1.jpg";
 import { baseURL } from '../../../../config/api';
 import moment from 'moment';
+import DOMPurify from "dompurify";
+
 
 
 
@@ -64,11 +66,14 @@ const AppUserWishesList = (
           </div>
 
           {/* Message */}
-          <div>
-            <p className="text-black/80 text-xs break-words whitespace-normal">
-               {item?.body}  
-            </p>
-          </div>
+            <div className="px-3 py-4  break-words whitespace-normal   ">
+
+               <div
+      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(item?.body) }}
+     
+    />
+              </div>
+        
 
           {/* Likes info */}
           <div className="text-xs  pb-3.5">
