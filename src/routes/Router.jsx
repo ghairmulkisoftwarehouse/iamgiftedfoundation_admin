@@ -48,6 +48,8 @@ import Post   from '../pages/app/post'
 import CreatePost from '../pages/app/post/create-post'
 import UpdatePost  from '../pages/app/post/update-post';
 import UpdateNewUser   from '../pages/app/panel-user/update-new-user'
+import  PillerForm   from '../pages/app/piller/create-pillers'
+import UpdatePillers   from '../pages/app/piller/update-pillers'
 
 
 
@@ -110,6 +112,12 @@ const Router = [
  { path: 'update-programs/:id', element: <ProtectedRoute element={<UpdatePrograms />} /> },
     
     { path: 'piller', element: <ProtectedRoute element={<Piller />} /> },
+     { path: 'create-piller', element: <ProtectedRoute element={<PillerForm />} /> },
+      { path: 'update-piller/:id', element: <ProtectedRoute element={<UpdatePillers />} /> },
+
+
+
+    
 
     
     {

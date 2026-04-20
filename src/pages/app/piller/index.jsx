@@ -6,6 +6,7 @@ import { useDispatch,useSelector } from 'react-redux';
 import { useQuery } from 'react-query';
 import { setStats } from '../../../redux/slices/pillarSlice';
 import devLog from '../../../utils/logsHelper';
+import Titlebtn   from '../../../components/global/Titlebtn'
 
 
 
@@ -21,7 +22,7 @@ const Piller = () => {
 const [currentPage, setCurrentPage] = useState(1);
 const [limit, setLimit] = useState(10);
 
-    const queryKey = ['fetch-all-campaign', currentPage, limit];
+    const queryKey = ['fetch-all-piller', currentPage, limit];
 
     const { isLoading, isError, error } = useQuery(
         queryKey,
@@ -42,7 +43,12 @@ const [limit, setLimit] = useState(10);
 
   return (
        <div className='flex  flex-col  gap-6 w-full'>
-              <Heading/>
+
+       <div className='  flex justify-between  lg:justify-end  w-full'>
+         <Heading/>
+              <Titlebtn label={'Add New'} url='/app/create-piller'  />
+       </div>
+            
               <PillerList
 
                      currentPage={currentPage}

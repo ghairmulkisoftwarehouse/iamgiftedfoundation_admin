@@ -17,7 +17,7 @@ import { getUser, removeUser } from "../utils/authLocalStorage";
 export const baseURL = 'https://iamgfserver.devoptixtech.com';  
 const Axios = axios.create({
    baseURL: `${baseURL}/api`,
-  timeout: 10000,
+  timeout: 50000,
 
 
 });

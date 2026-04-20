@@ -37,7 +37,8 @@ import {
 } from '../../../redux/slices/companySlice';
 
 import { 
-  setStats as setTeamStats 
+  setStats as setTeamStats, 
+  resetMultipleTeamDetails,
 } from '../../../redux/slices/teamSlice';
 
 import { useLocation } from "react-router-dom";
@@ -62,6 +63,9 @@ const UpdateEventsForm = () => {
    const { docDetails,patchLoading } = useSelector(state => state.event);
       const { companyInfo ,multipleCompanyDetails} = useSelector((state) => state.company);
       const {  multipleTeamDetails} = useSelector((state) => state.team);
+
+      // console.log(' this is a multipleTeamDetails',multipleTeamDetails)
+      // console.log('this is a docDetails',docDetails.doc.team)
  
 
 
@@ -76,6 +80,8 @@ const UpdateEventsForm = () => {
 
 const { docs: companyDocs } = useSelector((state) => state.company);
 const { docs: teamDocs } = useSelector((state) => state.team);
+
+
 
 
 
@@ -222,7 +228,7 @@ useEffect(() => {
             title: ticket.title || "",
             description: ticket.description || "",
             price: ticket.price ?? "",
-            currency: ticket.currency || "USD",
+            currency: ticket.currency ,
             quantity: ticket.quantity ?? "",
             saleStartDate: start ? start.toDate() : null,
             saleStartTime: start ? start.format("HH:mm") : "",
@@ -236,7 +242,7 @@ useEffect(() => {
             title: "",
             description: "",
             price: "",
-            currency: "USD",
+            currency: "",
             quantity: "",
             saleStartDate: null,
             saleStartTime: "",
@@ -252,7 +258,7 @@ useEffect(() => {
       title: sponsor.title || "",
       description: sponsor.description || "",
       amount: sponsor.amount ?? "",
-      currency: sponsor.currency || "USD",
+      currency: sponsor.currency ,
       ctaLabel: sponsor.ctaLabel || "",
       sortOrder: sponsor.sortOrder ?? "",
     }))
@@ -261,7 +267,7 @@ useEffect(() => {
         title: "",
         description: "",
         amount: "",
-        currency: "USD",
+        currency: "",
         ctaLabel: "",
         sortOrder: "",
       },
@@ -351,6 +357,27 @@ useEffect(() => {
   initializeForm();
 }, [eventdoc, companyDocs, teamDocs]);
 
+
+useEffect(() => {
+  const team = docDetails?.doc?.team;
+
+  if (Array.isArray(team) && team.length === 0) {
+    dispatch(resetMultipleTeamDetails());
+  }
+}, [docDetails?.doc?.team]);
+
+
+
+
+useEffect(() => {
+  const sponsored = docDetails?.doc?.sponsoredBy;
+
+  if (Array.isArray(sponsored) && sponsored.length === 0) {
+    dispatch(resetMultipleCompanyDetails());
+  }
+
+  dispatch(setCompanyInfo(null));
+}, [docDetails?.doc?.sponsoredBy, dispatch]);
 // console.log(' this is a  program',formData.program.title)
 
 
@@ -562,33 +589,66 @@ const handleSubmit = async () => {
 
 
 
-    const ticketDetails = formData.ticketDetails?.length
-        ? formData.ticketDetails.filter(td =>
-            Object.values(td).some(v => v !== "" && v !== null && v !== undefined)
-          ).map(td => ({
-            title: td.title,
-          ...(td.description ? { description: td.description } : {}),
-            price: Number(td.price),
-            currency: td.currency || "USD",
-            quantity: Number(td.quantity),
+
+
+
+
+
+      const hasValues = (obj) =>
+    obj &&
+    Object.values(obj).some(
+      (v) => v !== "" && v !== null && v !== undefined
+    );
+
+     const ticketDetails = Array.isArray(formData.ticketDetails)
+    ? formData.ticketDetails
+        .filter((td) =>
+          td &&
+          (
+            td.title ||
+            td.description ||
+            td.price ||
+            td.currency ||
+            td.quantity ||
+            td.saleStartDate ||
+            td.saleEndDate
+          )
+        )
+        .map((td) => ({
+          ...(td.title && { title: td.title }),
+          ...(td.description && { description: td.description }),
+          ...(td.price && { price: Number(td.price) }),
+          ...(td.currency && { currency: td.currency }),
+          ...(td.quantity && { quantity: Number(td.quantity) }),
+          ...((td.saleStartDate || td.saleStartTime) && {
             saleStartDate: combineDateTime(td.saleStartDate, td.saleStartTime),
+          }),
+          ...((td.saleEndDate || td.saleEndTime) && {
             saleEndDate: combineDateTime(td.saleEndDate, td.saleEndTime),
-            isActive: td.isActive ?? true,
-          }))
-        : [];
-  
-      const sponsorshipTiles = formData.sponsorshipTiles?.length
-        ? formData.sponsorshipTiles.filter(st =>
-            Object.values(st).some(v => v !== "" && v !== null && v !== undefined)
-          ).map(st => ({
-            title: st.title,
-            description: st.description,
-            amount: Number(st.amount),
-            currency: st.currency || "USD",
-            ctaLabel: st.ctaLabel,
-            sortOrder: Number(st.sortOrder),
-          }))
-        : [];
+          }),
+        }))
+    : [];
+
+    const sponsorshipTiles = Array.isArray(formData.sponsorshipTiles)
+    ? formData.sponsorshipTiles
+        .filter((st) =>
+          st &&
+          (
+            st.title ||
+            st.description ||
+            st.amount ||
+            st.ctaLabel ||
+            st.sortOrder
+          )
+        )
+        .map((st) => ({
+          ...(st.title && { title: st.title }),
+          ...(st.description && { description: st.description }),
+          ...(st.amount && { amount: Number(st.amount) }),
+          ...(st.ctaLabel && { ctaLabel: st.ctaLabel }),
+          ...(st.sortOrder && { sortOrder: Number(st.sortOrder) }),
+        }))
+    : [];
 
   try {
       const galleryUrls = formData.gallery?.length
@@ -634,7 +694,7 @@ const handleSubmit = async () => {
         ctaLabel: formData.ctaLabel,
       }),
        
-      ...(eventDateTime && { eventDate: eventDateTime }),
+      // ...(eventDateTime && { eventDate: eventDateTime }),
   ...(startDateTime && { registrationStartDate: startDateTime }),
   ...(endDateTime && { registrationEndDate: endDateTime }),
 
@@ -695,7 +755,7 @@ const handleSubmit = async () => {
 
     };
 
-    // console.log('this is  payload',payload)
+    console.log('this is  payload',payload)
 
 
     
@@ -708,6 +768,10 @@ const handleSubmit = async () => {
     toast.error('Failed to add Event');
   }
 };
+
+
+
+
 
 
 

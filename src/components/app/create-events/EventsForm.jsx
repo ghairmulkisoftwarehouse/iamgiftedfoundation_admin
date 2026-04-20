@@ -64,6 +64,10 @@ const [endTime, setEndTime] = useState('');
 
 
 
+
+// console.log('eventDate',eventDate)
+// console.log('eventEndDate',eventEndDate)
+
   const eventTypeOptions = [
   { id: 1, title: "Program", value: "program" },
   { id: 2, title: "Community", value: "community" },
