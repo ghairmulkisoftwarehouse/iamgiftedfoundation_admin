@@ -14,7 +14,7 @@ import { getUser, removeUser } from "../utils/authLocalStorage";
 ///  live  server http://54.162.89.235:4750'
 
 
-export const baseURL = 'https://iamgfserver.devoptixtech.com';  
+export const baseURL = 'https://server.iamgiftedfoundation.org';  
 const Axios = axios.create({
    baseURL: `${baseURL}/api`,
   timeout: 50000,
